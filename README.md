@@ -89,7 +89,7 @@
 - **Quick 1-Click Persona Switch**: Instant demo login as any key stakeholder:
   - 👨‍🌾 **Farmer / Livestock Owner**: Ramcharan Yadav (`farmer` / `farm123`)
   - 🩺 **Field Para-Vet / Pashu Sakhi**: Ramesh Kumar (`paravet` / `vet123`)
-  - 🏛️ **District Veterinary Officer (DVO)**: Dr. Sunil Bishnoi (`dvo_hisar` / `dvo123`)
+  - 🏛️ **District Veterinary Officer (DVO)**: Dr. Mohit Rao (`dvo_hisar` / `dvo123`)
   - 📊 **State Directorate**: Dr. A. K. Sharma (`director_ah` / `state123`)
 - **Official Credentials Login**: Username and password authentication with encrypted sessions.
 - **Rural Mobile OTP Login**: Designed for livestock owners without passwords — enter 10-digit mobile number to receive simulated OTP (`1962`) and log in immediately.

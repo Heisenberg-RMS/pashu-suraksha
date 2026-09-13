@@ -225,7 +225,7 @@ def seed_baseline_data(conn: sqlite3.Connection):
     users_data = [
         ("farmer", "9876543210", "farm123", "FARMER", "Ramcharan Yadav", "Dairy Livestock Keeper", "Dhani Mohabbatpur", "Hansi", "Hisar", "Haryana"),
         ("paravet", "9812903421", "vet123", "PARA_VET", "Ramesh Kumar", "Pashu Sakhi / Para-Veterinary Worker", "Bhatla", "Hansi", "Hisar", "Haryana"),
-        ("dvo_hisar", "9899123456", "dvo123", "DVO", "Dr. Sunil Bishnoi", "District Veterinary Officer (DVO)", "Hisar Polyclinic", "Hisar", "Hisar", "Haryana"),
+        ("dvo_hisar", "9899123456", "dvo123", "DVO", "Dr. Mohit Rao", "District Veterinary Officer (DVO)", "Hisar Polyclinic", "Hisar", "Hisar", "Haryana"),
         ("director_ah", "9811002233", "state123", "DIRECTOR", "Dr. A. K. Sharma", "Director General of Animal Husbandry", "State Secretariat", "Central", "State Directorate", "Haryana")
     ]
     cur.executemany("""
@@ -272,9 +272,9 @@ def seed_baseline_data(conn: sqlite3.Connection):
     overdue_date = (today - timedelta(days=20)).strftime("%Y-%m-%d")
     
     vaccines_data = [
-        ("100982347101", "Raksha-Ovac FMD", "Foot-and-Mouth Disease", 2, "BT-9021", "Indian Immunologicals", six_months_ago, next_fmd_due, "Dr. Sunil Bishnoi", "COMPLETED"),
-        ("100982347102", "Raksha-Ovac FMD", "Foot-and-Mouth Disease", 3, "BT-9021", "Indian Immunologicals", six_months_ago, next_fmd_due, "Dr. Sunil Bishnoi", "COMPLETED"),
-        ("100982347101", "Galghontu HS Vaccine", "Hemorrhagic Septicemia", 1, "HS-332", "IVRI Bareilly", six_months_ago, overdue_date, "Dr. Sunil Bishnoi", "OVERDUE"),
+        ("100982347101", "Raksha-Ovac FMD", "Foot-and-Mouth Disease", 2, "BT-9021", "Indian Immunologicals", six_months_ago, next_fmd_due, "Dr. Mohit Rao", "COMPLETED"),
+        ("100982347102", "Raksha-Ovac FMD", "Foot-and-Mouth Disease", 3, "BT-9021", "Indian Immunologicals", six_months_ago, next_fmd_due, "Dr. Mohit Rao", "COMPLETED"),
+        ("100982347101", "Galghontu HS Vaccine", "Hemorrhagic Septicemia", 1, "HS-332", "IVRI Bareilly", six_months_ago, overdue_date, "Dr. Mohit Rao", "OVERDUE"),
         ("100982347301", "Goat Pox Vaccine (Heterologous LSD)", "Lumpy Skin Disease", 1, "LSD-710", "Hester Biosciences", six_months_ago, next_fmd_due, "Dr. K. J. Thakkar", "COMPLETED"),
         ("100982347501", "PPR Live Vaccine", "Peste des Petits Ruminants", 1, "PPR-412", "Bio-Med", (today - timedelta(days=300)).strftime("%Y-%m-%d"), (today + timedelta(days=65)).strftime("%Y-%m-%d"), "Dr. M. Soundararajan", "COMPLETED")
     ]
@@ -285,7 +285,7 @@ def seed_baseline_data(conn: sqlite3.Connection):
     
     # 4. Treatments with Antimicrobial Withdrawal Stewardship
     treatments_data = [
-        ("100982347101", "Severe Pododermatitis & Vesicles", "Ceftiofur Sodium 1g IM & Meloxicam", "1 vial daily x 3 days", (today - timedelta(days=2)).strftime("%Y-%m-%d"), 7, (today + timedelta(days=5)).strftime("%Y-%m-%d"), "Dr. Sunil Bishnoi", "WITHDRAWAL RESTRICTION: Milk & meat unfit for human consumption until withdrawal date!"),
+        ("100982347101", "Severe Pododermatitis & Vesicles", "Ceftiofur Sodium 1g IM & Meloxicam", "1 vial daily x 3 days", (today - timedelta(days=2)).strftime("%Y-%m-%d"), 7, (today + timedelta(days=5)).strftime("%Y-%m-%d"), "Dr. Mohit Rao", "WITHDRAWAL RESTRICTION: Milk & meat unfit for human consumption until withdrawal date!"),
         ("100982347401", "Acute Submandibular Edema (Suspected HS)", "Oxytetracycline LA 200mg/ml", "20 ml deep IM", (today - timedelta(days=1)).strftime("%Y-%m-%d"), 21, (today + timedelta(days=20)).strftime("%Y-%m-%d"), "Dr. V. K. Saxena", "High dose long-acting tetracycline. Strict 21-day slaughter withdrawal.")
     ]
     cur.executemany("""
@@ -312,7 +312,7 @@ def seed_baseline_data(conn: sqlite3.Connection):
          "Found 4 heifers in village herd with severe vesicular stomatitis and smacking of lips.", None,
          "FMD", "Foot-and-Mouth Disease (खुरपका और मुंहपका)", 88, "CRITICAL", 0, 1, "INVESTIGATED", rep2_time),
          
-        ("REP-2026-003", "VET_OFFICER", "Dr. Sunil Bishnoi", "9899123456", None, "Buffalo", "Kheri Gagan", "Hansi", "Hisar", 29.0880, 75.9910,
+        ("REP-2026-003", "VET_OFFICER", "Dr. Mohit Rao", "9899123456", None, "Buffalo", "Kheri Gagan", "Hansi", "Hisar", 29.0880, 75.9910,
          json.dumps(["hoof_lesions", "oral_vesicles", "lameness"]), 1, 2, 0,
          "Clinical examination confirmed ruptured erosions on interdigital cleft and dental pad.", None,
          "FMD", "Foot-and-Mouth Disease (खुरपका और मुंहपका)", 85, "CRITICAL", 0, 1, "VERIFIED", rep3_time),
@@ -339,13 +339,28 @@ def seed_baseline_data(conn: sqlite3.Connection):
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, reports_data)
     
-    # 6. Outbreaks & Quarantine Zones
+    # 6. Outbreaks & Quarantine Zones (All-India Coverage)
     outbreaks_data = [
         ("CLUST-2026-001", "FMD", "Foot-and-Mouth Disease (खुरपका और मुंहपका)", "Hisar", "Hansi", "Dhani Mohabbatpur / Bhatla",
          29.1084, 76.0152, 3.0, 10.0, 9, 0, "ACTIVE", "CRITICAL", (today - timedelta(days=1)).strftime("%Y-%m-%d")),
          
         ("CLUST-2026-002", "LSD", "Lumpy Skin Disease (गांठदार त्वचा रोग)", "Anand", "Petlad", "Boriavi",
-         22.5280, 72.9350, 3.0, 8.0, 4, 0, "ACTIVE", "HIGH", (today - timedelta(days=3)).strftime("%Y-%m-%d"))
+         22.5280, 72.9350, 3.0, 8.0, 4, 0, "ACTIVE", "HIGH", (today - timedelta(days=3)).strftime("%Y-%m-%d")),
+
+        ("CLUST-2026-003", "LSD", "Lumpy Skin Disease (लम्पी त्वचा रोग - महाराष्ट्र)", "Pune", "Baramati", "Malegaon / Shirasane",
+         18.1524, 74.5772, 3.0, 10.0, 8, 0, "ACTIVE", "HIGH", (today - timedelta(days=2)).strftime("%Y-%m-%d")),
+
+        ("CLUST-2026-004", "FMD", "Foot-and-Mouth Disease (గాలికుంటు వ్యాధి - తెలంగాణ)", "Warangal", "Narsampet", "Pakhal / Khanapur",
+         17.9689, 79.5941, 3.0, 10.0, 12, 0, "ACTIVE", "CRITICAL", (today - timedelta(days=1)).strftime("%Y-%m-%d")),
+
+        ("CLUST-2026-005", "BQ", "Blackleg / फऱ्या रोग (कोल्हापूर)", "Kolhapur", "Karveer", "Vadange / Shiroli",
+         16.7050, 74.2433, 3.0, 8.0, 5, 1, "ACTIVE", "HIGH", (today - timedelta(days=4)).strftime("%Y-%m-%d")),
+
+        ("CLUST-2026-006", "HS", "Hemorrhagic Septicemia (गलघोंटू रोग - उत्तर प्रदेश)", "Bareilly", "Faridpur", "Kewani / Bhuta",
+         28.2140, 79.5420, 3.0, 10.0, 6, 2, "ACTIVE", "CRITICAL", (today - timedelta(days=2)).strftime("%Y-%m-%d")),
+
+        ("CLUST-2026-007", "ET", "Enterotoxaemia (గురక వ్యాధి - ఆంధ్రప్రదేశ్)", "Guntur", "Tenali", "Angalakuduru",
+         16.3067, 80.4365, 3.0, 8.0, 14, 2, "ACTIVE", "HIGH", (today - timedelta(days=3)).strftime("%Y-%m-%d"))
     ]
     cur.executemany("""
     INSERT OR IGNORE INTO outbreaks (

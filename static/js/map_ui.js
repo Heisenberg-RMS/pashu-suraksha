@@ -9,13 +9,31 @@ let containmentLayerGroup = null;
 let facilityLayerGroup = null;
 
 const VET_FACILITIES = [
-  { name: "Civil Veterinary Hospital, Hansi", type: "Dispensary", lat: 29.1005, lon: 75.9620, district: "Hisar", phone: "01663-254120" },
-  { name: "Disease Diagnostic Laboratory (DDL), Hisar", type: "Regional Diagnostic Lab", lat: 29.1492, lon: 75.7217, district: "Hisar", phone: "01662-289122" },
-  { name: "ICAR-Central Institute for Research on Buffaloes", type: "Research Institute", lat: 29.1764, lon: 75.7142, district: "Hisar", phone: "01662-276631" },
-  { name: "Veterinary Polyclinic, Anand", type: "Polyclinic", lat: 22.5645, lon: 72.9289, district: "Anand", phone: "02692-261314" },
-  { name: "State Disease Diagnostic Lab (SDDL), Gandhinagar", type: "State Referral Lab", lat: 23.2156, lon: 72.6369, district: "Gandhinagar", phone: "079-23254120" },
+  // North Zone (Haryana, Punjab, UP)
   { name: "ICAR-Indian Veterinary Research Institute (IVRI), Bareilly", type: "National Referral Lab", lat: 28.3752, lon: 79.4312, district: "Bareilly", phone: "0581-2586230" },
-  { name: "Veterinary Dispensary, Mullanpur", type: "Dispensary", lat: 30.9320, lon: 75.6980, district: "Ludhiana", phone: "0161-280412" }
+  { name: "ICAR-National Dairy Research Institute (NDRI), Karnal", type: "National Research Institute", lat: 29.6857, lon: 76.9905, district: "Karnal", phone: "0184-2259002" },
+  { name: "ICAR-Central Institute for Research on Buffaloes, Hisar", type: "Research Institute", lat: 29.1764, lon: 75.7142, district: "Hisar", phone: "01662-276631" },
+  { name: "Disease Diagnostic Laboratory (DDL), Hisar", type: "Regional Diagnostic Lab", lat: 29.1492, lon: 75.7217, district: "Hisar", phone: "01662-289122" },
+  { name: "Civil Veterinary Hospital, Hansi", type: "Dispensary", lat: 29.1005, lon: 75.9620, district: "Hisar", phone: "01663-254120" },
+  { name: "Veterinary Dispensary, Mullanpur", type: "Dispensary", lat: 30.9320, lon: 75.6980, district: "Ludhiana", phone: "0161-280412" },
+
+  // West Zone (Maharashtra & Gujarat)
+  { name: "College of Veterinary Science, MAFSU, Pune/Shirwal", type: "State Veterinary College & Hospital", lat: 18.1360, lon: 73.9850, district: "Pune", phone: "02169-244243" },
+  { name: "Disease Investigation Section (DIS), Aundh, Pune", type: "State Disease Referral Lab", lat: 18.5580, lon: 73.8075, district: "Pune", phone: "020-25880421" },
+  { name: "Veterinary Polyclinic, Kolhapur", type: "District Polyclinic", lat: 16.6980, lon: 74.2310, district: "Kolhapur", phone: "0231-2654120" },
+  { name: "College of Veterinary Science & Animal Husbandry, Anand", type: "State Veterinary Hospital", lat: 22.5645, lon: 72.9289, district: "Anand", phone: "02692-261314" },
+  { name: "State Disease Diagnostic Lab (SDDL), Gandhinagar", type: "State Referral Lab", lat: 23.2156, lon: 72.6369, district: "Gandhinagar", phone: "079-23254120" },
+
+  // South Zone (Telangana, Andhra Pradesh, Karnataka, Tamil Nadu)
+  { name: "PVNR Telangana Veterinary University (PVNRTVU), Rajendranagar", type: "State Referral Lab & Hospital", lat: 17.3200, lon: 78.4060, district: "Hyderabad", phone: "040-24002114" },
+  { name: "Regional Animal Disease Diagnostic Lab (RADDL), Warangal", type: "Regional Diagnostic Lab", lat: 17.9784, lon: 79.5910, district: "Warangal", phone: "0870-2456120" },
+  { name: "Veterinary Polyclinic, Tenali / Guntur", type: "District Polyclinic", lat: 16.2430, lon: 80.6400, district: "Guntur", phone: "08644-223450" },
+  { name: "SVVU College of Veterinary Science, Tirupati", type: "State Referral Hospital", lat: 13.6288, lon: 79.4192, district: "Tirupati", phone: "0877-2248155" },
+  { name: "Veterinary College Hebbal, KVAFSU, Bengaluru", type: "Referral Veterinary Hospital", lat: 13.0315, lon: 77.5890, district: "Bengaluru", phone: "080-23411483" },
+  { name: "TANUVAS Madras Veterinary College Hospital, Chennai", type: "Apex Referral Hospital", lat: 13.0878, lon: 80.2785, district: "Chennai", phone: "044-25304000" },
+
+  // East Zone (West Bengal)
+  { name: "WBUAFS Faculty of Veterinary Sciences, Belgachia, Kolkata", type: "State Diagnostic Lab", lat: 22.6020, lon: 88.3840, district: "Kolkata", phone: "033-25569234" }
 ];
 
 function initSurveillanceMap() {
@@ -27,15 +45,15 @@ function initSurveillanceMap() {
   const mapEl = document.getElementById('surveillanceMap');
   if (!mapEl) return;
 
-  // Center on Northern-Central India livestock belt
+  // Center on All India
   mapInstance = L.map('surveillanceMap', {
-    center: [28.0, 77.0],
-    zoom: 6,
+    center: [22.5, 78.9],
+    zoom: 5,
     zoomControl: true
   });
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors | Pashu Suraksha GIS',
+    attribution: '&copy; OpenStreetMap contributors | Pashu Suraksha National GIS',
     maxZoom: 18
   }).addTo(mapInstance);
 
@@ -187,6 +205,25 @@ function renderFacilities() {
   });
 }
 
+const INDIA_REGIONS = {
+  all: { center: [22.5, 79.2], zoom: 5, name: "All India" },
+  north: { center: [28.8, 76.8], zoom: 7, name: "North Zone (Haryana, Punjab, UP)" },
+  west: { center: [18.8, 74.2], zoom: 7, name: "West Zone (Maharashtra & Gujarat)" },
+  south: { center: [16.2, 78.8], zoom: 7, name: "South Zone (Telangana, AP, Karnataka)" },
+  east: { center: [23.5, 84.5], zoom: 7, name: "East & Central Zone" }
+};
+
+function focusRegion(regionKey) {
+  const reg = INDIA_REGIONS[regionKey] || INDIA_REGIONS.all;
+  if (mapInstance) {
+    mapInstance.flyTo(reg.center, reg.zoom, { duration: 1.0 });
+  }
+  // Update active pill button state
+  document.querySelectorAll('.map-region-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.region === regionKey);
+  });
+}
+
 function focusOnLocation(lat, lon, zoom = 11) {
   if (mapInstance) {
     mapInstance.setView([lat, lon], zoom);
@@ -197,6 +234,7 @@ window.MapManager = {
   init: initSurveillanceMap,
   refresh: loadMapData,
   focus: focusOnLocation,
+  focusRegion: focusRegion,
   invalidateSize: function() {
     if (mapInstance) mapInstance.invalidateSize();
   }

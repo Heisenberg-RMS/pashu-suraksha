@@ -1322,6 +1322,200 @@ body {
     bottom: 0;
     right: 0;
     width: 100vw;
+.chat-header-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.chat-header-sub {
+  font-size: 0.7rem;
+  color: #a7f3d0;
+}
+
+.chat-thread {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.chat-bubble {
+  max-width: 88%;
+  border-radius: 14px;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  position: relative;
+  word-wrap: break-word;
+}
+
+.chat-bubble.bot {
+  align-self: flex-start;
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: var(--primary);
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.bubble-sender {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #0f766e;
+  margin-bottom: 0.25rem;
+}
+
+.bubble-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.btn-bubble-tts {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: none;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-bubble-tts:hover {
+  background: #bae6fd;
+}
+
+.bubble-quick-prompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+
+.quick-prompt {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.72rem;
+  color: #334155;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.quick-prompt:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary-dark);
+}
+
+.typing-indicator span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #94a3b8;
+  border-radius: 50%;
+  margin-right: 3px;
+  animation: typingBounce 1.2s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+}
+
+.chat-input-bar {
+  padding: 0.75rem;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ==========================================
+   MOBILE BOTTOM NAVIGATION BAR
+   ========================================== */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.06);
+  z-index: 1400;
+  padding: 0.35rem 0.25rem calc(0.35rem + env(safe-area-inset-bottom)) 0.25rem;
+}
+
+.mobile-nav-item {
+  flex: 1;
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 0.68rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  padding: 0.2rem 0;
+}
+
+.mobile-nav-item.active {
+  color: var(--primary);
+}
+
+.mobile-nav-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+/* Mobile viewport optimizations (< 850px) */
+@media (max-width: 850px) {
+  body {
+    padding-bottom: 64px; /* Space for bottom nav */
+  }
+
+  .nav-tabs-bar {
+    display: none; /* Replaced by bottom nav on mobile */
+  }
+
+  .mobile-bottom-nav {
+    display: flex;
+  }
+
+  .chat-float-btn {
+    bottom: 74px; /* Above mobile bottom bar */
+    right: 16px;
+    width: 52px;
+    height: 52px;
+    font-size: 1.5rem;
+  }
+
+  .chat-drawer {
+    bottom: 0;
+    right: 0;
+    width: 100vw;
     height: 85vh;
     max-width: 100vw;
     border-radius: 20px 20px 0 0;
@@ -1333,5 +1527,90 @@ body {
   }
 }
 
-}
+/* Map Region Filter Bar */
+.map-region-filter-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
 
+.map-region-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--gray-600);
+  text-transform: uppercase;
+}
+
+.map-region-btn {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.map-region-btn:hover {
+  background: var(--gray-50);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.map-region-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+  box-shadow: 0 2px 4px rgba(15, 118, 110, 0.25);
+}
+
+/* Vision Scan Target Region Pills */
+.scan-target-pills-bar {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.scan-target-pill {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  padding: 0.35rem 0.65rem;
+  border-radius: 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.scan-target-pill:hover {
+  background: #f1f5f9;
+  border-color: #0f766e;
+  color: #0f766e;
+}
+
+.scan-target-pill.active {
+  background: #0f766e;
+  border-color: #0f766e;
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(15, 118, 110, 0.25);
+}
+
+.badge-healthy {
+  background: #dcfce7;
+  color: #15803d;
+  font-weight: 700;
+  border: 1px solid #bbf7d0;
+}

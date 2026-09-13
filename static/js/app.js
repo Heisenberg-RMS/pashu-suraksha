@@ -249,6 +249,7 @@ window.AuthManager = new AuthenticationManager();
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Initialize subsystems
+  if (window.I18n) window.I18n.init();
   window.OfflineManager.initDB();
   window.AuthManager.init();
   window.TriageManager.init();

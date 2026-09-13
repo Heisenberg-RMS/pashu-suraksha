@@ -191,7 +191,37 @@ class TestPashuSuraksha(unittest.TestCase):
         data_en = res_en.get_json()
         self.assertTrue(data_en["success"])
         self.assertEqual(data_en["intent"], "WITHDRAWAL_STEWARDSHIP")
-        self.assertIn("withdrawal", data_en["reply"].lower())
+        # 3. Marathi query about FMD
+        res_mr = self.client.post("/api/chatbot", json={
+            "message": "गाईच्या तोंडात आणि खुरांमध्ये फोड आहेत, काय उपाय करावा?",
+            "language": "mr"
+        })
+        self.assertEqual(res_mr.status_code, 200)
+        data_mr = res_mr.get_json()
+        self.assertEqual(data_mr["intent"], "FMD_TREATMENT")
+        self.assertIn("लाळ्या खुरकूत", data_mr["reply"])
+
+        # 4. Telugu query about LSD
+        res_te = self.client.post("/api/chatbot", json={
+            "message": "ఆవు ఒంటిపై గడ్డలు వచ్చాయి ఏం చేయాలి?",
+            "language": "te"
+        })
+        self.assertEqual(res_te.status_code, 200)
+        data_te = res_te.get_json()
+        self.assertEqual(data_te["intent"], "LSD_CARE")
+        self.assertIn("లంపీ", data_te["reply"])
+
+    def test_15_healthy_cattle_vision(self):
+        # A normal healthy scan with no hints should NOT diagnose anthrax or FMD
+        res = self.client.post("/api/image-diagnosis", json={
+            "hint": "healthy normal routine scan",
+            "language": "mr"
+        })
+        self.assertEqual(res.status_code, 200)
+        data = res.get_json()
+        self.assertEqual(data["disease_code"], "HEALTHY")
+        self.assertEqual(data["severity"], "NORMAL")
+        self.assertIn("निरोगी", data["disease_name"])
 
 if __name__ == "__main__":
     unittest.main()

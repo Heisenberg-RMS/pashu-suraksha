@@ -29,14 +29,14 @@
     <div class="brand-section">
       <div class="brand-logo">🐄</div>
       <div class="brand-text">
-        <h1>पशु सुरक्षा (Pashu Suraksha)</h1>
-        <p>Unified Real-Time Animal Health Surveillance & Early Warning Decision Support</p>
+        <h1 data-i18n="brand_title">पशु सुरक्षा (Pashu Suraksha)</h1>
+        <p data-i18n="brand_sub">Unified Real-Time Animal Health Surveillance & Early Warning Decision Support</p>
       </div>
     </div>
 
     <div class="header-controls">
       <div class="sync-badge" id="syncBadge">
-        <span class="dot"></span> Online (Auto-Sync Ready)
+        <span class="dot"></span> <span data-i18n="sync_online">Online (Auto-Sync Ready)</span>
       </div>
       <span id="pendingQueueCount" style="font-size:0.75rem; color:#fde68a; font-weight:700;"></span>
 
@@ -44,42 +44,52 @@
       <div id="userProfileWidget" class="user-profile-widget" onclick="window.AuthManager.openModal()" title="Click to switch user account or view profile">
         <span class="user-avatar" id="headerUserAvatar">👨‍⚕️</span>
         <div class="user-meta">
-          <span class="user-name" id="headerUserName">Dr. Sunil Bishnoi</span>
-          <span class="user-role" id="headerUserRole">District Veterinary Officer (DVO)</span>
+          <span class="user-name" id="headerUserName">Dr. Mohit Rao</span>
+          <span class="user-role" id="headerUserRole" data-i18n="user_dvo">District Veterinary Officer (DVO)</span>
         </div>
       </div>
 
+      <!-- Multilingual Language Selector (English, Hindi, Marathi, Telugu) -->
+      <div class="lang-selector-widget">
+        <span class="lang-icon">🌐</span>
+        <select id="globalLanguageSelect" class="lang-dropdown" onchange="window.I18n.setLanguage(this.value)" title="Select Portal Language / भाषा निवडा / భాషను ఎంచుకోండి">
+          <option value="en">English</option>
+          <option value="hi" selected>हिंदी (Hindi)</option>
+          <option value="mr">मराठी (Marathi)</option>
+          <option value="te">తెలుగు (Telugu)</option>
+        </select>
+      </div>
 
       <button class="btn-login-toggle" onclick="window.AuthManager.openModal()">
-        🔑 Login / Switch
+        🔑 <span data-i18n="nav_login">Login / Switch</span>
       </button>
     </div>
   </header>
 
   <!-- Navigation Tabs -->
   <nav class="nav-tabs-bar">
-    <button class="tab-btn active" data-tab="map">
+    <button class="tab-btn active" data-tab="map" data-i18n="tab_map">
       🗺️ Outbreak Map & GIS Surveillance
     </button>
-    <button class="tab-btn" data-tab="vision">
+    <button class="tab-btn" data-tab="vision" data-i18n="tab_vision">
       📸 AI Vision Lens & Lesion Scan
     </button>
-    <button class="tab-btn" data-tab="triage">
+    <button class="tab-btn" data-tab="triage" data-i18n="tab_triage">
       ⚡ Rapid Syndromic Report & AI Triage
     </button>
-    <button class="tab-btn" data-tab="ehr">
+    <button class="tab-btn" data-tab="ehr" data-i18n="tab_ehr">
       📋 Animal EHR & Health Passport
     </button>
-    <button class="tab-btn" data-tab="labs">
+    <button class="tab-btn" data-tab="labs" data-i18n="tab_labs">
       🧪 Lab Referrals & Chain of Custody
     </button>
-    <button class="tab-btn" data-tab="advisories">
+    <button class="tab-btn" data-tab="advisories" data-i18n="tab_advisories">
       🔊 Multilingual Voice Advisories & SMS
     </button>
-    <button class="tab-btn" data-tab="ivr">
+    <button class="tab-btn" data-tab="ivr" data-i18n="tab_ivr">
       📞 Simulated IVR Hotline (1962)
     </button>
-    <button class="tab-btn" data-tab="dashboard">
+    <button class="tab-btn" data-tab="dashboard" data-i18n="tab_dashboard">
       📈 Epidemiological Dashboard
     </button>
   </nav>
@@ -96,11 +106,30 @@
         <div class="card" style="margin-bottom:0; display:flex; flex-direction:column;">
           <div class="card-header">
             <h2 class="card-title">
-              <span>📍 Live Geospatial Surveillance & Containment Rings</span>
+              <span data-i18n="map_title">📍 Live Geospatial Surveillance & Containment Rings</span>
             </h2>
-            <div style="font-size:0.8rem; color:#64748b;">
+            <div style="font-size:0.8rem; color:#64748b;" data-i18n="map_subtitle">
               Active Layers: Outbreak Clusters • 3km Infected Zones • 10km Surveillance Buffers
             </div>
+          </div>
+
+          <!-- All-India Region Quick-Filter Buttons -->
+          <div class="map-region-filter-bar">
+            <button type="button" class="map-region-btn active" data-region="all" onclick="window.MapManager.focusRegion('all')" data-i18n="map_reg_all">
+              🇮🇳 All India
+            </button>
+            <button type="button" class="map-region-btn" data-region="north" onclick="window.MapManager.focusRegion('north')" data-i18n="map_reg_north">
+              🏔️ North Zone (HR/PB/UP)
+            </button>
+            <button type="button" class="map-region-btn" data-region="west" onclick="window.MapManager.focusRegion('west')" data-i18n="map_reg_west">
+              🌾 West Zone (MH/GJ)
+            </button>
+            <button type="button" class="map-region-btn" data-region="south" onclick="window.MapManager.focusRegion('south')" data-i18n="map_reg_south">
+              🌴 South Zone (TS/AP/KA)
+            </button>
+            <button type="button" class="map-region-btn" data-region="east" onclick="window.MapManager.focusRegion('east')" data-i18n="map_reg_east">
+              🌅 East & Central Zone
+            </button>
           </div>
 
           <div id="surveillanceMap"></div>
@@ -108,23 +137,23 @@
           <div class="map-legend">
             <div class="legend-item">
               <span class="legend-dot" style="background:#e11d48;"></span>
-              <span><b>Critical Outbreak Point</b> (Confirmed/Active)</span>
+              <span data-i18n="legend_outbreak"><b>Critical Outbreak Point</b> (Confirmed/Active)</span>
             </div>
             <div class="legend-item">
               <span class="legend-dot" style="background:#ffe4e6; border:1px solid #e11d48;"></span>
-              <span><b>3 km Infected Zone</b> (Strict Animal/Product Movement Ban)</span>
+              <span data-i18n="legend_infected_zone"><b>3 km Infected Zone</b> (Strict Animal/Product Movement Ban)</span>
             </div>
             <div class="legend-item">
               <span class="legend-dot" style="background:#fef3c7; border:1px dashed #f59e0b;"></span>
-              <span><b>10 km Surveillance Zone</b> (Clinical Ring Search & Emergency Vaccination)</span>
+              <span data-i18n="legend_surv_zone"><b>10 km Surveillance Zone</b> (Clinical Ring Search & Emergency Vaccination)</span>
             </div>
             <div class="legend-item">
               <span class="legend-dot" style="background:#059669;"></span>
-              <span>Veterinary Dispensary / Hospital</span>
+              <span data-i18n="legend_vet">Veterinary Dispensary / Hospital</span>
             </div>
             <div class="legend-item">
               <span class="legend-dot" style="background:#7c3aed;"></span>
-              <span>Regional Disease Diagnostic Laboratory</span>
+              <span data-i18n="legend_lab">Regional Disease Diagnostic Laboratory</span>
             </div>
           </div>
         </div>
@@ -214,22 +243,52 @@
         <!-- Capture / Upload Card -->
         <div class="card">
           <div class="card-header">
-            <h2 class="card-title">📸 AI Visual Lesion Scanner & Camera Lens</h2>
-            <span style="font-size:0.75rem; background:#ccfbf1; color:#0f766e; padding:2px 8px; border-radius:12px; font-weight:700;">Computer Vision AI</span>
+            <h2 class="card-title" data-i18n="vision_title">📸 AI Visual Lesion Scanner & Camera Lens</h2>
+            <span style="font-size:0.75rem; background:#ccfbf1; color:#0f766e; padding:2px 8px; border-radius:12px; font-weight:700;" data-i18n="vision_badge">Computer Vision AI</span>
+          </div>
+
+          <!-- Target Body Region / Scan Mode Selector -->
+          <div style="margin-bottom:0.75rem;">
+            <label style="font-size:0.78rem; font-weight:700; color:#475569; text-transform:uppercase;" data-i18n="vision_target_label">
+              🎯 Select Target Body Region / Scan Mode:
+            </label>
+            <div class="scan-target-pills-bar">
+              <button type="button" class="scan-target-pill active" data-target="auto" data-i18n="target_auto">
+                🔍 Auto-Detect (Visual AI)
+              </button>
+              <button type="button" class="scan-target-pill" data-target="healthy" data-i18n="target_healthy">
+                🐄 Routine Healthy Check
+              </button>
+              <button type="button" class="scan-target-pill" data-target="skin" data-i18n="target_skin">
+                ⚪ Skin Coat (LSD Nodules)
+              </button>
+              <button type="button" class="scan-target-pill" data-target="mouth" data-i18n="target_mouth">
+                👅 Mouth & Hoof (FMD Ulcers)
+              </button>
+              <button type="button" class="scan-target-pill" data-target="udder" data-i18n="target_udder">
+                🥛 Udder & Teats (Mastitis)
+              </button>
+              <button type="button" class="scan-target-pill" data-target="throat" data-i18n="target_throat">
+                🧣 Throat & Brisket (HS)
+              </button>
+              <button type="button" class="scan-target-pill" data-target="ticks" data-i18n="target_ticks">
+                🪰 Parasites (Ticks / Chichdi)
+              </button>
+            </div>
           </div>
 
           <!-- Dropzone -->
           <div class="vision-dropzone" id="visionDropzone" onclick="document.getElementById('visionImageFileInput').click()">
             <div id="visionDropzoneContent">
               <div style="font-size:3rem; margin-bottom:0.5rem;">📷</div>
-              <h3 style="color:#0f766e; margin-bottom:0.25rem;">Snap or Upload Lesion Photo</h3>
-              <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;">Tap to open camera, browse gallery, or drag-and-drop animal photo</p>
+              <h3 style="color:#0f766e; margin-bottom:0.25rem;" data-i18n="vision_drop_title">Snap or Upload Lesion Photo</h3>
+              <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;" data-i18n="vision_drop_sub">Tap to open camera, browse gallery, or drag-and-drop animal photo</p>
               
               <div style="display:flex; justify-content:center; gap:0.5rem; flex-wrap:wrap;">
-                <button type="button" class="btn btn-primary btn-sm" onclick="event.stopPropagation(); document.getElementById('visionCameraInput').click()">
+                <button type="button" class="btn btn-primary btn-sm" onclick="event.stopPropagation(); document.getElementById('visionCameraInput').click()" data-i18n="btn_launch_camera">
                   📸 Launch Mobile Camera
                 </button>
-                <button type="button" class="btn btn-outline btn-sm" onclick="event.stopPropagation(); document.getElementById('visionImageFileInput').click()">
+                <button type="button" class="btn btn-outline btn-sm" onclick="event.stopPropagation(); document.getElementById('visionImageFileInput').click()" data-i18n="btn_browse_files">
                   📁 Browse Device Photos
                 </button>
               </div>
@@ -240,7 +299,7 @@
               <img id="visionPreviewImage" class="vision-preview-img" src="" alt="Lesion Scan">
               <div style="margin-top:0.75rem; display:flex; justify-content:center; gap:0.5rem; align-items:center;">
                 <span id="visionFileLabel" style="font-size:0.8rem; font-weight:600; color:#475569;"></span>
-                <button type="button" class="btn btn-outline btn-sm" onclick="event.stopPropagation(); window.VisionManager.resetScan()">
+                <button type="button" class="btn btn-outline btn-sm" onclick="event.stopPropagation(); window.VisionManager.resetScan()" data-i18n="btn_scan_another">
                   🔄 Scan Another Photo
                 </button>
               </div>
@@ -252,26 +311,29 @@
 
           <!-- Sample Lesion Presets -->
           <div style="margin-top:1.25rem; border-top:1px solid #e2e8f0; padding-top:1rem;">
-            <label style="font-size:0.78rem; font-weight:700; color:#64748b; text-transform:uppercase;">
+            <label style="font-size:0.78rem; font-weight:700; color:#64748b; text-transform:uppercase;" data-i18n="presets_label">
               ⚡ Or Test With Standard Pathology Presets (No Camera Needed):
             </label>
             <div class="sample-presets-bar">
-              <button class="sample-preset-btn" data-hint="lsd" data-name="Lumpy Skin Disease" data-icon="⚪">
+              <button class="sample-preset-btn" data-hint="healthy" data-name="Healthy Bovine" data-icon="🐄" data-i18n="preset_healthy">
+                <span>🐄</span> Healthy Cattle
+              </button>
+              <button class="sample-preset-btn" data-hint="lsd" data-name="Lumpy Skin Disease" data-icon="⚪" data-i18n="preset_lsd">
                 <span>⚪</span> LSD Skin Nodules
               </button>
-              <button class="sample-preset-btn" data-hint="fmd" data-name="FMD Vesicles" data-icon="👅">
+              <button class="sample-preset-btn" data-hint="fmd" data-name="FMD Vesicles" data-icon="👅" data-i18n="preset_fmd">
                 <span>👅</span> FMD Oral Blisters
               </button>
-              <button class="sample-preset-btn" data-hint="mastitis" data-name="Bovine Mastitis" data-icon="🥛">
+              <button class="sample-preset-btn" data-hint="mastitis" data-name="Bovine Mastitis" data-icon="🥛" data-i18n="preset_mastitis">
                 <span>🥛</span> Udder Mastitis
               </button>
-              <button class="sample-preset-btn" data-hint="tick" data-name="Tick Cluster" data-icon="🪰">
+              <button class="sample-preset-btn" data-hint="tick" data-name="Tick Cluster" data-icon="🪰" data-i18n="preset_ticks">
                 <span>🪰</span> Tick Parasites
               </button>
-              <button class="sample-preset-btn" data-hint="anthrax" data-name="Anthrax Carcass" data-icon="⚠️">
+              <button class="sample-preset-btn" data-hint="anthrax" data-name="Anthrax Carcass" data-icon="⚠️" data-i18n="preset_anthrax">
                 <span>⚠️</span> Anthrax Post-Mortem
               </button>
-              <button class="sample-preset-btn" data-hint="hs" data-name="HS Throat Swelling" data-icon="🧣">
+              <button class="sample-preset-btn" data-hint="hs" data-name="HS Throat Swelling" data-icon="🧣" data-i18n="preset_hs">
                 <span>🧣</span> HS Neck Edema
               </button>
             </div>
@@ -283,8 +345,8 @@
           <div class="card" id="visionResultCard">
             <div style="text-align:center; padding:3rem 1.5rem; color:#94a3b8;">
               <div style="font-size:3rem; margin-bottom:0.75rem;">🔬</div>
-              <h3 style="color:#64748b; margin-bottom:0.35rem;">AI Vision Diagnostics Standby</h3>
-              <p style="font-size:0.85rem;">Capture or upload a photo of the affected animal's skin, mouth, hooves, or udder to detect disease lesions, clinical stage, and emergency first-aid.</p>
+              <h3 style="color:#64748b; margin-bottom:0.35rem;" data-i18n="standby_title">AI Vision Diagnostics Standby</h3>
+              <p style="font-size:0.85rem;" data-i18n="standby_desc">Capture or upload a photo of the affected animal's skin, mouth, hooves, or udder to detect disease lesions, clinical stage, and emergency first-aid.</p>
             </div>
           </div>
         </div>
@@ -820,7 +882,7 @@
             <div class="persona-card">
               <div>
                 <span class="persona-badge" style="background:#ffe4e6; color:#e11d48;">🏛️ District Vet Officer</span>
-                <div class="persona-name">Dr. Sunil Bishnoi</div>
+                <div class="persona-name">Dr. Mohit Rao</div>
                 <div class="persona-desc">Hisar District DVO. GIS containment zones (3km/10km), lab escalation & emergency SMS dispatch.</div>
               </div>
               <button class="btn btn-outline btn-sm btn-block" onclick="window.AuthManager.loginAsRole('DVO')">
@@ -906,9 +968,11 @@
         </div>
       </div>
       <div style="display:flex; align-items:center; gap:0.4rem;">
-        <select id="chatLanguageSelect" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:0.75rem; border-radius:6px; padding:2px 4px; outline:none;">
-          <option value="hi" style="color:#000;">हिन्दी</option>
+        <select id="chatLanguageSelect" onchange="window.I18n.setLanguage(this.value)" style="background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.3); color:#fff; font-size:0.75rem; border-radius:6px; padding:2px 4px; outline:none;">
           <option value="en" style="color:#000;">English</option>
+          <option value="hi" selected style="color:#000;">हिन्दी (Hindi)</option>
+          <option value="mr" style="color:#000;">मराठी (Marathi)</option>
+          <option value="te" style="color:#000;">తెలుగు (Telugu)</option>
         </select>
         <button id="chatDrawerCloseBtn" style="background:transparent; border:none; color:#fff; font-size:1.4rem; cursor:pointer; line-height:1;">&times;</button>
       </div>
@@ -919,7 +983,7 @@
     </div>
 
     <div class="chat-input-bar">
-      <input type="text" id="chatTextInput" class="form-control" placeholder="Ask about symptoms, first-aid, vaccines..." style="font-size:0.85rem;">
+      <input type="text" id="chatTextInput" class="form-control" placeholder="Ask about symptoms, first-aid, vaccines..." data-i18n-placeholder="chat_placeholder" style="font-size:0.85rem;">
       <button id="chatSendBtn" class="btn btn-primary btn-sm" style="padding:0 1rem;">
         ➤
       </button>
@@ -953,6 +1017,7 @@
   </nav>
 
   <!-- Application Core Scripts -->
+  <script src="/static/js/i18n.js"></script>
   <script src="/static/js/offline_sync.js"></script>
   <script src="/static/js/voice_advisory.js"></script>
   <script src="/static/js/vision_ui.js"></script>

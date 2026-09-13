@@ -138,7 +138,7 @@ def auth_me():
             "id": 1,
             "username": "dvo_hisar",
             "role": "DVO",
-            "full_name": "Dr. Sunil Bishnoi",
+            "full_name": "Dr. Mohit Rao",
             "designation": "District Veterinary Officer (DVO)",
             "district": "Hisar",
             "state": "Haryana"
@@ -157,17 +157,21 @@ def auth_logout():
 @app.route("/api/image-diagnosis", methods=["POST"])
 def image_diagnosis():
     filename = ""
-    hint = ""
+    hint = request.args.get("hint", "")
+    language = request.args.get("language", "hi")
     image_bytes = b""
     
     if "image" in request.files:
         file = request.files["image"]
         filename = file.filename or "upload.jpg"
+        hint = request.form.get("hint", hint)
+        language = request.form.get("language", language)
         image_bytes = file.read()
     elif request.is_json:
         data = request.json or {}
-        hint = data.get("hint", "")
+        hint = data.get("hint", hint)
         filename = data.get("filename", "")
+        language = data.get("language", language)
         data_url = data.get("image_data", "")
         if "," in data_url:
             data_url = data_url.split(",")[1]
@@ -176,7 +180,7 @@ def image_diagnosis():
         except Exception:
             image_bytes = b"simulated_image_bytes"
             
-    result = diagnose_image(image_bytes, filename=filename, metadata_hint=hint)
+    result = diagnose_image(image_bytes, filename=filename, metadata_hint=hint, language=language)
     return jsonify(result)
 
 @app.route("/api/image-diagnosis/presets", methods=["GET"])

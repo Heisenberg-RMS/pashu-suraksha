@@ -124,6 +124,8 @@ def calculate_environmental_risk(
 def get_regional_weather_profiles() -> List[Dict[str, Any]]:
     """Returns sample real-time simulated regional microclimate profiles across key livestock belts."""
     regions = [
+        {"district": "Pune", "block": "Baramati", "state": "Maharashtra", "temp": 29.2, "humidity": 80, "rain": 18.0, "wind": 13.5},
+        {"district": "Warangal", "block": "Narsampet", "state": "Telangana", "temp": 32.0, "humidity": 76, "rain": 12.0, "wind": 15.0},
         {"district": "Hisar", "block": "Hansi", "state": "Haryana", "temp": 31.5, "humidity": 78, "rain": 14.2, "wind": 16.5},
         {"district": "Anand", "block": "Petlad", "state": "Gujarat", "temp": 29.8, "humidity": 82, "rain": 22.0, "wind": 14.0},
         {"district": "Bareilly", "block": "Faridpur", "state": "Uttar Pradesh", "temp": 28.4, "humidity": 85, "rain": 38.5, "wind": 11.2},

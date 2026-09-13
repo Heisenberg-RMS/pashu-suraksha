@@ -2,17 +2,44 @@
  * Pashu Suraksha - Visual Lesion & AI Image Diagnostic UI Controller
  * Allows livestock farmers and para-vets to photograph/upload animal skin lesions or post-mortem signs
  * to get instantaneous visual AI differential diagnosis, clinical guidance, and home-care protocols.
+ * Supports Marathi, Hindi, English, and Telugu.
  */
 
 class VisionDiagnosticsManager {
   constructor() {
     this.currentDiagnosis = null;
     this.currentImageDataUrl = null;
+    this.currentFilename = null;
+    this.selectedTargetRegion = 'auto';
+
+    window.addEventListener('languageChanged', (e) => {
+      if (this.currentDiagnosis && this.currentImageDataUrl) {
+        // Re-analyze with new language to refresh translated diagnostic report
+        this.analyzeImage(this.currentImageDataUrl, this.currentFilename || "scan.jpg", this.selectedTargetRegion);
+      }
+    });
   }
 
   init() {
     this.setupDropzone();
     this.setupSamplePresets();
+    this.setupTargetRegionPills();
+  }
+
+  setupTargetRegionPills() {
+    const pills = document.querySelectorAll('.scan-target-pill');
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        this.selectedTargetRegion = pill.dataset.target || 'auto';
+
+        // If an image is already loaded, re-analyze with the selected target body region
+        if (this.currentImageDataUrl) {
+          this.analyzeImage(this.currentImageDataUrl, this.currentFilename || "scan.jpg", this.selectedTargetRegion);
+        }
+      });
+    });
   }
 
   setupDropzone() {
@@ -72,8 +99,9 @@ class VisionDiagnosticsManager {
     const reader = new FileReader();
     reader.onload = (e) => {
       this.currentImageDataUrl = e.target.result;
+      this.currentFilename = file.name;
       this.renderImagePreview(e.target.result, file.name);
-      this.analyzeImage(e.target.result, file.name, "");
+      this.analyzeImage(e.target.result, file.name, this.selectedTargetRegion);
     };
     reader.readAsDataURL(file);
   }
@@ -93,7 +121,7 @@ class VisionDiagnosticsManager {
     ctx.fillRect(0, 0, 400, 300);
 
     // Reticle
-    ctx.strokeStyle = '#0f766e';
+    ctx.strokeStyle = hint === 'healthy' ? '#10b981' : '#0f766e';
     ctx.lineWidth = 3;
     ctx.strokeRect(40, 40, 320, 220);
 
@@ -102,15 +130,16 @@ class VisionDiagnosticsManager {
     ctx.fillText(icon, 200, 140);
 
     ctx.font = 'bold 16px system-ui';
-    ctx.fillStyle = '#a7f3d0';
+    ctx.fillStyle = hint === 'healthy' ? '#86efac' : '#a7f3d0';
     ctx.fillText(`[SPECIMEN SCAN: ${displayName.toUpperCase()}]`, 200, 195);
 
     ctx.font = '12px system-ui';
     ctx.fillStyle = '#94a3b8';
-    ctx.fillText('AI Feature Vector Extraction in progress...', 200, 225);
+    ctx.fillText('Pillow AI Vector Extraction in progress...', 200, 225);
 
     const dataUrl = canvas.toDataURL('image/jpeg');
     this.currentImageDataUrl = dataUrl;
+    this.currentFilename = `sample_${hint}.jpg`;
     this.renderImagePreview(dataUrl, `Sample_${hint}.jpg`);
     this.analyzeImage(dataUrl, `sample_${hint}.jpg`, hint);
   }
@@ -129,6 +158,8 @@ class VisionDiagnosticsManager {
 
   async analyzeImage(dataUrl, filename, hint) {
     const resultCard = document.getElementById('visionResultCard');
+    const lang = (window.I18n && window.I18n.currentLanguage) ? window.I18n.currentLanguage : 'hi';
+
     if (resultCard) {
       resultCard.innerHTML = `
         <div style="text-align:center; padding:2.5rem 1.5rem; color:#0f766e;">
@@ -146,7 +177,8 @@ class VisionDiagnosticsManager {
         body: JSON.stringify({
           image_data: dataUrl,
           filename: filename,
-          hint: hint
+          hint: hint || this.selectedTargetRegion || 'auto',
+          language: lang
         })
       });
 
@@ -166,20 +198,33 @@ class VisionDiagnosticsManager {
     const card = document.getElementById('visionResultCard');
     if (!card) return;
 
-    const urgencyClass = (d.severity || 'high').toLowerCase();
+    const isHealthy = d.severity === 'NORMAL' || d.disease_code === 'HEALTHY';
+    const urgencyClass = isHealthy ? 'healthy' : (d.severity || 'high').toLowerCase();
+    const confidenceColor = isHealthy ? '#059669' : (urgencyClass === 'critical' ? '#e11d48' : '#0f766e');
+
+    const metrics = d.metrics || {};
+    const metricSummary = metrics.summary || 'Visual Feature Extraction Complete';
 
     card.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.75rem;">
         <div>
-          <span class="badge badge-${urgencyClass}">${d.severity} EPIDEMIOLOGICAL SEVERITY</span>
+          <span class="badge ${isHealthy ? 'badge-healthy' : 'badge-' + urgencyClass}" style="${isHealthy ? 'background:#dcfce7; color:#15803d; font-weight:700;' : ''}">
+            ${isHealthy ? '✅ NORMAL / HEALTHY PROFILE' : d.severity + ' EPIDEMIOLOGICAL SEVERITY'}
+          </span>
           ${d.is_zoonotic ? '<span class="badge badge-critical" style="margin-left:4px;">ZOONOTIC RISK</span>' : ''}
-          <h2 style="margin:0.4rem 0 0.1rem 0; font-size:1.3rem; color:#0f172a;">${d.disease_name}</h2>
+          <h2 style="margin:0.4rem 0 0.1rem 0; font-size:1.3rem; color:${isHealthy ? '#166534' : '#0f172a'};">${d.disease_name}</h2>
           <small style="color:#64748b; font-weight:600;">Lesion Pattern: ${d.lesion_type}</small>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:1.8rem; font-weight:800; color:${urgencyClass === 'critical' ? '#e11d48' : '#0f766e'};">${d.visual_confidence}%</div>
+          <div style="font-size:1.8rem; font-weight:800; color:${confidenceColor};">${d.visual_confidence}%</div>
           <small style="font-size:0.72rem; color:#64748b; font-weight:700; text-transform:uppercase;">AI Visual Confidence</small>
         </div>
+      </div>
+
+      <!-- CV Image Inspection Metrics Bar -->
+      <div style="background:#f1f5f9; border-radius:6px; padding:0.4rem 0.6rem; margin-bottom:0.85rem; font-size:0.75rem; color:#475569; display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.4rem;">
+        <span>🔍 <b>Features:</b> ${metricSummary}</span>
+        ${metrics.luminance !== undefined ? `<span>💡 Light: <b>${metrics.luminance}%</b> | Redness: <b>${metrics.redness_index || 0}</b> | Texture: <b>${metrics.roughness_score || 0}%</b></span>` : ''}
       </div>
 
       ${d.biohazard_alert ? `
@@ -196,25 +241,37 @@ class VisionDiagnosticsManager {
       <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.85rem; margin-bottom:1rem; font-size:0.85rem;">
         <b style="color:#334155;">🔍 Detected Pathognomonic Visual Markers:</b>
         <ul style="margin:0.4rem 0 0 1.2rem; color:#475569;">
-          ${d.pathognomonic_markers.map(m => `<li style="margin-bottom:0.25rem;">${m}</li>`).join('')}
+          ${(d.pathognomonic_markers || []).map(m => `<li style="margin-bottom:0.25rem;">${m}</li>`).join('')}
         </ul>
       </div>
 
       <!-- Immediate Home Care -->
-      <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:0.85rem; margin-bottom:1rem; font-size:0.85rem; color:#166534;">
+      <div style="background:${isHealthy ? '#f0fdf4' : '#fef2f2'}; border:1px solid ${isHealthy ? '#bbf7d0' : '#fecaca'}; border-radius:8px; padding:0.85rem; margin-bottom:1rem; font-size:0.85rem; color:${isHealthy ? '#166534' : '#991b1b'};">
         <b style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.4rem;">
-          <span>🩺</span> Immediate Field Care & First-Aid Protocol:
+          <span>${isHealthy ? '🌱' : '🩺'}</span> ${isHealthy ? 'Routine Animal Care & Prevention Protocol:' : 'Immediate Field Care & First-Aid Protocol:'}
         </b>
         <ol style="margin:0 0 0 1.2rem;">
-          ${d.immediate_home_care.map(care => `<li style="margin-bottom:0.35rem;">${care}</li>`).join('')}
+          ${(d.immediate_home_care || []).map(care => `<li style="margin-bottom:0.35rem;">${care}</li>`).join('')}
         </ol>
       </div>
 
       <!-- Lab specimen needed -->
-      <div style="font-size:0.82rem; color:#475569; margin-bottom:1.25rem; background:#fff; border:1px solid #e2e8f0; padding:0.6rem 0.8rem; border-radius:6px;">
+      <div style="font-size:0.82rem; color:#475569; margin-bottom:1rem; background:#fff; border:1px solid #e2e8f0; padding:0.6rem 0.8rem; border-radius:6px;">
         🧪 <b>Recommended Confirmatory Laboratory Specimen:</b><br>
         ${d.lab_specimen_needed}
       </div>
+
+      <!-- Secondary Differentials (if any) -->
+      ${d.differential_diagnoses && d.differential_diagnoses.length ? `
+        <div style="margin-bottom:1.25rem; font-size:0.78rem; color:#64748b;">
+          <b>Differential Diagnoses:</b>
+          ${d.differential_diagnoses.map(diff => `
+            <span style="display:inline-block; background:#e2e8f0; padding:2px 6px; border-radius:4px; margin-right:4px; margin-top:2px;">
+              ${diff.disease_code} (${diff.differential_probability}%)
+            </span>
+          `).join('')}
+        </div>
+      ` : ''}
 
       <!-- Quick Action Buttons -->
       <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
@@ -271,7 +328,16 @@ class VisionDiagnosticsManager {
 
   askChatbotAboutLesion() {
     if (!this.currentDiagnosis) return;
-    const query = `${this.currentDiagnosis.disease_name} के लक्षण और उपचार बताइए`;
+    const lang = (window.I18n && window.I18n.currentLanguage) ? window.I18n.currentLanguage : 'hi';
+    let query = `${this.currentDiagnosis.disease_name} के लक्षण और उपचार बताइए`;
+    if (lang === 'mr') {
+      query = `${this.currentDiagnosis.disease_name} ची लक्षणे आणि घरगुती उपचार सांगा`;
+    } else if (lang === 'te') {
+      query = `${this.currentDiagnosis.disease_name} లక్షణాలు మరియు చికిత్స వివరాలు తెలపండి`;
+    } else if (lang === 'en') {
+      query = `Tell me treatment and first-aid for ${this.currentDiagnosis.disease_name}`;
+    }
+
     window.ChatbotManager.openChat();
     window.ChatbotManager.sendUserQuery(query);
   }
@@ -279,6 +345,7 @@ class VisionDiagnosticsManager {
   resetScan() {
     this.currentDiagnosis = null;
     this.currentImageDataUrl = null;
+    this.currentFilename = null;
     const previewContainer = document.getElementById('visionPreviewContainer');
     const dropzoneContent = document.getElementById('visionDropzoneContent');
     const resultCard = document.getElementById('visionResultCard');
@@ -290,8 +357,8 @@ class VisionDiagnosticsManager {
       resultCard.innerHTML = `
         <div style="text-align:center; padding:3rem 1.5rem; color:#94a3b8;">
           <div style="font-size:3rem; margin-bottom:0.75rem;">🔬</div>
-          <h3 style="color:#64748b; margin-bottom:0.35rem;">AI Vision Diagnostics Standby</h3>
-          <p style="font-size:0.85rem;">Capture or upload a photo of the affected animal's skin, mouth, hooves, or udder to detect disease lesions.</p>
+          <h3 style="color:#64748b; margin-bottom:0.35rem;" data-i18n="standby_title">AI Vision Diagnostics Standby</h3>
+          <p style="font-size:0.85rem;" data-i18n="standby_desc">Capture or upload a photo of the affected animal's skin, mouth, hooves, or udder to detect disease lesions.</p>
         </div>
       `;
     }
