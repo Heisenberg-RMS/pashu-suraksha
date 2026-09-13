@@ -1517,75 +1517,56 @@ body {
   text-align: center;
 }
 
-/* Cinematic Video Modal Player */
-.video-modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(10, 15, 26, 0.88);
-  backdrop-filter: blur(8px);
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-
-.video-modal-content {
+/* Farmer Video Section (Direct Home Page Inline Player) */
+.farmer-video-section {
   background: #0f172a;
   border: 1px solid #1e293b;
   border-radius: 16px;
-  width: 100%;
-  max-width: 920px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-  display: flex;
-  flex-direction: column;
-}
-
-.video-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.85rem 1.25rem;
-  background: #1e293b;
-  border-bottom: 1px solid #334155;
-}
-
-.video-modal-title {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-}
-
-.video-modal-title .video-icon {
-  font-size: 1.4rem;
-}
-
-.video-modal-title h3 {
-  margin: 0;
-  font-size: 1rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   color: #ffffff;
+}
+
+.video-section-header {
+  margin-bottom: 1rem;
+}
+
+.video-badge-pill {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  font-size: 0.78rem;
   font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.video-modal-close {
-  background: transparent;
-  border: none;
-  color: #94a3b8;
-  font-size: 1.6rem;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0 0.4rem;
-  border-radius: 6px;
-  transition: color 0.15s;
-}
-
-.video-modal-close:hover {
+.video-main-title {
+  font-size: 1.35rem;
+  font-weight: 800;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
+  margin: 0 0 0.35rem 0;
+  line-height: 1.3;
+}
+
+.video-subtitle-lead {
+  font-size: 0.92rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.video-player-card {
+  background: #020617;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .video-canvas-container {
@@ -1595,14 +1576,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  aspect-ratio: 16 / 9;
 }
 
 #farmerVideoCanvas {
   width: 100%;
-  height: auto;
-  max-height: 520px;
+  height: 100%;
+  aspect-ratio: 16 / 9;
   display: block;
   background: #000000;
+  cursor: pointer;
 }
 
 .video-hero-play-overlay {
@@ -1611,7 +1594,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(15, 23, 42, 0.75);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1619,10 +1602,11 @@ body {
   color: #ffffff;
   cursor: pointer;
   transition: background 0.2s ease;
+  z-index: 10;
 }
 
 .video-hero-play-overlay:hover {
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(15, 23, 42, 0.6);
 }
 
 .hero-play-circle {
@@ -1647,32 +1631,61 @@ body {
   100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
+.hero-play-text {
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin-top: 0.75rem;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.hero-play-subtext {
+  font-size: 0.88rem;
+  color: #a7f3d0;
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
 .video-subtitle-bar {
   background: #090e17;
-  padding: 0.65rem 1rem;
+  padding: 0.75rem 1.25rem;
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
+  align-items: flex-start;
+  gap: 0.75rem;
   border-top: 1px solid #1e293b;
   border-bottom: 1px solid #1e293b;
 }
 
 .subtitle-icon {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.subtitle-content {
+  flex: 1;
 }
 
 .subtitle-text {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   color: #f1f5f9;
-  line-height: 1.4;
+  line-height: 1.45;
   font-weight: 500;
+  display: block;
+}
+
+.subtitle-banner {
+  font-size: 0.78rem;
+  color: #38bdf8;
+  font-weight: 700;
+  margin-top: 0.25rem;
 }
 
 .video-scenes-nav {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0.85rem;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
   background: #131d2e;
   overflow-x: auto;
   scrollbar-width: thin;
@@ -1682,15 +1695,15 @@ body {
   background: #1e293b;
   border: 1px solid #334155;
   color: #94a3b8;
-  padding: 0.35rem 0.65rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
   transition: all 0.15s ease;
 }
 
@@ -1703,15 +1716,15 @@ body {
   background: #0f766e;
   border-color: #34d399;
   color: #ffffff;
-  box-shadow: 0 0 8px rgba(52, 211, 153, 0.3);
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.35);
 }
 
 .chip-time {
-  font-size: 0.68rem;
-  opacity: 0.8;
-  background: rgba(0, 0, 0, 0.25);
-  padding: 1px 4px;
-  border-radius: 3px;
+  font-size: 0.7rem;
+  opacity: 0.85;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 5px;
+  border-radius: 4px;
 }
 
 .video-controls-bar {
@@ -1720,10 +1733,12 @@ body {
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   background: #1e293b;
+  flex-wrap: wrap;
 }
 
 .video-scrubber-wrapper {
   flex: 1;
+  min-width: 140px;
   position: relative;
   display: flex;
   align-items: center;
@@ -1740,35 +1755,48 @@ body {
 
 .video-time-pill {
   font-family: monospace;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: #94a3b8;
   font-weight: 600;
   white-space: nowrap;
 }
 
-@media (max-width: 850px) {
-  .farmer-video-hero-card {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 1rem;
-    gap: 1rem;
+.video-quick-actions {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  background: #090e17;
+  border-top: 1px solid #1e293b;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .farmer-video-section {
+    padding: 0.85rem;
   }
 
-  .video-hero-thumbnail {
-    width: 100%;
-    height: 140px;
+  .video-main-title {
+    font-size: 1.15rem;
   }
 
-  .video-modal-content {
-    max-height: 95vh;
+  .hero-play-circle {
+    width: 50px;
+    height: 50px;
+    font-size: 1.4rem;
   }
 
-  .video-scenes-nav {
-    padding: 0.4rem 0.5rem;
+  .hero-play-text {
+    font-size: 1rem;
+  }
+
+  .video-controls-bar {
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
   }
 
   .video-scene-chip {
-    font-size: 0.7rem;
-    padding: 0.3rem 0.5rem;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.55rem;
   }
 }
+

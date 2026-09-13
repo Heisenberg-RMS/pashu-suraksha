@@ -49,7 +49,7 @@
         </div>
       </div>
 
-      <button class="btn-video-nav" onclick="window.FarmerVideoManager.openModal()" title="Watch 45-second Farmer Guide Video">
+      <button class="btn-video-nav" onclick="window.FarmerVideoManager.scrollToPlayer()" title="Watch 45-second Farmer Guide Video">
         🎬 किसान वीडियो
       </button>
 
@@ -90,33 +90,98 @@
   <!-- Main Container -->
   <main class="main-container">
 
-    <!-- Farmer Awareness & Introductory Video Banner -->
-    <div class="farmer-video-hero-card">
-      <div class="video-hero-left">
-        <div class="video-hero-badge">🎬 किसान जागरूकता वीडियो (Farmer Video Guide)</div>
-        <h2 class="video-hero-title">पशु सुरक्षा कैसे काम करता है? (45s Video)</h2>
-        <p class="video-hero-desc">
-          देखें कि कैसे बीमारी की शुरुआती पहचान से पशुधन की जान बचाई जा सकती है और पशु चिकित्सक को स्वतः सूचना मिलती है।
-        </p>
-        <div class="video-hero-actions">
-          <button class="btn btn-primary" onclick="window.FarmerVideoManager.openModal()">
-            <span class="pulsing-play-icon">▶</span> वीडियो देखें (Watch 45s Video)
+    <!-- Farmer Awareness & Introductory Video Section (Direct Inline Player) -->
+    <section class="farmer-video-section" id="farmerVideoSection">
+      <div class="video-section-header">
+        <div class="video-section-title-wrap">
+          <div class="video-badge-pill">🎬 किसान जागरूकता वीडियो • 45 सेकंड (Farmer Awareness Video)</div>
+          <h2 class="video-main-title">पशु सुरक्षा कैसे काम करता है? (How PashuSuraksha Protects Your Herd)</h2>
+          <p class="video-subtitle-lead">
+            बीमारी की शुरुआती पहचान, त्वरित जोखिम आकलन और पशु चिकित्सक को स्वतः सूचना — 45 सेकंड में समझें।
+          </p>
+        </div>
+      </div>
+
+      <div class="video-player-card">
+        <!-- Canvas Video Stage -->
+        <div class="video-canvas-container" id="videoCanvasContainer">
+          <canvas id="farmerVideoCanvas" width="800" height="450"></canvas>
+
+          <!-- Big Click to Play Overlay (Visible before playing) -->
+          <div id="videoHeroPlayOverlay" class="video-hero-play-overlay">
+            <div class="hero-play-circle">▶</div>
+            <div class="hero-play-text">वीडियो शुरू करें (Click to Play Video)</div>
+            <div class="hero-play-subtext">⏱ 45 सेकंड • 5 दृश्य • हिंदी आवाज़ व मधुर संगीत सहित</div>
+          </div>
+        </div>
+
+        <!-- Dynamic Subtitle Bar (Synchronized with Hindi Voiceover) -->
+        <div class="video-subtitle-bar">
+          <span class="subtitle-icon">💬</span>
+          <div class="subtitle-content">
+            <span id="videoActiveSubtitle" class="subtitle-text">
+              क्या आपके पशुओं में बीमारी के शुरुआती लक्षण दिखाई दे रहे हैं? समय पर पहचान न होने से बीमारी तेजी से फैल सकती है।
+            </span>
+            <div id="videoActiveBanner" class="subtitle-banner">
+              बीमारी की जल्दी पहचान, पशुधन की बेहतर सुरक्षा
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 Interactive Scene Nav Chips (Direct jump to scene) -->
+        <div class="video-scenes-nav">
+          <button class="video-scene-chip active" data-scene="1" title="Jump to Scene 1">
+            <span class="chip-time">0–8s</span>
+            <span>1. समस्या (The Problem)</span>
           </button>
-          <button class="btn btn-outline" onclick="window.App.switchTab('triage')">
-            ⚡ लक्षण दर्ज करें (Report Symptoms)
+          <button class="video-scene-chip" data-scene="2" title="Jump to Scene 2">
+            <span class="chip-time">8–15s</span>
+            <span>2. परिचय (Introducing Platform)</span>
+          </button>
+          <button class="video-scene-chip" data-scene="3" title="Jump to Scene 3">
+            <span class="chip-time">15–30s</span>
+            <span>3. कार्यप्रणाली (How it Works)</span>
+          </button>
+          <button class="video-scene-chip" data-scene="4" title="Jump to Scene 4">
+            <span class="chip-time">30–40s</span>
+            <span>4. लाभ व बचाव (Benefits)</span>
+          </button>
+          <button class="video-scene-chip" data-scene="5" title="Jump to Scene 5">
+            <span class="chip-time">40–45s</span>
+            <span>5. कार्रवाई (Action)</span>
+          </button>
+        </div>
+
+        <!-- Video Controls Bar -->
+        <div class="video-controls-bar">
+          <button id="videoPlayToggleBtn" class="btn btn-primary btn-sm">▶ Play</button>
+          <button id="videoRestartBtn" class="btn btn-outline btn-sm">🔄 Restart</button>
+
+          <!-- Timeline Scrubber -->
+          <div class="video-scrubber-wrapper">
+            <input type="range" id="videoTimelineScrubber" min="0" max="45" step="0.1" value="0" class="video-scrubber-input">
+            <div id="videoProgressFill" class="video-scrubber-fill" style="width:0%;"></div>
+          </div>
+
+          <div id="videoTimeDisplay" class="video-time-pill">00:00 / 00:45</div>
+          <button id="videoMuteBtn" class="btn btn-outline btn-sm">🔊 Sound</button>
+          <button id="videoFullscreenBtn" class="btn btn-outline btn-sm" title="Toggle Fullscreen">⛶ Fullscreen</button>
+        </div>
+
+        <!-- Quick Action Shortcuts below video -->
+        <div class="video-quick-actions">
+          <button class="btn btn-primary btn-sm" onclick="window.App.switchTab('triage')">
+            ⚡ लक्षण दर्ज करें (Report Animal Symptoms)
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="window.App.switchTab('vision')">
+            📸 AI विज़न लेंस (Scan Disease Lesion)
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="window.ChatbotManager.openChat()">
+            💬 एआई सहायक से पूछें (Ask AI Doctor)
           </button>
         </div>
       </div>
-      <div class="video-hero-thumbnail" onclick="window.FarmerVideoManager.openModal()" title="Click to play intro video">
-        <div class="thumbnail-overlay">
-          <div class="play-circle-btn">▶</div>
-          <span class="thumbnail-duration">0:45 • Hindi HD</span>
-        </div>
-        <div class="thumbnail-preview-tag">
-          <span>🐮 शुरुआती पहचान • सुरक्षित पशुधन</span>
-        </div>
-      </div>
-    </div>
+    </section>
 
     <!-- TAB 1: OUTBREAK MAP & GIS SURVEILLANCE -->
     <section id="view-map" class="tab-view active">
@@ -955,78 +1020,7 @@
     </div>
   </div>
 
-  <!-- Cinematic Farmer Video Modal Player -->
-  <div id="farmerVideoModal" class="video-modal-backdrop" style="display:none;">
-    <div class="video-modal-content">
-      <!-- Header Bar -->
-      <div class="video-modal-header">
-        <div class="video-modal-title">
-          <span class="video-icon">🎬</span>
-          <div>
-            <h3>किसान जागरूकता वीडियो: PashuSuraksha (पशु सुरक्षा)</h3>
-            <small id="videoActiveBanner" style="color:#a7f3d0; font-weight:600;">बीमारी की जल्दी पहचान, पशुधन की बेहतर सुरक्षा</small>
-          </div>
-        </div>
-        <button id="videoModalCloseBtn" class="video-modal-close" title="Close Video">&times;</button>
-      </div>
 
-      <!-- Video Canvas Stage -->
-      <div class="video-canvas-container">
-        <canvas id="farmerVideoCanvas"></canvas>
-        
-        <!-- Big Hero Play Overlay when paused at start -->
-        <div id="videoHeroPlayOverlay" class="video-hero-play-overlay" onclick="window.FarmerVideoManager.play()">
-          <div class="hero-play-circle">▶</div>
-          <div style="font-weight:700; font-size:1.1rem; margin-top:0.5rem;">क्लिक करें और वीडियो देखें (Click to Play)</div>
-          <small style="opacity:0.85;">45 सेकंड • सचित्र व हिंदी आवाज़ सहित</small>
-        </div>
-      </div>
-
-      <!-- Subtitle Bar -->
-      <div class="video-subtitle-bar">
-        <span class="subtitle-icon">💬</span>
-        <span id="videoActiveSubtitle" class="subtitle-text">क्या आपके पशुओं में बीमारी के शुरुआती लक्षण दिखाई दे रहे हैं? समय पर पहचान न होने से बीमारी तेजी से फैल सकती है।</span>
-      </div>
-
-      <!-- Scene Navigation Chips -->
-      <div class="video-scenes-nav">
-        <button class="video-scene-chip active" data-scene="1">
-          <span class="chip-time">0–8s</span>
-          <span>1. समस्या (Problem)</span>
-        </button>
-        <button class="video-scene-chip" data-scene="2">
-          <span class="chip-time">8–15s</span>
-          <span>2. परिचय (Introduction)</span>
-        </button>
-        <button class="video-scene-chip" data-scene="3">
-          <span class="chip-time">15–30s</span>
-          <span>3. कार्यप्रणाली (How it Works)</span>
-        </button>
-        <button class="video-scene-chip" data-scene="4">
-          <span class="chip-time">30–40s</span>
-          <span>4. लाभ व बचाव (Benefits)</span>
-        </button>
-        <button class="video-scene-chip" data-scene="5">
-          <span class="chip-time">40–45s</span>
-          <span>5. कार्रवाई (Action)</span>
-        </button>
-      </div>
-
-      <!-- Controls Bar -->
-      <div class="video-controls-bar">
-        <button id="videoPlayToggleBtn" class="btn btn-primary btn-sm">▶ Play</button>
-        <button id="videoRestartBtn" class="btn btn-outline btn-sm">🔄 Restart</button>
-        
-        <div class="video-scrubber-wrapper">
-          <input type="range" id="videoTimelineScrubber" min="0" max="45" step="0.1" value="0" class="video-scrubber-input">
-          <div id="videoProgressFill" class="video-scrubber-fill" style="width:0%;"></div>
-        </div>
-
-        <div id="videoTimeDisplay" class="video-time-pill">00:00 / 00:45</div>
-        <button id="videoMuteBtn" class="btn btn-outline btn-sm">🔊 Sound</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Mobile Bottom Navigation Bar (Docked for touch devices) -->
   <nav class="mobile-bottom-nav">

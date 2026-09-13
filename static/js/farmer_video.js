@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Pashu Suraksha - Farmer Awareness & Introductory Video Engine
  * Renders a 45-second high-definition animated educational video with
  * synchronized Hindi voiceover, acoustic background melody, interactive subtitles,
@@ -17,16 +17,16 @@ class FarmerVideoPlayer {
     this.isMuted = false;
     this.audioCtx = null;
     this.musicInterval = null;
-    this.currentSceneIndex = 0;
-    this.currentUtterance = null;
     this.lastSpokenScene = -1;
+    this.width = 800;
+    this.height = 450;
 
     this.scenes = [
       {
         id: 1,
         start: 0,
         end: 8,
-        title: "The Problem (समस्या)",
+        title: "Scene 1 • समस्या (The Problem)",
         bannerText: "बीमारी की जल्दी पहचान, पशुधन की बेहतर सुरक्षा",
         voiceover: "क्या आपके पशुओं में बीमारी के शुरुआती लक्षण दिखाई दे रहे हैं? समय पर पहचान न होने से बीमारी तेजी से फैल सकती है।",
         theme: "gloomy"
@@ -35,7 +35,7 @@ class FarmerVideoPlayer {
         id: 2,
         start: 8,
         end: 15,
-        title: "Introducing PashuSuraksha (समाधान)",
+        title: "Scene 2 • परिचय (Introducing PashuSuraksha)",
         bannerText: "PashuSuraksha (पशु सुरक्षा) — स्मार्ट प्लेटफ़ॉर्म",
         voiceover: "पेश है PashuSuraksha – पशु रोगों की शुरुआती पहचान और समय पर जानकारी देने वाला स्मार्ट प्लेटफ़ॉर्म।",
         theme: "sunrise"
@@ -44,7 +44,7 @@ class FarmerVideoPlayer {
         id: 3,
         start: 15,
         end: 30,
-        title: "How It Works (कार्यप्रणाली)",
+        title: "Scene 3 • कार्यप्रणाली (How It Works)",
         bannerText: "लक्षण दर्ज करें ➔ जोखिम पहचानें ➔ समय पर सहायता प्राप्त करें",
         voiceover: "किसान पशु की जानकारी और लक्षण दर्ज करता है। सिस्टम संभावित बीमारी और जोखिम का आकलन करता है तथा आवश्यकता होने पर पशु चिकित्सक को सूचना भेजता है।",
         theme: "app_demo"
@@ -53,7 +53,7 @@ class FarmerVideoPlayer {
         id: 4,
         start: 30,
         end: 40,
-        title: "Benefits & Prevention (लाभ और सुरक्षा)",
+        title: "Scene 4 • लाभ व बचाव (Benefits & Prevention)",
         bannerText: "स्वस्थ पशु, सुरक्षित किसान",
         voiceover: "समय पर जानकारी से बीमारी को फैलने से रोका जा सकता है, पशुओं की सुरक्षा बढ़ती है और किसानों का नुकसान कम होता है।",
         theme: "healthy"
@@ -62,7 +62,7 @@ class FarmerVideoPlayer {
         id: 5,
         start: 40,
         end: 45,
-        title: "Ending & Call to Action (कार्रवाई)",
+        title: "Scene 5 • कार्रवाई (Call to Action)",
         bannerText: "PashuSuraksha — Detect Early • Protect Livestock",
         voiceover: "PashuSuraksha — बीमारी की पहचान जल्दी, कार्रवाई सही समय पर।",
         theme: "outro"
@@ -75,24 +75,13 @@ class FarmerVideoPlayer {
     if (!this.canvas) return;
     this.ctx = this.canvas.getContext('2d');
 
-    // Handle high DPI
-    this.setupCanvasDPI();
-    window.addEventListener('resize', () => this.setupCanvasDPI());
+    // Ensure fixed base coordinate system
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
 
     this.bindControls();
     this.renderFrame(0);
-  }
-
-  setupCanvasDPI() {
-    if (!this.canvas) return;
-    const rect = this.canvas.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    this.width = rect.width || 800;
-    this.height = Math.round(this.width * 9 / 16); // 16:9 aspect ratio
-    this.canvas.width = this.width * dpr;
-    this.canvas.height = this.height * dpr;
-    this.ctx.scale(dpr, dpr);
-    this.renderFrame(this.currentTime);
+    this.updateTimelineUI();
   }
 
   bindControls() {
@@ -100,11 +89,28 @@ class FarmerVideoPlayer {
     const restartBtn = document.getElementById('videoRestartBtn');
     const muteBtn = document.getElementById('videoMuteBtn');
     const scrubber = document.getElementById('videoTimelineScrubber');
-    const modalClose = document.getElementById('videoModalCloseBtn');
+    const fullscreenBtn = document.getElementById('videoFullscreenBtn');
+    const heroOverlay = document.getElementById('videoHeroPlayOverlay');
 
-    if (playBtn) playBtn.addEventListener('click', () => this.togglePlay());
-    if (restartBtn) restartBtn.addEventListener('click', () => this.restart());
-    if (muteBtn) muteBtn.addEventListener('click', () => this.toggleMute());
+    if (playBtn) {
+      playBtn.onclick = () => this.togglePlay();
+    }
+    if (restartBtn) {
+      restartBtn.onclick = () => this.restart();
+    }
+    if (muteBtn) {
+      muteBtn.onclick = () => this.toggleMute();
+    }
+    if (fullscreenBtn) {
+      fullscreenBtn.onclick = () => this.toggleFullscreen();
+    }
+    if (heroOverlay) {
+      heroOverlay.onclick = () => this.play();
+    }
+
+    if (this.canvas) {
+      this.canvas.onclick = () => this.togglePlay();
+    }
 
     if (scrubber) {
       scrubber.addEventListener('input', (e) => {
@@ -113,20 +119,18 @@ class FarmerVideoPlayer {
       });
     }
 
-    if (modalClose) {
-      modalClose.addEventListener('click', () => this.closeModal());
-    }
-
     // Scene Navigation Chips
     document.querySelectorAll('.video-scene-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const sceneId = parseInt(chip.dataset.scene);
+      chip.onclick = () => {
+        const sceneId = parseInt(chip.dataset.scene, 10);
         const targetScene = this.scenes.find(s => s.id === sceneId);
         if (targetScene) {
           this.seekTo(targetScene.start);
-          if (!this.isPlaying) this.play();
+          if (!this.isPlaying) {
+            this.play();
+          }
         }
-      });
+      };
     });
   }
 
@@ -139,23 +143,35 @@ class FarmerVideoPlayer {
   }
 
   play() {
-    if (this.currentTime >= this.totalDuration) {
+    if (this.currentTime >= this.totalDuration - 0.2) {
       this.currentTime = 0;
       this.lastSpokenScene = -1;
     }
     this.isPlaying = true;
     this.lastFrameTimestamp = performance.now();
     this.updatePlayBtnUI(true);
-    this.initAudioContext();
-    this.startBackgroundMusic();
-    this.checkVoiceoverTrigger();
+
+    try {
+      this.initAudioContext();
+      this.startBackgroundMusic();
+      this.checkVoiceoverTrigger();
+    } catch (err) {
+      console.warn('Audio playback initialization warning:', err);
+    }
+
+    if (this.animFrameId) {
+      cancelAnimationFrame(this.animFrameId);
+    }
     this.loop();
   }
 
   pause() {
     this.isPlaying = false;
     this.updatePlayBtnUI(false);
-    if (this.animFrameId) cancelAnimationFrame(this.animFrameId);
+    if (this.animFrameId) {
+      cancelAnimationFrame(this.animFrameId);
+      this.animFrameId = null;
+    }
     this.stopVoiceover();
     this.stopBackgroundMusic();
   }
@@ -167,10 +183,12 @@ class FarmerVideoPlayer {
 
   seekTo(seconds) {
     this.currentTime = Math.max(0, Math.min(seconds, this.totalDuration));
-    this.lastSpokenScene = -1; // allow re-triggering voice for current scene
+    this.lastSpokenScene = -1;
     this.updateTimelineUI();
-    this.checkVoiceoverTrigger();
     this.renderFrame(this.currentTime);
+    if (this.isPlaying) {
+      this.checkVoiceoverTrigger();
+    }
   }
 
   toggleMute() {
@@ -178,6 +196,7 @@ class FarmerVideoPlayer {
     const muteBtn = document.getElementById('videoMuteBtn');
     if (muteBtn) {
       muteBtn.innerHTML = this.isMuted ? '🔇 Unmute' : '🔊 Sound';
+      muteBtn.classList.toggle('btn-secondary', this.isMuted);
     }
     if (this.isMuted) {
       this.stopVoiceover();
@@ -190,16 +209,34 @@ class FarmerVideoPlayer {
     }
   }
 
+  toggleFullscreen() {
+    const container = document.getElementById('videoCanvasContainer') || this.canvas;
+    if (!container) return;
+
+    if (!document.fullscreenElement) {
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch(err => console.log('Fullscreen failed:', err));
+      } else if (container.webkitRequestFullscreen) {
+        container.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  }
+
   updatePlayBtnUI(playing) {
     const playBtn = document.getElementById('videoPlayToggleBtn');
-    const heroPlayOverlay = document.getElementById('videoHeroPlayOverlay');
+    const heroOverlay = document.getElementById('videoHeroPlayOverlay');
+
     if (playBtn) {
       playBtn.innerHTML = playing ? '⏸ Pause' : '▶ Play';
       playBtn.classList.toggle('btn-danger', playing);
       playBtn.classList.toggle('btn-primary', !playing);
     }
-    if (heroPlayOverlay) {
-      heroPlayOverlay.style.display = playing ? 'none' : 'flex';
+    if (heroOverlay) {
+      heroOverlay.style.display = playing ? 'none' : 'flex';
     }
   }
 
@@ -210,7 +247,9 @@ class FarmerVideoPlayer {
     const subtitleEl = document.getElementById('videoActiveSubtitle');
     const bannerEl = document.getElementById('videoActiveBanner');
 
-    if (scrubber) scrubber.value = this.currentTime;
+    if (scrubber) {
+      scrubber.value = this.currentTime;
+    }
     if (progressFill) {
       const pct = (this.currentTime / this.totalDuration) * 100;
       progressFill.style.width = pct + '%';
@@ -221,21 +260,25 @@ class FarmerVideoPlayer {
       const curS = String(Math.floor(this.currentTime % 60)).padStart(2, '0');
       const totM = String(Math.floor(this.totalDuration / 60)).padStart(2, '0');
       const totS = String(Math.floor(this.totalDuration % 60)).padStart(2, '0');
-      timeDisplay.innerText = ${curM}: / :;
+      timeDisplay.innerText = curM + ':' + curS + ' / ' + totM + ':' + totS;
     }
 
-    // Update active scene chip
     const currentScene = this.getCurrentScene();
     document.querySelectorAll('.video-scene-chip').forEach(chip => {
-      chip.classList.toggle('active', parseInt(chip.dataset.scene) === currentScene.id);
+      chip.classList.toggle('active', parseInt(chip.dataset.scene, 10) === currentScene.id);
     });
 
-    if (subtitleEl) subtitleEl.innerText = currentScene.voiceover;
-    if (bannerEl) bannerEl.innerText = currentScene.bannerText;
+    if (subtitleEl) {
+      subtitleEl.innerText = currentScene.voiceover;
+    }
+    if (bannerEl) {
+      bannerEl.innerText = currentScene.bannerText;
+    }
   }
 
   getCurrentScene() {
-    for (const scene of this.scenes) {
+    for (let i = 0; i < this.scenes.length; i++) {
+      const scene = this.scenes[i];
       if (this.currentTime >= scene.start && this.currentTime < scene.end) {
         return scene;
       }
@@ -247,7 +290,7 @@ class FarmerVideoPlayer {
     if (!this.isPlaying) return;
 
     const now = performance.now();
-    const dt = (now - this.lastFrameTimestamp) / 1000;
+    const dt = (now - (this.lastFrameTimestamp || now)) / 1000;
     this.lastFrameTimestamp = now;
 
     this.currentTime += dt;
@@ -271,14 +314,18 @@ class FarmerVideoPlayer {
   // AUDIO & SYNCHRONIZED HINDI VOICEOVER
   // ==========================================
   initAudioContext() {
-    if (!this.audioCtx) {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (AudioContext) {
-        this.audioCtx = new AudioContext();
+    try {
+      if (!this.audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          this.audioCtx = new AudioContextClass();
+        }
       }
-    }
-    if (this.audioCtx && this.audioCtx.state === 'suspended') {
-      this.audioCtx.resume();
+      if (this.audioCtx && this.audioCtx.state === 'suspended') {
+        this.audioCtx.resume();
+      }
+    } catch (e) {
+      console.warn('AudioContext not supported or blocked:', e);
     }
   }
 
@@ -287,8 +334,7 @@ class FarmerVideoPlayer {
     this.stopBackgroundMusic();
 
     let noteIdx = 0;
-    // Pleasant acoustic pentatonic arpeggio chords
-    const gloomyChords = [196, 220, 246.94, 293.66]; // G3, A3, B3, D4 minor shade
+    const gloomyChords = [196, 220, 246.94, 293.66]; // G3, A3, B3, D4
     const upliftingChords = [261.63, 329.63, 392.00, 523.25, 440.00, 392.00]; // C4, E4, G4, C5, A4
 
     this.musicInterval = setInterval(() => {
@@ -296,12 +342,12 @@ class FarmerVideoPlayer {
       const scene = this.getCurrentScene();
       const chordList = scene.theme === 'gloomy' ? gloomyChords : upliftingChords;
       const freq = chordList[noteIdx % chordList.length];
-      this.playAcousticNote(freq, scene.theme === 'gloomy' ? 0.04 : 0.07);
+      this.playAcousticNote(freq, scene.theme === 'gloomy' ? 0.035 : 0.06);
       noteIdx++;
     }, 450);
   }
 
-  playAcousticNote(freq, gainVal = 0.05) {
+  playAcousticNote(freq, gainVal) {
     if (!this.audioCtx || this.isMuted) return;
     try {
       const osc = this.audioCtx.createOscillator();
@@ -324,7 +370,7 @@ class FarmerVideoPlayer {
       osc.start();
       osc.stop(this.audioCtx.currentTime + 0.9);
     } catch (e) {
-      // Audio fallback
+      // Audio fallback silent
     }
   }
 
@@ -347,25 +393,33 @@ class FarmerVideoPlayer {
 
   speakVoiceover(text) {
     if (!('speechSynthesis' in window) || this.isMuted) return;
-    window.speechSynthesis.cancel(); // cancel prior speech
+    try {
+      window.speechSynthesis.cancel();
 
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = 'hi-IN';
-    utter.rate = 0.92; // natural cadence
-    utter.pitch = 1.05; // friendly male tone
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'hi-IN';
+      utter.rate = 0.92;
+      utter.pitch = 1.05;
 
-    // Try finding Hindi voice
-    const voices = window.speechSynthesis.getVoices();
-    const hiVoice = voices.find(v => v.lang.startsWith('hi'));
-    if (hiVoice) utter.voice = hiVoice;
+      const voices = window.speechSynthesis.getVoices();
+      const hiVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('hi'));
+      if (hiVoice) {
+        utter.voice = hiVoice;
+      }
 
-    this.currentUtterance = utter;
-    window.speechSynthesis.speak(utter);
+      window.speechSynthesis.speak(utter);
+    } catch (e) {
+      console.warn('Speech synthesis error:', e);
+    }
   }
 
   stopVoiceover() {
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+      try {
+        window.speechSynthesis.cancel();
+      } catch (e) {
+        // silent
+      }
     }
   }
 
@@ -374,8 +428,8 @@ class FarmerVideoPlayer {
   // ==========================================
   renderFrame(time) {
     if (!this.ctx) return;
-    const w = this.width || 800;
-    const h = this.height || 450;
+    const w = this.width;
+    const h = this.height;
     const ctx = this.ctx;
 
     ctx.clearRect(0, 0, w, h);
@@ -392,7 +446,7 @@ class FarmerVideoPlayer {
       this.renderScene5_Outro(ctx, w, h, time - 40);
     }
 
-    // Global HUD: Progress Bar & Current Scene Stamp
+    // Video HUD Bottom Scrubber line
     this.renderVideoHUD(ctx, w, h, time);
   }
 
@@ -410,9 +464,12 @@ class FarmerVideoPlayer {
     ctx.strokeStyle = '#473224';
     ctx.lineWidth = 14;
     ctx.beginPath();
-    ctx.moveTo(0, 40); ctx.lineTo(w, 40);
-    ctx.moveTo(w * 0.25, 0); ctx.lineTo(w * 0.25, h * 0.8);
-    ctx.moveTo(w * 0.75, 0); ctx.lineTo(w * 0.75, h * 0.8);
+    ctx.moveTo(0, 40);
+    ctx.lineTo(w, 40);
+    ctx.moveTo(w * 0.25, 0);
+    ctx.lineTo(w * 0.25, h * 0.8);
+    ctx.moveTo(w * 0.75, 0);
+    ctx.lineTo(w * 0.75, h * 0.8);
     ctx.stroke();
 
     // Straw bed
@@ -426,25 +483,25 @@ class FarmerVideoPlayer {
     // Worried Farmer (Left)
     const farmerX = w * 0.28;
     const farmerY = h * 0.62;
-    ctx.font = ${Math.round(h * 0.28)}px system-ui;
+    ctx.font = Math.round(h * 0.28) + "px system-ui, sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('👨‍🌾', farmerX, farmerY);
 
     // Sweat drop / worry animation
     if (Math.sin(t * 3) > 0) {
-      ctx.font = ${Math.round(h * 0.08)}px system-ui;
+      ctx.font = Math.round(h * 0.08) + "px system-ui, sans-serif";
       ctx.fillText('💧', farmerX + 28, farmerY - 70);
     }
 
     // Sick Cow (Right)
     const cowX = w * 0.65;
     const cowY = h * 0.68;
-    ctx.font = ${Math.round(h * 0.36)}px system-ui;
+    ctx.font = Math.round(h * 0.36) + "px system-ui, sans-serif";
     ctx.fillText('🐄', cowX, cowY);
 
     // Pulsing disease nodules / fever alert circles
     const pulse = Math.abs(Math.sin(t * 4));
-    ctx.strokeStyle = gba(225, 29, 72, );
+    ctx.strokeStyle = "rgba(225, 29, 72, " + (0.5 + pulse * 0.5) + ")";
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.arc(cowX - 35, cowY - 80, 15 + pulse * 10, 0, Math.PI * 2);
@@ -452,20 +509,20 @@ class FarmerVideoPlayer {
     ctx.stroke();
 
     // Nodules tag
-    ctx.fillStyle = 'rgba(225, 29, 72, 0.9)';
-    ctx.font = old px system-ui;
+    ctx.fillStyle = 'rgba(225, 29, 72, 0.95)';
+    ctx.font = "bold " + Math.round(h * 0.045) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
     ctx.fillText('⚠️ त्वचा पर गांठें (Skin Nodules)', cowX + 25, cowY - 105);
-    ctx.fillText('📉 दूध उत्पादन में गिरावट (Low Milk)', cowX - 60, cowY + 25);
+    ctx.fillText('📉 दूध उत्पादन में गिरावट (Low Milk)', cowX - 50, cowY + 25);
 
     // Empty Milk Can
-    ctx.font = ${Math.round(h * 0.12)}px system-ui;
+    ctx.font = Math.round(h * 0.12) + "px system-ui, sans-serif";
     ctx.fillText('🥛', w * 0.46, h * 0.78);
 
     // Gloomy Vignette
     this.renderVignette(ctx, w, h, 'rgba(15, 23, 42, 0.45)');
 
     // Cinematic Banner Text
-    this.renderSceneTitleBanner(ctx, w, h, 'Scene 1 • समस्या की गंभीरता', 'बीमारी की जल्दी पहचान, पशुधन की बेहतर सुरक्षा');
+    this.renderSceneTitleBanner(ctx, w, h, 'Scene 1 • समस्या की गंभीरता (The Problem)', 'बीमारी की जल्दी पहचान, पशुधन की बेहतर सुरक्षा');
   }
 
   // SCENE 2 (8-15s): Introducing PashuSuraksha - Golden Sun, Hopeful Farmer, Mobile App
@@ -493,20 +550,21 @@ class FarmerVideoPlayer {
       const rx2 = w * 0.5 + Math.cos(angle + t * 0.2) * 140;
       const ry2 = h * 0.38 + Math.sin(angle + t * 0.2) * 140;
       ctx.beginPath();
-      ctx.moveTo(rx1, ry1); ctx.lineTo(rx2, ry2);
+      ctx.moveTo(rx1, ry1);
+      ctx.lineTo(rx2, ry2);
       ctx.stroke();
     }
 
     // Smiling Farmer holding smartphone
-    ctx.font = ${Math.round(h * 0.34)}px system-ui;
+    ctx.font = Math.round(h * 0.34) + "px system-ui, sans-serif";
     ctx.textAlign = 'center';
-    ctx.fillText('👨‍🌾', w * 0.28, h * 0.72);
+    ctx.fillText('👨‍🌾', w * 0.26, h * 0.72);
 
     // Modern smartphone frame in center
     const phoneW = Math.round(w * 0.32);
     const phoneH = Math.round(h * 0.62);
-    const phoneX = w * 0.52;
-    const phoneY = h * 0.16;
+    const phoneX = w * 0.50;
+    const phoneY = h * 0.18;
 
     // Phone body
     ctx.fillStyle = '#0f172a';
@@ -522,25 +580,25 @@ class FarmerVideoPlayer {
     ctx.fill();
 
     // On-screen Logo & Emblem
-    ctx.font = ${Math.round(phoneH * 0.22)}px system-ui;
+    ctx.font = Math.round(phoneH * 0.22) + "px system-ui, sans-serif";
     ctx.fillText('🛡️🐄', phoneX + phoneW / 2, phoneY + phoneH * 0.38);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = old px system-ui;
+    ctx.font = "bold " + Math.round(phoneH * 0.09) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
     ctx.fillText('PashuSuraksha', phoneX + phoneW / 2, phoneY + phoneH * 0.55);
 
     ctx.fillStyle = '#a7f3d0';
-    ctx.font = ${Math.round(phoneH * 0.052)}px system-ui;
+    ctx.font = Math.round(phoneH * 0.052) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
     ctx.fillText('पशु स्वास्थ्य सुरक्षा तंत्र', phoneX + phoneW / 2, phoneY + phoneH * 0.65);
 
     ctx.fillStyle = '#34d399';
     this.roundRect(ctx, phoneX + 24, phoneY + phoneH * 0.74, phoneW - 48, 26, 6);
     ctx.fill();
     ctx.fillStyle = '#064e3b';
-    ctx.font = old px system-ui;
+    ctx.font = "bold " + Math.round(phoneH * 0.05) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
     ctx.fillText('⚡ 1-Click Triage', phoneX + phoneW / 2, phoneY + phoneH * 0.79);
 
-    this.renderSceneTitleBanner(ctx, w, h, 'Scene 2 • समाधान का शुभारंभ', 'पेश है PashuSuraksha — डिजिटल समाधान');
+    this.renderSceneTitleBanner(ctx, w, h, 'Scene 2 • समाधान का शुभारंभ (Introducing PashuSuraksha)', 'PashuSuraksha (पशु सुरक्षा) — स्मार्ट प्लेटफ़ॉर्म');
   }
 
   // SCENE 3 (15-30s): How It Works - Animal Selection, Symptoms, AI Assessment, Vet Notification
@@ -553,10 +611,16 @@ class FarmerVideoPlayer {
     ctx.strokeStyle = 'rgba(15, 118, 110, 0.15)';
     ctx.lineWidth = 1;
     for (let x = 0; x < w; x += 40) {
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, h);
+      ctx.stroke();
     }
     for (let y = 0; y < h; y += 40) {
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
     }
 
     // 3 Workflow Steps Card Layout
@@ -582,7 +646,7 @@ class FarmerVideoPlayer {
     this.drawArrow(ctx, w * 0.64, yPos + cardH / 2, w * 0.67, yPos + cardH / 2);
 
     // Process Ribbon Header
-    this.renderSceneTitleBanner(ctx, w, h, 'Scene 3 • कैसे काम करता है?', 'लक्षण दर्ज करें ➔ जोखिम पहचानें ➔ समय पर सहायता प्राप्त करें');
+    this.renderSceneTitleBanner(ctx, w, h, 'Scene 3 • कैसे काम करता है? (How It Works)', 'लक्षण दर्ज करें ➔ जोखिम पहचानें ➔ समय पर सहायता प्राप्त करें');
   }
 
   // SCENE 4 (30-40s): Benefits & Prevention - Vet Care, Tagging, Healthy Herd
@@ -603,28 +667,28 @@ class FarmerVideoPlayer {
     ctx.fill();
 
     // Vet Doctor Arriving & Treating (Left-Center)
-    ctx.font = ${Math.round(h * 0.28)}px system-ui;
+    ctx.font = Math.round(h * 0.28) + "px system-ui, sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('🩺👨‍⚕️', w * 0.32, h * 0.68);
 
     // Healthy Cattle & Calf (Center-Right)
-    ctx.font = ${Math.round(h * 0.34)}px system-ui;
+    ctx.font = Math.round(h * 0.34) + "px system-ui, sans-serif";
     ctx.fillText('🐄', w * 0.62, h * 0.7);
-    ctx.font = ${Math.round(h * 0.22)}px system-ui;
+    ctx.font = Math.round(h * 0.22) + "px system-ui, sans-serif";
     ctx.fillText('🐂', w * 0.82, h * 0.74);
 
     // Tagging / Vaccination Shield Badge above cattle
     const badgeY = h * 0.32 + Math.sin(t * 3) * 6;
     ctx.fillStyle = '#ffffff';
-    this.roundRect(ctx, w * 0.52, badgeY, w * 0.32, 44, 8);
+    this.roundRect(ctx, w * 0.52, badgeY, w * 0.34, 44, 8);
     ctx.fill();
     ctx.strokeStyle = '#16a34a';
     ctx.lineWidth = 2;
     ctx.stroke();
 
     ctx.fillStyle = '#15803d';
-    ctx.font = old px system-ui;
-    ctx.fillText('🛡️ प्रमाणित टीकाकृत (Vaccinated)', w * 0.68, badgeY + 28);
+    ctx.font = "bold " + Math.round(h * 0.045) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('🛡️ प्रमाणित टीकाकृत (Vaccinated)', w * 0.69, badgeY + 28);
 
     // Flying sparkles of health
     ctx.fillStyle = '#fef08a';
@@ -636,7 +700,7 @@ class FarmerVideoPlayer {
       ctx.fill();
     }
 
-    this.renderSceneTitleBanner(ctx, w, h, 'Scene 4 • लाभ और रोकथाम', 'स्वस्थ पशु, सुरक्षित किसान — नुकसान से संपूर्ण बचाव');
+    this.renderSceneTitleBanner(ctx, w, h, 'Scene 4 • लाभ और रोकथाम (Benefits & Prevention)', 'स्वस्थ पशु, सुरक्षित किसान — नुकसान से संपूर्ण बचाव');
   }
 
   // SCENE 5 (40-45s): Ending & Call to Action - Centered Emblem, Dual Slogan
@@ -652,7 +716,7 @@ class FarmerVideoPlayer {
     // Central 3D Glowing Shield
     const pulse = 1 + Math.sin(t * 4) * 0.04;
     ctx.save();
-    ctx.translate(w * 0.5, h * 0.36);
+    ctx.translate(w * 0.5, h * 0.34);
     ctx.scale(pulse, pulse);
 
     // Outer glow
@@ -665,7 +729,7 @@ class FarmerVideoPlayer {
     ctx.fill();
 
     // Emblem Shield Icon
-    ctx.font = ${Math.round(h * 0.24)}px system-ui;
+    ctx.font = Math.round(h * 0.24) + "px system-ui, sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('🛡️🐄', 0, 20);
     ctx.restore();
@@ -673,34 +737,33 @@ class FarmerVideoPlayer {
     // Brand Name
     ctx.textAlign = 'center';
     ctx.fillStyle = '#ffffff';
-    ctx.font = old px system-ui;
-    ctx.fillText('PashuSuraksha', w * 0.5, h * 0.62);
+    ctx.font = "bold " + Math.round(h * 0.08) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('PashuSuraksha', w * 0.5, h * 0.60);
 
     // Sub-titles
     ctx.fillStyle = '#fef08a';
-    ctx.font = old px system-ui;
-    ctx.fillText('बीमारी की पहचान जल्दी, कार्रवाई सही समय पर।', w * 0.5, h * 0.72);
+    ctx.font = "bold " + Math.round(h * 0.048) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('बीमारी की पहचान जल्दी, कार्रवाई सही समय पर।', w * 0.5, h * 0.70);
 
     ctx.fillStyle = '#a7f3d0';
-    ctx.font = 600 px system-ui;
-    ctx.fillText('Detect Early • Protect Livestock • Empower Farmers', w * 0.5, h * 0.81);
+    ctx.font = "600 " + Math.round(h * 0.038) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('Detect Early • Protect Livestock • Empower Farmers', w * 0.5, h * 0.78);
 
     // Interactive CTA button preview
     ctx.fillStyle = '#10b981';
-    this.roundRect(ctx, w * 0.36, h * 0.86, w * 0.28, 36, 18);
+    this.roundRect(ctx, w * 0.32, h * 0.83, w * 0.36, 38, 19);
     ctx.fill();
     ctx.fillStyle = '#064e3b';
-    ctx.font = old px system-ui;
-    ctx.fillText('⚡ अभी रिपोर्ट दर्ज करें (Report Now)', w * 0.5, h * 0.92);
+    ctx.font = "bold " + Math.round(h * 0.042) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('⚡ अभी रिपोर्ट दर्ज करें (Report Now)', w * 0.5, h * 0.89);
   }
 
   // ==========================================
   // HELPER DRAWING METHODS
   // ==========================================
   renderSceneTitleBanner(ctx, w, h, sceneTag, bannerText) {
-    // Top banner ribbon
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-    this.roundRect(ctx, w * 0.1, 16, w * 0.8, 48, 8);
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+    this.roundRect(ctx, w * 0.08, 14, w * 0.84, 48, 8);
     ctx.fill();
     ctx.strokeStyle = '#0f766e';
     ctx.lineWidth = 1.5;
@@ -708,12 +771,12 @@ class FarmerVideoPlayer {
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#38bdf8';
-    ctx.font = old px system-ui;
-    ctx.fillText(sceneTag, w * 0.5, 34);
+    ctx.font = "bold " + Math.round(h * 0.036) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText(sceneTag, w * 0.5, 32);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = old px system-ui;
-    ctx.fillText(bannerText, w * 0.5, 55);
+    ctx.font = "bold " + Math.round(h * 0.042) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText(bannerText, w * 0.5, 52);
   }
 
   renderWorkflowCard(ctx, x, y, w, h, title, items, active) {
@@ -725,13 +788,13 @@ class FarmerVideoPlayer {
     ctx.stroke();
 
     ctx.fillStyle = active ? '#34d399' : '#94a3b8';
-    ctx.font = old px system-ui;
+    ctx.font = "bold " + Math.round(h * 0.07) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
     ctx.textAlign = 'left';
     ctx.fillText(title, x + 14, y + 28);
 
     items.forEach((item, idx) => {
       ctx.fillStyle = active ? '#ffffff' : '#64748b';
-      ctx.font = ${Math.round(h * 0.062)}px system-ui;
+      ctx.font = Math.round(h * 0.062) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
       ctx.fillText(item, x + 16, y + 68 + idx * 32);
     });
   }
@@ -746,30 +809,30 @@ class FarmerVideoPlayer {
 
     ctx.textAlign = 'left';
     ctx.fillStyle = active ? '#f43f5e' : '#94a3b8';
-    ctx.font = old px system-ui;
+    ctx.font = "bold " + Math.round(h * 0.07) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
     ctx.fillText('3. एआई जोखिम व सूचना (AI Alert)', x + 14, y + 28);
 
     if (active) {
       // Risk meter badge
       ctx.fillStyle = '#fee2e2';
-      this.roundRect(ctx, x + 14, y + 50, w - 28, 38, 6);
+      this.roundRect(ctx, x + 14, y + 46, w - 28, 36, 6);
       ctx.fill();
       ctx.fillStyle = '#991b1b';
-      ctx.font = old px system-ui;
-      ctx.fillText('🚨 HIGH RISK: FMD / LSD', x + 24, y + 74);
+      ctx.font = "bold " + Math.round(h * 0.055) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+      ctx.fillText('🚨 HIGH RISK: FMD / LSD', x + 24, y + 70);
 
       // Automatic alert dispatch to DVO
       ctx.fillStyle = '#dbeafe';
-      this.roundRect(ctx, x + 14, y + 100, w - 28, 55, 6);
+      this.roundRect(ctx, x + 14, y + 92, w - 28, 55, 6);
       ctx.fill();
       ctx.fillStyle = '#1e40af';
-      ctx.font = old px system-ui;
-      ctx.fillText('📲 पशु चिकित्सक को अलर्ट प्रेषित:', x + 24, y + 120);
-      ctx.font = ${Math.round(h * 0.045)}px system-ui;
-      ctx.fillText('डॉ. सुनील (DVO) को SMS प्रेषित', x + 24, y + 142);
+      ctx.font = "bold " + Math.round(h * 0.05) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+      ctx.fillText('📲 पशु चिकित्सक को अलर्ट प्रेषित:', x + 20, y + 114);
+      ctx.font = Math.round(h * 0.045) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+      ctx.fillText('डॉ. सुनील (DVO) को SMS प्रेषित', x + 20, y + 136);
     } else {
       ctx.fillStyle = '#64748b';
-      ctx.font = ${Math.round(h * 0.06)}px system-ui;
+      ctx.font = Math.round(h * 0.06) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
       ctx.fillText('Waiting for symptoms...', x + 16, y + 75);
     }
   }
@@ -779,7 +842,7 @@ class FarmerVideoPlayer {
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.stroke();
-    // Arrowhead
+
     ctx.fillStyle = '#0f766e';
     ctx.beginPath();
     ctx.moveTo(x2, y2);
@@ -798,9 +861,8 @@ class FarmerVideoPlayer {
   }
 
   renderVideoHUD(ctx, w, h, time) {
-    // Bottom thin scrub bar on canvas
-    const barH = 4;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    const barH = 5;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
     ctx.fillRect(0, h - barH, w, barH);
     ctx.fillStyle = '#10b981';
     ctx.fillRect(0, h - barH, (time / this.totalDuration) * w, barH);
@@ -820,24 +882,16 @@ class FarmerVideoPlayer {
     ctx.closePath();
   }
 
-  openModal() {
-    const modal = document.getElementById('farmerVideoModal');
-    if (modal) {
-      modal.style.display = 'flex';
-      this.setupCanvasDPI();
-      this.play();
+  scrollToPlayer() {
+    const section = document.getElementById('farmerVideoSection');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }
-
-  closeModal() {
-    const modal = document.getElementById('farmerVideoModal');
-    if (modal) {
-      modal.style.display = 'none';
-      this.pause();
-    }
+    this.play();
   }
 }
 
+// Instantiate global manager
 window.FarmerVideoManager = new FarmerVideoPlayer();
 
 document.addEventListener('DOMContentLoaded', () => {
