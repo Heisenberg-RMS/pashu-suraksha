@@ -49,9 +49,6 @@
         </div>
       </div>
 
-      <button class="btn-video-nav" onclick="window.FarmerVideoManager.scrollToPlayer()" title="Watch 75-second Farmer Guide Video & Live Portal Walkthrough">
-        🎬 किसान वीडियो (75s)
-      </button>
 
       <button class="btn-login-toggle" onclick="window.AuthManager.openModal()">
         🔑 Login / Switch
@@ -90,102 +87,7 @@
   <!-- Main Container -->
   <main class="main-container">
 
-    <!-- Farmer Awareness & Introductory Video Section (Direct Inline Player) -->
-    <section class="farmer-video-section" id="farmerVideoSection">
-      <div class="video-section-header">
-        <div class="video-section-title-wrap">
-          <div class="video-badge-pill">🎬 किसान वीडियो व लाइव पोर्टल गाइड • 75 सेकंड (Farmer Video & Live Portal Walkthrough)</div>
-          <h2 class="video-main-title">पशु सुरक्षा पोर्टल का उपयोग कैसे करें? (Live Website Walkthrough & Video Guide)</h2>
-          <p class="video-subtitle-lead">
-            बीमारी की शुरुआती पहचान, लाइव एआई जांच (Triage), जीआईएस मैप अलर्ट व ई-स्वास्थ्य कार्ड — 75 सेकंड में सीखें।
-          </p>
-        </div>
-      </div>
 
-      <div class="video-player-card">
-        <!-- Canvas Video Stage -->
-        <div class="video-canvas-container" id="videoCanvasContainer">
-          <canvas id="farmerVideoCanvas" width="960" height="540"></canvas>
-
-          <!-- Big Click to Play Overlay (Visible before playing) -->
-          <div id="videoHeroPlayOverlay" class="video-hero-play-overlay">
-            <div class="hero-play-circle">▶</div>
-            <div class="hero-play-text">वीडियो शुरू करें (Click to Play Video)</div>
-            <div class="hero-play-subtext">⏱ 75 सेकंड • 6 दृश्य • लाइव स्क्रीन रिकॉर्डिंग व हिंदी आवाज़ सहित</div>
-          </div>
-        </div>
-
-        <!-- Dynamic Subtitle Bar (Synchronized with Hindi Voiceover) -->
-        <div class="video-subtitle-bar">
-          <span class="subtitle-icon">💬</span>
-          <div class="subtitle-content">
-            <span id="videoActiveSubtitle" class="subtitle-text">
-              क्या आपके पशुओं में बीमारी के शुरुआती लक्षण जैसे तेज बुखार, त्वचा पर गांठें, या मुंह में छाले दिख रहे हैं? समय पर पहचान और सूचना न मिलने से बीमारी पूरे गांव में तेजी से फैल सकती है।
-            </span>
-            <div id="videoActiveBanner" class="subtitle-banner">
-              बीमारी की जल्दी पहचान, पशुधन की संपूर्ण सुरक्षा
-            </div>
-          </div>
-        </div>
-
-        <!-- 6 Interactive Scene Nav Chips (Direct jump to scene) -->
-        <div class="video-scenes-nav">
-          <button class="video-scene-chip active" data-scene="1" title="Jump to Scene 1">
-            <span class="chip-time">0–12s</span>
-            <span>1. समस्या (The Problem)</span>
-          </button>
-          <button class="video-scene-chip" data-scene="2" title="Jump to Scene 2">
-            <span class="chip-time">12–24s</span>
-            <span>2. पोर्टल परिचय (Portal Intro)</span>
-          </button>
-          <button class="video-scene-chip" data-scene="3" title="Jump to Scene 3">
-            <span class="chip-time">24–42s</span>
-            <span>3. लक्षण व एआई जांच (Report & AI Triage)</span>
-          </button>
-          <button class="video-scene-chip" data-scene="4" title="Jump to Scene 4">
-            <span class="chip-time">42–56s</span>
-            <span>4. जीआईएस मैप व अलर्ट (Map & Vet Alert)</span>
-          </button>
-          <button class="video-scene-chip" data-scene="5" title="Jump to Scene 5">
-            <span class="chip-time">56–67s</span>
-            <span>5. ई-स्वास्थ्य कार्ड (EHR & 1962)</span>
-          </button>
-          <button class="video-scene-chip" data-scene="6" title="Jump to Scene 6">
-            <span class="chip-time">67–75s</span>
-            <span>6. कार्रवाई (Action)</span>
-          </button>
-        </div>
-
-        <!-- Video Controls Bar -->
-        <div class="video-controls-bar">
-          <button id="videoPlayToggleBtn" class="btn btn-primary btn-sm">▶ Play</button>
-          <button id="videoRestartBtn" class="btn btn-outline btn-sm">🔄 Restart</button>
-
-          <!-- Timeline Scrubber -->
-          <div class="video-scrubber-wrapper">
-            <input type="range" id="videoTimelineScrubber" min="0" max="75" step="0.1" value="0" class="video-scrubber-input">
-            <div id="videoProgressFill" class="video-scrubber-fill" style="width:0%;"></div>
-          </div>
-
-          <div id="videoTimeDisplay" class="video-time-pill">00:00 / 01:15</div>
-          <button id="videoMuteBtn" class="btn btn-outline btn-sm">🔊 Sound</button>
-          <button id="videoFullscreenBtn" class="btn btn-outline btn-sm" title="Toggle Fullscreen">⛶ Fullscreen</button>
-        </div>
-
-        <!-- Quick Action Shortcuts below video -->
-        <div class="video-quick-actions">
-          <button class="btn btn-primary btn-sm" onclick="window.App.switchTab('triage')">
-            ⚡ लक्षण दर्ज करें (Report Animal Symptoms)
-          </button>
-          <button class="btn btn-outline btn-sm" onclick="window.App.switchTab('vision')">
-            📸 AI विज़न लेंस (Scan Disease Lesion)
-          </button>
-          <button class="btn btn-outline btn-sm" onclick="window.ChatbotManager.openChat()">
-            💬 एआई सहायक से पूछें (Ask AI Doctor)
-          </button>
-        </div>
-      </div>
-    </section>
 
     <!-- TAB 1: OUTBREAK MAP & GIS SURVEILLANCE -->
     <section id="view-map" class="tab-view active">
@@ -1060,7 +962,6 @@
   <script src="/static/js/ehr_ui.js"></script>
   <script src="/static/js/lab_ui.js"></script>
   <script src="/static/js/ivr_ui.js"></script>
-  <script src="/static/js/farmer_video.js"></script>
   <script src="/static/js/app.js"></script>
 </body>
 </html>
