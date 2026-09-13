@@ -345,7 +345,11 @@ def create_report():
 
 @app.route("/api/animals", methods=["GET"])
 def list_animals():
-    return jsonify(get_all_animals())
+    owner = request.args.get("owner", "").strip()
+    animals = get_all_animals()
+    if owner:
+        animals = [a for a in animals if owner.lower() in (a.get("owner_name") or "").lower()]
+    return jsonify(animals)
 
 @app.route("/api/animals/<tag_number>", methods=["GET"])
 def get_animal_ehr(tag_number):
@@ -622,6 +626,20 @@ def dashboard_stats():
             "completed_vaccinations": total_vaccinations,
             "overdue_vaccinations": overdue_vaccinations,
             "herd_immunity_index": "81.4%"
+        },
+        "director_kpis": {
+            "vaccine_stockpile": {
+                "fmd_doses": 145000,
+                "lsd_goatpox_doses": 82000,
+                "hs_bq_doses": 95000,
+                "cold_chain_compliance_pct": 98.6
+            },
+            "epidemiological_indices": {
+                "r0_transmission_velocity": 1.28,
+                "case_fatality_ratio": "2.4%",
+                "inter_district_quarantine_rings": active_outbreaks,
+                "ring_containment_adherence": "94.2%"
+            }
         },
         "disease_breakdown": disease_breakdown,
         "recent_reports": recent_reports

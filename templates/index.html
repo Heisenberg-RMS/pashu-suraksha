@@ -66,30 +66,47 @@
     </div>
   </header>
 
+  <!-- Dynamic Role-Tailored Portal Banner -->
+  <div id="rolePortalBanner" class="role-portal-banner banner-dvo">
+    <div class="role-banner-left">
+      <div id="roleBannerAvatar" class="role-banner-avatar">🏛️</div>
+      <div>
+        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <h2 id="roleBannerTitle" class="role-banner-title" data-i18n="role_dvo_title">District Veterinary Officer (DVO) Command Console</h2>
+          <span id="roleBannerBadge" class="role-banner-badge">Dr. Mohit Rao • District Hisar</span>
+        </div>
+        <p id="roleBannerDesc" class="role-banner-desc" data-i18n="role_dvo_desc">Containment ring enforcement (3km/10km), case validation & triage sign-off, diagnostic confirmation, and broadcast alerts.</p>
+      </div>
+    </div>
+    <div id="roleBannerActions" class="role-banner-actions">
+      <!-- Injected dynamically based on role -->
+    </div>
+  </div>
+
   <!-- Navigation Tabs -->
   <nav class="nav-tabs-bar">
-    <button class="tab-btn active" data-tab="map" data-i18n="tab_map">
+    <button class="tab-btn active" data-tab="map" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" data-i18n="tab_map">
       🗺️ Outbreak Map & GIS Surveillance
     </button>
-    <button class="tab-btn" data-tab="vision" data-i18n="tab_vision">
+    <button class="tab-btn" data-tab="vision" data-roles="FARMER,PARA_VET,DVO" data-i18n="tab_vision">
       📸 AI Vision Lens & Lesion Scan
     </button>
-    <button class="tab-btn" data-tab="triage" data-i18n="tab_triage">
+    <button class="tab-btn" data-tab="triage" data-roles="FARMER,PARA_VET,DVO" data-i18n="tab_triage">
       ⚡ Rapid Syndromic Report & AI Triage
     </button>
-    <button class="tab-btn" data-tab="ehr" data-i18n="tab_ehr">
+    <button class="tab-btn" data-tab="ehr" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" data-i18n="tab_ehr">
       📋 Animal EHR & Health Passport
     </button>
-    <button class="tab-btn" data-tab="labs" data-i18n="tab_labs">
+    <button class="tab-btn" data-tab="labs" data-roles="PARA_VET,DVO,DIRECTOR" data-i18n="tab_labs">
       🧪 Lab Referrals & Chain of Custody
     </button>
-    <button class="tab-btn" data-tab="advisories" data-i18n="tab_advisories">
+    <button class="tab-btn" data-tab="advisories" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" data-i18n="tab_advisories">
       🔊 Multilingual Voice Advisories & SMS
     </button>
-    <button class="tab-btn" data-tab="ivr" data-i18n="tab_ivr">
+    <button class="tab-btn" data-tab="ivr" data-roles="FARMER,PARA_VET,DVO" data-i18n="tab_ivr">
       📞 Simulated IVR Hotline (1962)
     </button>
-    <button class="tab-btn" data-tab="dashboard" data-i18n="tab_dashboard">
+    <button class="tab-btn" data-tab="dashboard" data-roles="DVO,DIRECTOR" data-i18n="tab_dashboard">
       📈 Epidemiological Dashboard
     </button>
   </nav>
@@ -514,6 +531,22 @@
 
     <!-- TAB 3: ANIMAL EHR & HEALTH PASSPORT -->
     <section id="view-ehr" class="tab-view">
+      <!-- Farmer Personalized Livestock Section (Shown when logged in as FARMER) -->
+      <div id="farmerLivestockSection" style="display:none; margin-bottom:1.5rem;">
+        <div class="card" style="border-left: 4px solid #10b981; background: #ffffff;">
+          <div class="card-header" style="border-bottom: 1px solid #f1f5f9; padding-bottom:0.75rem;">
+            <div>
+              <h2 class="card-title" data-i18n="farmer_cattle_title">🐄 My Registered Cattle & Livestock Passports</h2>
+              <div style="font-size:0.8rem; color:#64748b;" data-i18n="farmer_cattle_sub">Ear Tag RFID • Vaccination Status • Milk Withholding Safety Watch</div>
+            </div>
+            <button class="btn btn-sm btn-outline" onclick="window.EHRManager.openNewAnimalModal()">➕ Register Animal</button>
+          </div>
+          <div id="farmerCattleCardsContainer" class="farmer-cattle-grid" style="margin-top:1rem;">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </div>
+      </div>
+
       <div class="grid-2">
         <!-- Animal Directory List -->
         <div class="card">
@@ -729,6 +762,23 @@
 
     <!-- TAB 7: EPIDEMIOLOGICAL DASHBOARD -->
     <section id="view-dashboard" class="tab-view">
+      <!-- Director Executive Strategic Command Section (Shown when logged in as DIRECTOR) -->
+      <div id="directorExecutiveSection" style="display:none; margin-bottom:1.5rem;">
+        <div class="card" style="background: linear-gradient(to right, #faf5ff, #f3e8ff); border: 1px solid #d8b4fe;">
+          <div class="card-header" style="border-bottom: 1px solid #e9d5ff; padding-bottom:0.75rem;">
+            <div>
+              <h2 class="card-title" style="color:#581c87;" data-i18n="director_kpi_title">🏛️ State Directorate Strategic Disease Intelligence</h2>
+              <div style="font-size:0.82rem; color:#6b21a8;" data-i18n="director_kpi_sub">Macro Surveillance • Vaccine Cold-Chain Logistics • Epidemic Transmission Velocity</div>
+            </div>
+            <span class="badge" style="background:#7e22ce; color:#fff; font-weight:700;">DG Animal Husbandry</span>
+          </div>
+
+          <div class="director-kpi-grid" id="directorKpisGrid" style="margin-top:1rem;">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+
       <!-- KPI Row -->
       <div class="kpi-row">
         <div class="kpi-card">
@@ -994,23 +1044,23 @@
 
   <!-- Mobile Bottom Navigation Bar (Docked for touch devices) -->
   <nav class="mobile-bottom-nav">
-    <button class="mobile-nav-item active" data-tab="map" onclick="window.App.switchTab('map')">
+    <button class="mobile-nav-item active" data-tab="map" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.App.switchTab('map')">
       <span class="mobile-nav-icon">🗺️</span>
       <span>Map</span>
     </button>
-    <button class="mobile-nav-item" data-tab="vision" onclick="window.App.switchTab('vision')">
+    <button class="mobile-nav-item" data-tab="vision" data-roles="FARMER,PARA_VET,DVO" onclick="window.App.switchTab('vision')">
       <span class="mobile-nav-icon">📸</span>
       <span>Lens</span>
     </button>
-    <button class="mobile-nav-item" data-tab="triage" onclick="window.App.switchTab('triage')">
+    <button class="mobile-nav-item" data-tab="triage" data-roles="FARMER,PARA_VET,DVO" onclick="window.App.switchTab('triage')">
       <span class="mobile-nav-icon">⚡</span>
       <span>Report</span>
     </button>
-    <button class="mobile-nav-item" data-tab="chat" onclick="window.ChatbotManager.openChat()">
+    <button class="mobile-nav-item" data-tab="chat" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.ChatbotManager.openChat()">
       <span class="mobile-nav-icon">💬</span>
       <span>AI Chat</span>
     </button>
-    <button class="mobile-nav-item" data-tab="ehr" onclick="window.App.switchTab('ehr')">
+    <button class="mobile-nav-item" data-tab="ehr" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.App.switchTab('ehr')">
       <span class="mobile-nav-icon">📋</span>
       <span>EHR</span>
     </button>

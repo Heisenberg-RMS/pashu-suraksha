@@ -223,6 +223,35 @@ class TestPashuSuraksha(unittest.TestCase):
         self.assertEqual(data["severity"], "NORMAL")
         self.assertIn("निरोगी", data["disease_name"])
 
+    def test_16_role_customizations(self):
+        # 1. Test owner filtering for Farmer portal
+        res_farmer_animals = self.client.get("/api/animals?owner=Ramcharan+Yadav")
+        self.assertEqual(res_farmer_animals.status_code, 200)
+        farmer_herd = res_farmer_animals.get_json()
+        self.assertGreater(len(farmer_herd), 0)
+        for animal in farmer_herd:
+            self.assertIn("Ramcharan", animal["owner_name"])
+
+        # 2. Test Director KPIs on dashboard
+        res_dash = self.client.get("/api/stats/dashboard")
+        self.assertEqual(res_dash.status_code, 200)
+        dash_data = res_dash.get_json()
+        self.assertIn("director_kpis", dash_data)
+        stock = dash_data["director_kpis"]["vaccine_stockpile"]
+        self.assertGreater(stock["fmd_doses"], 100000)
+        self.assertGreater(stock["lsd_goatpox_doses"], 50000)
+        indices = dash_data["director_kpis"]["epidemiological_indices"]
+        self.assertIn("r0_transmission_velocity", indices)
+
+        # 3. Test quick login for each role
+        for role in ["FARMER", "PARA_VET", "DVO", "DIRECTOR"]:
+            res_login = self.client.post("/api/auth/login", json={"role": role})
+            self.assertEqual(res_login.status_code, 200)
+            login_data = res_login.get_json()
+            self.assertTrue(login_data["success"])
+            self.assertEqual(login_data["user"]["role"], role)
+
 if __name__ == "__main__":
     unittest.main()
+
 

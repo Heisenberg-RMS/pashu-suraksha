@@ -1614,3 +1614,194 @@ body {
   font-weight: 700;
   border: 1px solid #bbf7d0;
 }
+
+/* ==========================================
+   ROLE-SPECIFIC PORTAL BANNERS & THEMES
+   ========================================== */
+.role-portal-banner {
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.banner-farmer {
+  background: linear-gradient(135deg, #14532d 0%, #15803d 100%);
+  border: 1px solid #22c55e;
+}
+
+.banner-paravet {
+  background: linear-gradient(135deg, #78350f 0%, #b45309 100%);
+  border: 1px solid #f59e0b;
+}
+
+.banner-dvo {
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+  border: 1px solid #14b8a6;
+}
+
+.banner-director {
+  background: linear-gradient(135deg, #3b0764 0%, #6b21a8 100%);
+  border: 1px solid #a855f7;
+}
+
+.role-banner-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.role-banner-avatar {
+  font-size: 2.2rem;
+  background: rgba(255, 255, 255, 0.2);
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.role-banner-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.role-banner-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.role-banner-sub {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  margin-top: 0.2rem;
+}
+
+.role-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.role-action-btn {
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f172a;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.45rem 0.85rem;
+  border-radius: 20px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: all 0.15s ease;
+}
+
+.role-action-btn:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.role-switch-btn {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.45rem 0.75rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.role-switch-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Farmer Cattle Grid Cards */
+.farmer-cattle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.farmer-cattle-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.farmer-cattle-card:hover {
+  border-color: #10b981;
+  box-shadow: var(--shadow);
+}
+
+.farmer-cattle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.4rem;
+}
+
+.farmer-cattle-tag {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+/* Director Executive KPI Grid */
+.director-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.director-kpi-tile {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.director-kpi-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #6b21a8;
+}
+
+.tab-hidden {
+  display: none !important;
+}
+

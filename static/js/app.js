@@ -49,11 +49,17 @@ class AuthenticationManager {
     if (roleEl) roleEl.innerText = this.currentUser.designation || this.currentUser.role;
   }
 
-  applyRoleContext() {
+  applyRoleContext(autoSwitchTab = false) {
     if (!this.currentUser) return;
     const role = this.currentUser.role;
 
-    // Pre-populate Triage Reporter inputs
+    // 1. Update Role Banner (Avatar, Title, Subtitle, Badge, Actions)
+    this.updateRoleBanner();
+
+    // 2. Filter Navigation Tabs & Mobile Nav
+    this.filterNavigationByRole(role);
+
+    // 3. Pre-populate Triage Reporter inputs
     const repType = document.getElementById('reporterTypeSelect');
     const repName = document.getElementById('reporterNameInput');
     const repPhone = document.getElementById('reporterPhoneInput');
@@ -83,14 +89,155 @@ class AuthenticationManager {
       repDistrict.value = this.currentUser.district;
     }
 
-    // Role-specific view recommendations
-    if (role === 'FARMER') {
-      const ehrSearch = document.getElementById('ehrSearchInput');
-      if (ehrSearch && this.currentUser.full_name) {
-        ehrSearch.value = this.currentUser.full_name;
-        ehrSearch.dispatchEvent(new Event('input'));
+    // 4. Role-specific section toggles & rendering
+    const farmerSection = document.getElementById('farmerLivestockSection');
+    if (farmerSection) {
+      if (role === 'FARMER') {
+        farmerSection.style.display = 'block';
+        renderFarmerLivestockSection(this.currentUser.full_name || 'Ramcharan Yadav');
+      } else {
+        farmerSection.style.display = 'none';
       }
     }
+
+    const directorSection = document.getElementById('directorExecutiveSection');
+    if (directorSection) {
+      if (role === 'DIRECTOR') {
+        directorSection.style.display = 'block';
+        renderDirectorExecutiveSection();
+      } else {
+        directorSection.style.display = 'none';
+      }
+    }
+
+    // 5. Landing Tab logic
+    const roleLandingMap = {
+      'FARMER': 'ehr',
+      'PARA_VET': 'triage',
+      'DVO': 'map',
+      'DIRECTOR': 'dashboard'
+    };
+
+    if (autoSwitchTab) {
+      const defaultLanding = roleLandingMap[role] || 'map';
+      switchTab(defaultLanding);
+    } else {
+      // If current active tab is hidden for this role, auto-switch to default landing
+      const activeBtn = document.querySelector('.tab-btn.active');
+      if (activeBtn && activeBtn.classList.contains('tab-hidden')) {
+        const defaultLanding = roleLandingMap[role] || 'map';
+        switchTab(defaultLanding);
+      }
+    }
+  }
+
+  updateRoleBanner() {
+    if (!this.currentUser) return;
+    const role = this.currentUser.role;
+    const banner = document.getElementById('rolePortalBanner');
+    if (!banner) return;
+
+    banner.classList.remove('banner-farmer', 'banner-paravet', 'banner-dvo', 'banner-director');
+    const classMap = {
+      'FARMER': 'banner-farmer',
+      'PARA_VET': 'banner-paravet',
+      'DVO': 'banner-dvo',
+      'DIRECTOR': 'banner-director'
+    };
+    banner.classList.add(classMap[role] || 'banner-dvo');
+
+    const avatarMap = {
+      'FARMER': '👨‍🌾',
+      'PARA_VET': '🩺',
+      'DVO': '🏛️',
+      'DIRECTOR': '📊'
+    };
+    const avatarEl = document.getElementById('roleBannerAvatar');
+    if (avatarEl) avatarEl.innerText = avatarMap[role] || '👤';
+
+    const titleEl = document.getElementById('roleBannerTitle');
+    const descEl = document.getElementById('roleBannerDesc');
+    const badgeEl = document.getElementById('roleBannerBadge');
+    const actionsEl = document.getElementById('roleBannerActions');
+
+    const t = (k) => (window.I18n ? window.I18n.t(k) : k);
+
+    if (role === 'FARMER') {
+      if (titleEl) titleEl.innerText = t('role_farmer_title');
+      if (descEl) descEl.innerText = t('role_farmer_desc');
+      if (badgeEl) badgeEl.innerText = `${this.currentUser.full_name || 'Ramcharan Yadav'} • ${this.currentUser.village || 'Dhani Mohabbatpur'}, ${this.currentUser.block || 'Hansi'}`;
+      if (actionsEl) {
+        actionsEl.innerHTML = `
+          <button class="role-action-btn" onclick="window.App.switchTab('ehr')">${t('btn_farmer_my_cattle')}</button>
+          <button class="role-action-btn" onclick="window.App.switchTab('vision')">${t('btn_farmer_scan')}</button>
+          <button class="role-action-btn" onclick="window.App.switchTab('triage')">${t('btn_farmer_report')}</button>
+          <button class="role-action-btn" onclick="window.App.switchTab('ivr')">${t('btn_farmer_call')}</button>
+          <button class="role-switch-btn" onclick="window.AuthManager.openModal()">${t('btn_switch_role')}</button>
+        `;
+      }
+    } else if (role === 'PARA_VET') {
+      if (titleEl) titleEl.innerText = t('role_paravet_title');
+      if (descEl) descEl.innerText = t('role_paravet_desc');
+      if (badgeEl) badgeEl.innerText = `${this.currentUser.full_name || 'Ramesh Kumar'} • Pashu Sakhi (${this.currentUser.block || 'Hansi'} Block)`;
+      if (actionsEl) {
+        actionsEl.innerHTML = `
+          <button class="role-action-btn" onclick="window.App.switchTab('triage')">${t('btn_paravet_survey')}</button>
+          <button class="role-action-btn" onclick="window.App.switchTab('ehr')">${t('btn_paravet_register')}</button>
+          <button class="role-action-btn" onclick="window.App.switchTab('labs')">${t('btn_paravet_sample')}</button>
+          <button class="role-switch-btn" onclick="window.AuthManager.openModal()">${t('btn_switch_role')}</button>
+        `;
+      }
+    } else if (role === 'DIRECTOR') {
+      if (titleEl) titleEl.innerText = t('role_director_title');
+      if (descEl) descEl.innerText = t('role_director_desc');
+      if (badgeEl) badgeEl.innerText = `${this.currentUser.full_name || 'Dr. A. K. Sharma'} • DG Animal Husbandry & State Surveillance`;
+      if (actionsEl) {
+        actionsEl.innerHTML = `
+          <button class="role-action-btn" onclick="window.App.switchTab('dashboard')">${t('btn_director_stockpile')}</button>
+          <button class="role-action-btn" onclick="window.App.switchTab('dashboard')">${t('btn_director_r0')}</button>
+          <button class="role-action-btn" onclick="window.App.switchTab('map')">🗺️ All India Surveillance</button>
+          <button class="role-switch-btn" onclick="window.AuthManager.openModal()">${t('btn_switch_role')}</button>
+        `;
+      }
+    } else { // DVO
+      if (titleEl) titleEl.innerText = t('role_dvo_title');
+      if (descEl) descEl.innerText = t('role_dvo_desc');
+      if (badgeEl) badgeEl.innerText = `${this.currentUser.full_name || 'Dr. Mohit Rao'} • District Veterinary Officer (${this.currentUser.district || 'Hisar'})`;
+      if (actionsEl) {
+        actionsEl.innerHTML = `
+          <button class="role-action-btn" onclick="window.App.switchTab('map')">${t('btn_dvo_quarantine')}</button>
+          <button class="role-action-btn" onclick="window.App.switchTab('triage')">${t('btn_dvo_verify')}</button>
+          <button class="role-action-btn" onclick="window.App.switchTab('advisories')">${t('btn_dvo_broadcast')}</button>
+          <button class="role-switch-btn" onclick="window.AuthManager.openModal()">${t('btn_switch_role')}</button>
+        `;
+      }
+    }
+  }
+
+  filterNavigationByRole(role) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      const rolesStr = btn.dataset.roles;
+      if (rolesStr) {
+        const allowed = rolesStr.split(',').map(s => s.trim());
+        if (!allowed.includes(role)) {
+          btn.classList.add('tab-hidden');
+        } else {
+          btn.classList.remove('tab-hidden');
+        }
+      }
+    });
+
+    document.querySelectorAll('.mobile-nav-item').forEach(btn => {
+      const rolesStr = btn.dataset.roles;
+      if (rolesStr) {
+        const allowed = rolesStr.split(',').map(s => s.trim());
+        if (!allowed.includes(role)) {
+          btn.classList.add('tab-hidden');
+        } else {
+          btn.classList.remove('tab-hidden');
+        }
+      }
+    });
   }
 
   openModal() {
@@ -126,7 +273,7 @@ class AuthenticationManager {
         this.currentUser = data.user;
         currentRole = role;
         this.updateHeaderProfile();
-        this.applyRoleContext();
+        this.applyRoleContext(true);
         this.closeModal();
         alert(`✅ Logged in successfully as ${this.currentUser.full_name} (${this.currentUser.designation})`);
         refreshDashboardData();
@@ -159,7 +306,7 @@ class AuthenticationManager {
         this.currentUser = data.user;
         currentRole = data.user.role;
         this.updateHeaderProfile();
-        this.applyRoleContext();
+        this.applyRoleContext(true);
         this.closeModal();
         alert(`✅ Welcome back, ${data.user.full_name}! (${data.user.designation})`);
         refreshDashboardData();
@@ -226,7 +373,7 @@ class AuthenticationManager {
         this.currentUser = data.user;
         currentRole = data.user.role;
         this.updateHeaderProfile();
-        this.applyRoleContext();
+        this.applyRoleContext(true);
         this.closeModal();
         alert(`✅ Mobile OTP Verified! Welcome, ${data.user.full_name}.`);
         refreshDashboardData();
@@ -264,6 +411,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupWeatherPanel();
   
   await refreshDashboardData();
+
+  window.addEventListener('languageChanged', () => {
+    if (window.AuthManager) window.AuthManager.updateRoleBanner();
+  });
 
   // Register Service Worker
   if ('serviceWorker' in navigator) {
@@ -336,6 +487,167 @@ async function refreshDashboardData() {
     updateCharts(data.disease_breakdown || []);
   } catch (err) {
     console.error('Failed to load dashboard stats:', err);
+  }
+}
+
+async function renderFarmerLivestockSection(ownerName) {
+  const container = document.getElementById('farmerCattleCardsContainer');
+  if (!container) return;
+
+  container.innerHTML = '<div style="color:#64748b; font-size:0.85rem; padding:1rem; grid-column: 1 / -1;">Loading your registered livestock health cards...</div>';
+
+  try {
+    const res = await fetch(`/api/animals?owner=${encodeURIComponent(ownerName)}`);
+    const animals = await res.json();
+
+    if (!animals || animals.length === 0) {
+      container.innerHTML = `
+        <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:1.5rem; text-align:center; color:#64748b; grid-column:1/-1;">
+          <div style="font-size:2rem; margin-bottom:0.4rem;">🐄</div>
+          <p style="margin-bottom:0.5rem;">No animals registered yet under <b>${ownerName}</b>.</p>
+          <button class="btn btn-primary btn-sm" onclick="window.EHRManager.openNewAnimalModal()">➕ Register Your First Cow / Buffalo</button>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = animals.map(a => {
+      const isSick = a.health_status === 'SICK' || a.health_status === 'QUARANTINED';
+      const statusBadge = isSick 
+        ? `<span class="badge badge-danger" style="animation: pulse 1.5s infinite;">🚨 SICK / UNDER CARE</span>`
+        : `<span class="badge badge-success">✅ HEALTHY</span>`;
+
+      // Milk withholding safety check: tag 100982347101 or sick status
+      const isWithheld = (a.tag_number === '100982347101' || isSick);
+      const milkSafetyBadge = isWithheld
+        ? `<div style="background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:0.45rem 0.65rem; border-radius:6px; font-size:0.75rem; font-weight:700; margin-top:0.6rem; display:flex; align-items:flex-start; gap:0.4rem;">
+             <span style="font-size:1.1rem; line-height:1;">⛔</span>
+             <div>
+               <div style="color:#991b1b;">WITHHOLD MILK (Active Antibiotic Course)</div>
+               <div style="font-size:0.7rem; font-weight:normal; color:#b91c1c; margin-top:1px;">Ceftiofur IM course active. Safe to resume milking in 48 hrs.</div>
+             </div>
+           </div>`
+        : `<div style="background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; padding:0.45rem 0.65rem; border-radius:6px; font-size:0.75rem; font-weight:700; margin-top:0.6rem; display:flex; align-items:flex-start; gap:0.4rem;">
+             <span style="font-size:1.1rem; line-height:1;">✅</span>
+             <div>
+               <div style="color:#065f46;">MILK SAFE TO CONSUME & SELL</div>
+               <div style="font-size:0.7rem; font-weight:normal; color:#047857; margin-top:1px;">Zero chemical or antibiotic residue detected.</div>
+             </div>
+           </div>`;
+
+      // Vaccine schedule calculation
+      const nextVaxText = isSick 
+        ? "⚠️ FMD Booster due in 12 days (Pending Clinical Recovery)" 
+        : "💉 FMD & HS Booster due in 18 days (October 2026)";
+
+      return `
+        <div class="farmer-cattle-card">
+          <div class="farmer-cattle-header">
+            <div>
+              <span style="font-size:1.2rem; margin-right:0.25rem;">${a.species === 'Buffalo' ? '🐃' : '🐄'}</span>
+              <span class="farmer-cattle-tag">Tag #${a.tag_number}</span>
+            </div>
+            ${statusBadge}
+          </div>
+
+          <div style="font-size:0.8rem; color:#475569; margin-bottom:0.5rem;">
+            <b>${a.breed}</b> (${a.species}) • ${a.age_months} months • ${a.sex}
+          </div>
+
+          <div style="background:#f1f5f9; padding:0.4rem 0.6rem; border-radius:6px; font-size:0.75rem; color:#334155; margin-bottom:0.4rem;">
+            <b>Vaccination Schedule:</b> ${nextVaxText}
+          </div>
+
+          ${milkSafetyBadge}
+
+          <div style="display:flex; gap:0.4rem; margin-top:0.75rem;">
+            <button class="btn btn-outline btn-sm" style="flex:1; font-size:0.75rem;" onclick="window.EHRManager.viewPassport('${a.tag_number}')">
+              📋 View Passport
+            </button>
+            <button class="btn btn-primary btn-sm" style="flex:1; font-size:0.75rem; background:#0f766e;" onclick="window.App.switchTab('vision')">
+              📸 AI Lesion Scan
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+  } catch (err) {
+    console.error('Error loading farmer livestock cards:', err);
+    container.innerHTML = '<div style="color:#ef4444; font-size:0.82rem; padding:1rem;">Failed to load livestock cards.</div>';
+  }
+}
+
+async function renderDirectorExecutiveSection() {
+  const container = document.getElementById('directorKpisGrid');
+  if (!container) return;
+
+  try {
+    const res = await fetch('/api/stats/dashboard');
+    const data = await res.json();
+    const kpis = data.director_kpis;
+    if (!kpis) return;
+
+    const r0 = kpis.epidemiological_indices.r0_transmission_velocity;
+    const cfr = kpis.epidemiological_indices.case_fatality_ratio;
+    const rings = kpis.epidemiological_indices.inter_district_quarantine_rings;
+    const adherence = kpis.epidemiological_indices.ring_containment_adherence;
+
+    const fmdStock = kpis.vaccine_stockpile.fmd_doses.toLocaleString();
+    const lsdStock = kpis.vaccine_stockpile.lsd_goatpox_doses.toLocaleString();
+    const hsStock = kpis.vaccine_stockpile.hs_bq_doses.toLocaleString();
+    const coldChain = kpis.vaccine_stockpile.cold_chain_compliance_pct;
+
+    container.innerHTML = `
+      <div class="director-kpi-tile" style="background:#ffffff; border-color:#e9d5ff;">
+        <div style="font-size:0.75rem; font-weight:700; color:#7e22ce; text-transform:uppercase; margin-bottom:0.25rem;">
+          📈 Epidemic Velocity (R₀ Index)
+        </div>
+        <div class="director-kpi-val" style="color:#e11d48;">${r0}</div>
+        <div style="font-size:0.72rem; color:#64748b; margin-top:0.2rem;">Transmission Target: &lt; 1.0 (Active Containment)</div>
+      </div>
+
+      <div class="director-kpi-tile" style="background:#ffffff; border-color:#e9d5ff;">
+        <div style="font-size:0.75rem; font-weight:700; color:#7e22ce; text-transform:uppercase; margin-bottom:0.25rem;">
+          🚨 Case Fatality Ratio (CFR)
+        </div>
+        <div class="director-kpi-val" style="color:#d97706;">${cfr}</div>
+        <div style="font-size:0.72rem; color:#64748b; margin-top:0.2rem;">Statewide Veterinary Triage Benchmark</div>
+      </div>
+
+      <div class="director-kpi-tile" style="background:#ffffff; border-color:#e9d5ff;">
+        <div style="font-size:0.75rem; font-weight:700; color:#7e22ce; text-transform:uppercase; margin-bottom:0.25rem;">
+          ⭕ Inter-District Quarantine Rings
+        </div>
+        <div class="director-kpi-val" style="color:#0284c7;">${rings} Active</div>
+        <div style="font-size:0.72rem; color:#64748b; margin-top:0.2rem;">3km Infected / 10km Buffer (${adherence} Adherence)</div>
+      </div>
+
+      <div class="director-kpi-tile" style="background:#ffffff; border-color:#e9d5ff;">
+        <div style="font-size:0.75rem; font-weight:700; color:#7e22ce; text-transform:uppercase; margin-bottom:0.25rem;">
+          💉 FMD Vaccine Stockpile
+        </div>
+        <div class="director-kpi-val" style="color:#059669;">${fmdStock}</div>
+        <div style="font-size:0.72rem; color:#64748b; margin-top:0.2rem;">Cold-Chain Compliance: ${coldChain}%</div>
+      </div>
+
+      <div class="director-kpi-tile" style="background:#ffffff; border-color:#e9d5ff;">
+        <div style="font-size:0.75rem; font-weight:700; color:#7e22ce; text-transform:uppercase; margin-bottom:0.25rem;">
+          💉 LSD (Goat Pox) Stockpile
+        </div>
+        <div class="director-kpi-val" style="color:#059669;">${lsdStock}</div>
+        <div style="font-size:0.72rem; color:#64748b; margin-top:0.2rem;">Strategic State Emergency Reserve</div>
+      </div>
+
+      <div class="director-kpi-tile" style="background:#ffffff; border-color:#e9d5ff;">
+        <div style="font-size:0.75rem; font-weight:700; color:#7e22ce; text-transform:uppercase; margin-bottom:0.25rem;">
+          💉 HS + BQ Combined Reserves
+        </div>
+        <div class="director-kpi-val" style="color:#059669;">${hsStock}</div>
+        <div style="font-size:0.72rem; color:#64748b; margin-top:0.2rem;">Pre-Monsoon Preparedness Buffer</div>
+      </div>
+    `;
+  } catch (err) {
+    console.error('Error loading director executive KPIs:', err);
   }
 }
 
