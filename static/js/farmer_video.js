@@ -1,8 +1,8 @@
 /**
- * Pashu Suraksha - Farmer Awareness & Introductory Video Engine
- * Renders a 45-second high-definition animated educational video with
- * synchronized Hindi voiceover, acoustic background melody, interactive subtitles,
- * and animated visual scenes for livestock farmers.
+ * Pashu Suraksha - Farmer Awareness & Live Website Walkthrough Engine
+ * Renders a 75-second high-definition animated educational video showing
+ * the actual PashuSuraksha website screen, live UI interactions (Triage, GIS Map, EHR, 1962 Hotline),
+ * synchronized Hindi voiceover, acoustic background melody, and interactive subtitles.
  */
 
 class FarmerVideoPlayer {
@@ -11,61 +11,76 @@ class FarmerVideoPlayer {
     this.ctx = null;
     this.isPlaying = false;
     this.currentTime = 0; // in seconds
-    this.totalDuration = 45; // 45 seconds total
+    this.totalDuration = 75; // 75 seconds total
     this.lastFrameTimestamp = null;
     this.animFrameId = null;
     this.isMuted = false;
     this.audioCtx = null;
     this.musicInterval = null;
     this.lastSpokenScene = -1;
-    this.width = 800;
-    this.height = 450;
+    this.width = 960;
+    this.height = 540;
 
     this.scenes = [
       {
         id: 1,
         start: 0,
-        end: 8,
+        end: 12,
         title: "Scene 1 • समस्या (The Problem)",
         bannerText: "बीमारी की जल्दी पहचान, पशुधन की बेहतर सुरक्षा",
-        voiceover: "क्या आपके पशुओं में बीमारी के शुरुआती लक्षण दिखाई दे रहे हैं? समय पर पहचान न होने से बीमारी तेजी से फैल सकती है।",
-        theme: "gloomy"
+        voiceover: "क्या आपके पशुओं में बीमारी के शुरुआती लक्षण जैसे तेज बुखार, त्वचा पर गांठें, या मुंह में छाले दिख रहे हैं? समय पर पहचान और सूचना न मिलने से बीमारी पूरे गांव में तेजी से फैल सकती है।",
+        theme: "gloomy",
+        activeTab: "none"
       },
       {
         id: 2,
-        start: 8,
-        end: 15,
-        title: "Scene 2 • परिचय (Introducing PashuSuraksha)",
-        bannerText: "PashuSuraksha (पशु सुरक्षा) — स्मार्ट प्लेटफ़ॉर्म",
-        voiceover: "पेश है PashuSuraksha – पशु रोगों की शुरुआती पहचान और समय पर जानकारी देने वाला स्मार्ट प्लेटफ़ॉर्म।",
-        theme: "sunrise"
+        start: 12,
+        end: 24,
+        title: "Scene 2 • पोर्टल का परिचय (Meet PashuSuraksha)",
+        bannerText: "PashuSuraksha — किसानों और पशुपालकों के लिए स्मार्ट डिजिटल मंच",
+        voiceover: "पेश है PashuSuraksha – पशु स्वास्थ्य सुरक्षा का सबसे सरल डिजिटल मंच। इसे आप अपने मोबाइल फोन या कंप्यूटर पर आसानी से खोल सकते हैं। आइए सीखें इसका उपयोग कैसे करें।",
+        theme: "sunrise",
+        activeTab: "home"
       },
       {
         id: 3,
-        start: 15,
-        end: 30,
-        title: "Scene 3 • कार्यप्रणाली (How It Works)",
-        bannerText: "लक्षण दर्ज करें ➔ जोखिम पहचानें ➔ समय पर सहायता प्राप्त करें",
-        voiceover: "किसान पशु की जानकारी और लक्षण दर्ज करता है। सिस्टम संभावित बीमारी और जोखिम का आकलन करता है तथा आवश्यकता होने पर पशु चिकित्सक को सूचना भेजता है।",
-        theme: "app_demo"
+        start: 24,
+        end: 42,
+        title: "Scene 3 • लक्षण दर्ज करें व एआई जांच (Report & AI Triage)",
+        bannerText: "लक्षण दर्ज करें ➔ एआई तुरंत बीमारी और जोखिम का सटीक आकलन करता है",
+        voiceover: "चरण 1: 'Rapid Syndromic Report' टैब पर क्लिक करें। अपने पशु का चयन करें और दिखाई देने वाले लक्षणों पर टिक लगाएं। हमारा एआई सिस्टम तुरंत बीमारी और जोखिम स्तर का सटीक आकलन करता है।",
+        theme: "app_demo",
+        activeTab: "triage"
       },
       {
         id: 4,
-        start: 30,
-        end: 40,
-        title: "Scene 4 • लाभ व बचाव (Benefits & Prevention)",
-        bannerText: "स्वस्थ पशु, सुरक्षित किसान",
-        voiceover: "समय पर जानकारी से बीमारी को फैलने से रोका जा सकता है, पशुओं की सुरक्षा बढ़ती है और किसानों का नुकसान कम होता है।",
-        theme: "healthy"
+        start: 42,
+        end: 56,
+        title: "Scene 4 • जीआईएस मैप व डॉक्टर को अलर्ट (GIS Map & Auto Alert)",
+        bannerText: "डॉक्टर को स्वतः सूचना ➔ जीआईएस नक्शे पर 10 किमी सुरक्षा घेरा सक्रिय",
+        voiceover: "चरण 2: रिपोर्ट दर्ज होते ही नजदीकी पशु चिकित्सा अधिकारी को फोन पर तुरंत एसएमएस और अलर्ट पहुंच जाता है। साथ ही जीआईएस नक्शे पर 10 किलोमीटर का सुरक्षा घेरा सक्रिय हो जाता है।",
+        theme: "app_demo",
+        activeTab: "map"
       },
       {
         id: 5,
-        start: 40,
-        end: 45,
-        title: "Scene 5 • कार्रवाई (Call to Action)",
-        bannerText: "PashuSuraksha — Detect Early • Protect Livestock",
-        voiceover: "PashuSuraksha — बीमारी की पहचान जल्दी, कार्रवाई सही समय पर।",
-        theme: "outro"
+        start: 56,
+        end: 67,
+        title: "Scene 5 • पशु स्वास्थ्य रिकॉर्ड व 1962 हेल्पलाइन (EHR & 1962 Hotline)",
+        bannerText: "ई-स्वास्थ्य कार्ड (EHR) • 12-अंकीय टैग • टोल-फ्री हेल्पलाइन 1962",
+        voiceover: "चरण 3: 'Animal EHR' में पशु का 12-अंकों का टैग नंबर दर्ज करके उसका टीकाकरण और उपचार इतिहास कभी भी देखें। बिना स्मार्टफोन वाले किसान 1962 टोल-फ्री हेल्पलाइन पर भी कॉल कर सकते हैं।",
+        theme: "healthy",
+        activeTab: "ehr"
+      },
+      {
+        id: 6,
+        start: 67,
+        end: 75,
+        title: "Scene 6 • कार्रवाई (Protect Your Herd - Call to Action)",
+        bannerText: "PashuSuraksha — Detect Early • Protect Livestock • Empower Farmers",
+        voiceover: "PashuSuraksha – बीमारी की पहचान जल्दी, कार्रवाई सही समय पर। अभी ऊपर दिए गए 'लक्षण दर्ज करें' बटन पर क्लिक करें और अपने पशुधन को सुरक्षित बनाएं।",
+        theme: "outro",
+        activeTab: "action"
       }
     ];
   }
@@ -342,7 +357,7 @@ class FarmerVideoPlayer {
       const scene = this.getCurrentScene();
       const chordList = scene.theme === 'gloomy' ? gloomyChords : upliftingChords;
       const freq = chordList[noteIdx % chordList.length];
-      this.playAcousticNote(freq, scene.theme === 'gloomy' ? 0.035 : 0.06);
+      this.playAcousticNote(freq, scene.theme === 'gloomy' ? 0.035 : 0.055);
       noteIdx++;
     }, 450);
   }
@@ -398,7 +413,7 @@ class FarmerVideoPlayer {
 
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = 'hi-IN';
-      utter.rate = 0.92;
+      utter.rate = 0.94; // slightly natural educational pace
       utter.pitch = 1.05;
 
       const voices = window.speechSynthesis.getVoices();
@@ -434,23 +449,27 @@ class FarmerVideoPlayer {
 
     ctx.clearRect(0, 0, w, h);
 
-    if (time < 8) {
+    if (time < 12) {
       this.renderScene1_Problem(ctx, w, h, time);
-    } else if (time < 15) {
-      this.renderScene2_Intro(ctx, w, h, time - 8);
-    } else if (time < 30) {
-      this.renderScene3_HowItWorks(ctx, w, h, time - 15);
-    } else if (time < 40) {
-      this.renderScene4_Benefits(ctx, w, h, time - 30);
+    } else if (time < 24) {
+      this.renderScene2_PortalIntro(ctx, w, h, time - 12);
+    } else if (time < 42) {
+      this.renderScene3_LiveTriage(ctx, w, h, time - 24);
+    } else if (time < 56) {
+      this.renderScene4_LiveMapAndAlert(ctx, w, h, time - 42);
+    } else if (time < 67) {
+      this.renderScene5_EHRAndHotline(ctx, w, h, time - 56);
     } else {
-      this.renderScene5_Outro(ctx, w, h, time - 40);
+      this.renderScene6_Outro(ctx, w, h, time - 67);
     }
 
     // Video HUD Bottom Scrubber line
     this.renderVideoHUD(ctx, w, h, time);
   }
 
-  // SCENE 1 (0-8s): The Problem - Rural Barn, Worried Farmer, Sick Cow
+  // =========================================================================
+  // SCENE 1 (0-12s): The Problem - Barn, Worried Farmer, Sick Cow
+  // =========================================================================
   renderScene1_Problem(ctx, w, h, t) {
     // Dim rustic barn background
     const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
@@ -476,8 +495,8 @@ class FarmerVideoPlayer {
     ctx.fillStyle = '#713f12';
     ctx.fillRect(0, h * 0.75, w, h * 0.25);
     ctx.fillStyle = '#ca8a04';
-    for (let i = 0; i < 30; i++) {
-      ctx.fillRect((i * 28 + (t * 2)) % w, h * 0.78 + (i % 5) * 4, 18, 3);
+    for (let i = 0; i < 35; i++) {
+      ctx.fillRect((i * 30 + (t * 2)) % w, h * 0.78 + (i % 5) * 4, 20, 3);
     }
 
     // Worried Farmer (Left)
@@ -490,11 +509,11 @@ class FarmerVideoPlayer {
     // Sweat drop / worry animation
     if (Math.sin(t * 3) > 0) {
       ctx.font = Math.round(h * 0.08) + "px system-ui, sans-serif";
-      ctx.fillText('💧', farmerX + 28, farmerY - 70);
+      ctx.fillText('💧', farmerX + 32, farmerY - 75);
     }
 
     // Sick Cow (Right)
-    const cowX = w * 0.65;
+    const cowX = w * 0.66;
     const cowY = h * 0.68;
     ctx.font = Math.round(h * 0.36) + "px system-ui, sans-serif";
     ctx.fillText('🐄', cowX, cowY);
@@ -504,15 +523,16 @@ class FarmerVideoPlayer {
     ctx.strokeStyle = "rgba(225, 29, 72, " + (0.5 + pulse * 0.5) + ")";
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.arc(cowX - 35, cowY - 80, 15 + pulse * 10, 0, Math.PI * 2);
-    ctx.arc(cowX + 25, cowY - 50, 18 + pulse * 12, 0, Math.PI * 2);
+    ctx.arc(cowX - 45, cowY - 90, 16 + pulse * 10, 0, Math.PI * 2);
+    ctx.arc(cowX + 30, cowY - 55, 20 + pulse * 12, 0, Math.PI * 2);
     ctx.stroke();
 
     // Nodules tag
     ctx.fillStyle = 'rgba(225, 29, 72, 0.95)';
     ctx.font = "bold " + Math.round(h * 0.045) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-    ctx.fillText('⚠️ त्वचा पर गांठें (Skin Nodules)', cowX + 25, cowY - 105);
-    ctx.fillText('📉 दूध उत्पादन में गिरावट (Low Milk)', cowX - 50, cowY + 25);
+    ctx.fillText('⚠️ त्वचा पर गांठें (Skin Nodules)', cowX + 30, cowY - 110);
+    ctx.fillText('📉 दूध उत्पादन में गिरावट (Low Milk)', cowX - 60, cowY + 28);
+    ctx.fillText('🌡️ तेज बुखार >104°F (High Fever)', cowX + 10, cowY + 50);
 
     // Empty Milk Can
     ctx.font = Math.round(h * 0.12) + "px system-ui, sans-serif";
@@ -522,189 +542,466 @@ class FarmerVideoPlayer {
     this.renderVignette(ctx, w, h, 'rgba(15, 23, 42, 0.45)');
 
     // Cinematic Banner Text
-    this.renderSceneTitleBanner(ctx, w, h, 'Scene 1 • समस्या की गंभीरता (The Problem)', 'बीमारी की जल्दी पहचान, पशुधन की बेहतर सुरक्षा');
+    this.renderSceneTitleBanner(ctx, w, h, 'Scene 1 • समस्या की पहचान (The Problem)', 'बीमारी की जल्दी पहचान, पशुधन की संपूर्ण सुरक्षा');
   }
 
-  // SCENE 2 (8-15s): Introducing PashuSuraksha - Golden Sun, Hopeful Farmer, Mobile App
-  renderScene2_Intro(ctx, w, h, t) {
-    // Golden sunrise over green pastures
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
-    bgGrad.addColorStop(0, '#fef08a');
-    bgGrad.addColorStop(0.35, '#fed7aa');
-    bgGrad.addColorStop(0.65, '#bbf7d0');
-    bgGrad.addColorStop(1, '#15803d');
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, w, h);
+  // =========================================================================
+  // SCENE 2 (12-24s): Meet PashuSuraksha Portal & Interface
+  // =========================================================================
+  renderScene2_PortalIntro(ctx, w, h, t) {
+    // Draw realistic PashuSuraksha browser frame in background
+    this.drawBrowserChrome(ctx, w, h, 'home', t);
 
-    // Rising Sun with gentle rays
-    ctx.fillStyle = '#f59e0b';
-    ctx.beginPath();
-    ctx.arc(w * 0.5, h * 0.38, 65, 0, Math.PI * 2);
+    // Spotlight overlay on the navigation tabs
+    const spotX = w * 0.5;
+    const spotY = 82;
+    ctx.strokeStyle = 'rgba(52, 211, 153, 0.85)';
+    ctx.lineWidth = 3;
+    this.roundRect(ctx, w * 0.08, 64, w * 0.84, 38, 8);
+    ctx.stroke();
+
+    // Guide callout pointing to navigation
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+    this.roundRect(ctx, w * 0.2, 115, w * 0.6, 52, 10);
     ctx.fill();
-
-    ctx.strokeStyle = 'rgba(245, 158, 11, 0.25)';
-    ctx.lineWidth = 4;
-    for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 8) {
-      const rx1 = w * 0.5 + Math.cos(angle + t * 0.2) * 80;
-      const ry1 = h * 0.38 + Math.sin(angle + t * 0.2) * 80;
-      const rx2 = w * 0.5 + Math.cos(angle + t * 0.2) * 140;
-      const ry2 = h * 0.38 + Math.sin(angle + t * 0.2) * 140;
-      ctx.beginPath();
-      ctx.moveTo(rx1, ry1);
-      ctx.lineTo(rx2, ry2);
-      ctx.stroke();
-    }
-
-    // Smiling Farmer holding smartphone
-    ctx.font = Math.round(h * 0.34) + "px system-ui, sans-serif";
-    ctx.textAlign = 'center';
-    ctx.fillText('👨‍🌾', w * 0.26, h * 0.72);
-
-    // Modern smartphone frame in center
-    const phoneW = Math.round(w * 0.32);
-    const phoneH = Math.round(h * 0.62);
-    const phoneX = w * 0.50;
-    const phoneY = h * 0.18;
-
-    // Phone body
-    ctx.fillStyle = '#0f172a';
-    this.roundRect(ctx, phoneX, phoneY, phoneW, phoneH, 18);
-    ctx.fill();
-
-    // Phone screen glow
-    const screenGrad = ctx.createLinearGradient(phoneX, phoneY, phoneX, phoneY + phoneH);
-    screenGrad.addColorStop(0, '#0f766e');
-    screenGrad.addColorStop(1, '#064e3b');
-    ctx.fillStyle = screenGrad;
-    this.roundRect(ctx, phoneX + 8, phoneY + 12, phoneW - 16, phoneH - 24, 12);
-    ctx.fill();
-
-    // On-screen Logo & Emblem
-    ctx.font = Math.round(phoneH * 0.22) + "px system-ui, sans-serif";
-    ctx.fillText('🛡️🐄', phoneX + phoneW / 2, phoneY + phoneH * 0.38);
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = "bold " + Math.round(phoneH * 0.09) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-    ctx.fillText('PashuSuraksha', phoneX + phoneW / 2, phoneY + phoneH * 0.55);
-
-    ctx.fillStyle = '#a7f3d0';
-    ctx.font = Math.round(phoneH * 0.052) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-    ctx.fillText('पशु स्वास्थ्य सुरक्षा तंत्र', phoneX + phoneW / 2, phoneY + phoneH * 0.65);
-
-    ctx.fillStyle = '#34d399';
-    this.roundRect(ctx, phoneX + 24, phoneY + phoneH * 0.74, phoneW - 48, 26, 6);
-    ctx.fill();
-    ctx.fillStyle = '#064e3b';
-    ctx.font = "bold " + Math.round(phoneH * 0.05) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-    ctx.fillText('⚡ 1-Click Triage', phoneX + phoneW / 2, phoneY + phoneH * 0.79);
-
-    this.renderSceneTitleBanner(ctx, w, h, 'Scene 2 • समाधान का शुभारंभ (Introducing PashuSuraksha)', 'PashuSuraksha (पशु सुरक्षा) — स्मार्ट प्लेटफ़ॉर्म');
-  }
-
-  // SCENE 3 (15-30s): How It Works - Animal Selection, Symptoms, AI Assessment, Vet Notification
-  renderScene3_HowItWorks(ctx, w, h, t) {
-    // Clean high-tech dashboard background
-    ctx.fillStyle = '#091522';
-    ctx.fillRect(0, 0, w, h);
-
-    // Subtle grid
-    ctx.strokeStyle = 'rgba(15, 118, 110, 0.15)';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < w; x += 40) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, h);
-      ctx.stroke();
-    }
-    for (let y = 0; y < h; y += 40) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y);
-      ctx.stroke();
-    }
-
-    // 3 Workflow Steps Card Layout
-    const step = Math.min(2, Math.floor(t / 5)); // 0: Select, 1: Symptoms, 2: Alert
-
-    // Step 1 Box: Select Animal (Left)
-    const cardW = w * 0.28;
-    const cardH = h * 0.55;
-    const yPos = h * 0.24;
-
-    this.renderWorkflowCard(ctx, w * 0.05, yPos, cardW, cardH, '1. पशु चुनें (Select)', ['🐄 Cattle (गाय)', '🐃 Buffalo (भैंस)', '🐐 Goat (बकरी)', '🐑 Sheep (भेड़)'], step >= 0);
-
-    // Step 2 Box: Symptoms (Center)
-    this.renderWorkflowCard(ctx, w * 0.36, yPos, cardW, cardH, '2. लक्षण दर्ज करें (Symptoms)', ['✓ मुंह में छाले (Blisters)', '✓ त्वचा पर गांठें (Nodules)', '✓ तेज बुखार (Fever >104°)', '✓ लंगड़ाना (Lameness)'], step >= 1);
-
-    // Step 3 Box: AI Risk & Vet Notification (Right)
-    this.renderRiskAlertCard(ctx, w * 0.67, yPos, cardW, cardH, t, step >= 2);
-
-    // Connecting arrows between steps
-    ctx.strokeStyle = '#0f766e';
-    ctx.lineWidth = 4;
-    this.drawArrow(ctx, w * 0.33, yPos + cardH / 2, w * 0.36, yPos + cardH / 2);
-    this.drawArrow(ctx, w * 0.64, yPos + cardH / 2, w * 0.67, yPos + cardH / 2);
-
-    // Process Ribbon Header
-    this.renderSceneTitleBanner(ctx, w, h, 'Scene 3 • कैसे काम करता है? (How It Works)', 'लक्षण दर्ज करें ➔ जोखिम पहचानें ➔ समय पर सहायता प्राप्त करें');
-  }
-
-  // SCENE 4 (30-40s): Benefits & Prevention - Vet Care, Tagging, Healthy Herd
-  renderScene4_Benefits(ctx, w, h, t) {
-    // Lush green meadow with blue sky
-    const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
-    bgGrad.addColorStop(0, '#38bdf8');
-    bgGrad.addColorStop(0.4, '#bae6fd');
-    bgGrad.addColorStop(0.42, '#22c55e');
-    bgGrad.addColorStop(1, '#15803d');
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, w, h);
-
-    // Pastoral hill curve
-    ctx.fillStyle = '#16a34a';
-    ctx.beginPath();
-    ctx.ellipse(w * 0.3, h * 0.65, w * 0.45, h * 0.28, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Vet Doctor Arriving & Treating (Left-Center)
-    ctx.font = Math.round(h * 0.28) + "px system-ui, sans-serif";
-    ctx.textAlign = 'center';
-    ctx.fillText('🩺👨‍⚕️', w * 0.32, h * 0.68);
-
-    // Healthy Cattle & Calf (Center-Right)
-    ctx.font = Math.round(h * 0.34) + "px system-ui, sans-serif";
-    ctx.fillText('🐄', w * 0.62, h * 0.7);
-    ctx.font = Math.round(h * 0.22) + "px system-ui, sans-serif";
-    ctx.fillText('🐂', w * 0.82, h * 0.74);
-
-    // Tagging / Vaccination Shield Badge above cattle
-    const badgeY = h * 0.32 + Math.sin(t * 3) * 6;
-    ctx.fillStyle = '#ffffff';
-    this.roundRect(ctx, w * 0.52, badgeY, w * 0.34, 44, 8);
-    ctx.fill();
-    ctx.strokeStyle = '#16a34a';
+    ctx.strokeStyle = '#34d399';
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    ctx.fillStyle = '#15803d';
-    ctx.font = "bold " + Math.round(h * 0.045) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-    ctx.fillText('🛡️ प्रमाणित टीकाकृत (Vaccinated)', w * 0.69, badgeY + 28);
-
-    // Flying sparkles of health
+    ctx.textAlign = 'center';
     ctx.fillStyle = '#fef08a';
-    for (let i = 0; i < 8; i++) {
-      const sx = w * 0.5 + Math.sin(t * 2 + i) * 120;
-      const sy = h * 0.5 + Math.cos(t * 3 + i) * 60;
-      ctx.beginPath();
-      ctx.arc(sx, sy, 3 + (i % 3), 0, Math.PI * 2);
-      ctx.fill();
-    }
+    ctx.font = "bold " + Math.round(h * 0.04) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('👆 मुख्य नेविगेशन बार: सभी 8 सुविधाएं 1-क्लिक में उपलब्ध', w * 0.5, 137);
+    ctx.fillStyle = '#a7f3d0';
+    ctx.font = Math.round(h * 0.034) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('GIS आउटब्रेक मैप • एआई विज़न लेंस • रैपिड सिंड्रोमिक रिपोर्ट • पशु स्वास्थ्य कार्ड (EHR)', w * 0.5, 157);
 
-    this.renderSceneTitleBanner(ctx, w, h, 'Scene 4 • लाभ और रोकथाम (Benefits & Prevention)', 'स्वस्थ पशु, सुरक्षित किसान — नुकसान से संपूर्ण बचाव');
+    // Farmer avatar at bottom left demonstrating the website
+    ctx.font = Math.round(h * 0.22) + "px system-ui, sans-serif";
+    ctx.textAlign = 'center';
+    ctx.fillText('👨‍🌾', w * 0.15, h * 0.82);
+
+    // Speech bubble for farmer
+    ctx.fillStyle = '#0f766e';
+    this.roundRect(ctx, w * 0.24, h * 0.64, w * 0.65, 75, 12);
+    ctx.fill();
+    ctx.strokeStyle = '#34d399';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = "bold " + Math.round(h * 0.042) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('💡 "मोबाइल या कंप्यूटर पर खोलें: pashusuraksha.gov.in"', w * 0.26, h * 0.70);
+    ctx.fillStyle = '#fef08a';
+    ctx.font = Math.round(h * 0.036) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('पशुपालकों और चिकित्सकों के लिए 24/7 निःशुल्क डिजिटल स्वास्थ्य मंच', w * 0.26, h * 0.74);
+
+    // Animated mouse cursor gliding towards the Triage tab
+    const curX = w * 0.5 + Math.sin(t * 1.5) * 120;
+    const curY = 82;
+    this.drawCursor(ctx, curX, curY, Math.sin(t * 3) > 0.5);
+
+    this.renderSceneTitleBanner(ctx, w, h, 'Scene 2 • पोर्टल का परिचय (Meet PashuSuraksha)', 'PashuSuraksha (पशु सुरक्षा) — स्मार्ट डिजिटल मंच');
   }
 
-  // SCENE 5 (40-45s): Ending & Call to Action - Centered Emblem, Dual Slogan
-  renderScene5_Outro(ctx, w, h, t) {
+  // =========================================================================
+  // SCENE 3 (24-42s): Live Demo - Rapid Syndromic Report & AI Triage
+  // =========================================================================
+  renderScene3_LiveTriage(ctx, w, h, t) {
+    // Background website screen with active triage tab
+    this.drawBrowserChrome(ctx, w, h, 'triage', t);
+
+    const mainY = 110;
+    const cardH = h - mainY - 25;
+
+    // LEFT CARD: Triage Form
+    const leftW = w * 0.46;
+    const leftX = w * 0.03;
+    ctx.fillStyle = '#0f172a';
+    this.roundRect(ctx, leftX, mainY, leftW, cardH, 10);
+    ctx.fill();
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Form Header
+    ctx.fillStyle = '#10b981';
+    ctx.font = "bold " + Math.round(h * 0.045) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.textAlign = 'left';
+    ctx.fillText('⚡ 1. पशु व लक्षण चयन (Symptom Report)', leftX + 16, mainY + 28);
+
+    // Animal Selector
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = "600 " + Math.round(h * 0.032) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('पशु की प्रजाति (Species):', leftX + 16, mainY + 54);
+
+    // Species button selected
+    ctx.fillStyle = '#0f766e';
+    this.roundRect(ctx, leftX + 16, mainY + 62, 130, 32, 6);
+    ctx.fill();
+    ctx.strokeStyle = '#34d399';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = "bold " + Math.round(h * 0.035) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('🐄 गाय (Cattle)', leftX + 26, mainY + 83);
+
+    // Unselected species
+    ctx.fillStyle = '#1e293b';
+    this.roundRect(ctx, leftX + 154, mainY + 62, 110, 32, 6);
+    ctx.fill();
+    ctx.fillStyle = '#64748b';
+    ctx.fillText('🐃 भैंस (Buffalo)', leftX + 162, mainY + 83);
+
+    // Symptoms checkboxes list
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = "600 " + Math.round(h * 0.032) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('दिखाई देने वाले लक्षण (Check Symptoms):', leftX + 16, mainY + 116);
+
+    const symptoms = [
+      { text: 'मुंह में छाले व लार (Mouth Vesicles/Saliva)', checked: t >= 3 },
+      { text: 'त्वचा पर गांठें (Skin Nodules / Lumps)', checked: t >= 6 },
+      { text: 'तेज बुखार >104°F (High Fever)', checked: t >= 9 },
+      { text: 'लंगड़ाना व खुर में घाव (Hoof Lesions)', checked: t >= 12 }
+    ];
+
+    symptoms.forEach((sym, idx) => {
+      const rowY = mainY + 130 + idx * 36;
+      ctx.fillStyle = sym.checked ? '#064e3b' : '#1e293b';
+      this.roundRect(ctx, leftX + 16, rowY, leftW - 32, 30, 6);
+      ctx.fill();
+      ctx.strokeStyle = sym.checked ? '#34d399' : '#334155';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Checkbox square
+      ctx.fillStyle = sym.checked ? '#10b981' : '#334155';
+      this.roundRect(ctx, leftX + 24, rowY + 6, 18, 18, 4);
+      ctx.fill();
+      if (sym.checked) {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = "bold 14px system-ui";
+        ctx.fillText('✓', leftX + 28, rowY + 20);
+      }
+
+      ctx.fillStyle = sym.checked ? '#ffffff' : '#94a3b8';
+      ctx.font = "500 " + Math.round(h * 0.032) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+      ctx.fillText(sym.text, leftX + 50, rowY + 20);
+    });
+
+    // Run AI Diagnosis Button
+    const btnY = mainY + cardH - 52;
+    const isClicked = t >= 14;
+    ctx.fillStyle = isClicked ? '#059669' : '#10b981';
+    this.roundRect(ctx, leftX + 16, btnY, leftW - 32, 40, 8);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = "bold " + Math.round(h * 0.04) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.textAlign = 'center';
+    ctx.fillText('⚡ एआई जोखिम जांच (Run Instant AI Diagnosis)', leftX + leftW / 2, btnY + 26);
+
+    // RIGHT CARD: AI Diagnostic Assessment Result
+    const rightW = w * 0.46;
+    const rightX = w * 0.51;
+
+    ctx.fillStyle = '#0f172a';
+    this.roundRect(ctx, rightX, mainY, rightW, cardH, 10);
+    ctx.fill();
+    ctx.strokeStyle = t >= 14 ? '#ef4444' : '#334155';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = "bold " + Math.round(h * 0.045) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('🤖 2. एआई विश्लेषण परिणाम (AI Assessment)', rightX + 16, mainY + 28);
+
+    if (t < 14) {
+      // Waiting state
+      ctx.fillStyle = '#64748b';
+      ctx.font = Math.round(h * 0.04) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+      ctx.fillText('लक्षण चुनकर "एआई जांच" बटन दबाएं...', rightX + 20, mainY + 120);
+    } else {
+      // Real-time AI Result Revealed
+      // Red Alert Card
+      ctx.fillStyle = '#450a0a';
+      this.roundRect(ctx, rightX + 16, mainY + 45, rightW - 32, 58, 8);
+      ctx.fill();
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#f87171';
+      ctx.font = "bold " + Math.round(h * 0.044) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+      ctx.fillText('🚨 अति गंभीर जोखिम: FMD (खुरपका) / LSD', rightX + 26, mainY + 70);
+
+      // Confidence bar
+      ctx.fillStyle = '#ffffff';
+      ctx.font = "600 " + Math.round(h * 0.032) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+      ctx.fillText('एआई डायग्नोसिस सटीकता (AI Confidence): 94%', rightX + 26, mainY + 92);
+
+      // 10km containment ring trigger badge
+      ctx.fillStyle = '#7f1d1d';
+      this.roundRect(ctx, rightX + 16, mainY + 112, rightW - 32, 42, 6);
+      ctx.fill();
+      ctx.fillStyle = '#fef08a';
+      ctx.font = "bold " + Math.round(h * 0.034) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+      ctx.fillText('⚠️ 10 किमी बायो-सिक्योरिटी घेरा स्वतः सक्रिय किया गया', rightX + 26, mainY + 138);
+
+      // Immediate First Aid instructions
+      ctx.fillStyle = '#1e293b';
+      this.roundRect(ctx, rightX + 16, mainY + 162, rightW - 32, cardH - 180, 8);
+      ctx.fill();
+
+      ctx.fillStyle = '#34d399';
+      ctx.font = "bold " + Math.round(h * 0.036) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+      ctx.fillText('📋 तत्काल प्राथमिक उपचार (Immediate Action):', rightX + 26, mainY + 188);
+
+      const aids = [
+        '1. बीमार पशु को तुरंत बाकी झुंड से अलग करें',
+        '2. मुंह व खुरों के घावों को लाल दवा (KMnO4) से धोएं',
+        '3. पशु चिकित्सक को स्वतः सूचना भेज दी गई है'
+      ];
+      aids.forEach((aid, i) => {
+        ctx.fillStyle = '#f1f5f9';
+        ctx.font = "500 " + Math.round(h * 0.032) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+        ctx.fillText(aid, rightX + 26, mainY + 214 + i * 26);
+      });
+    }
+
+    // Cursor clicking the diagnosis button at t = 13s
+    if (t >= 11 && t < 15) {
+      this.drawCursor(ctx, leftX + leftW / 2, btnY + 20, true);
+    }
+
+    this.renderSceneTitleBanner(ctx, w, h, 'Scene 3 • लाइव डेमो: लक्षण व एआई जांच (AI Triage)', 'लक्षण दर्ज करें ➔ जोखिम पहचानें ➔ समय पर सहायता प्राप्त करें');
+  }
+
+  // =========================================================================
+  // SCENE 4 (42-56s): GIS Outbreak Map & Automatic Vet Alert
+  // =========================================================================
+  renderScene4_LiveMapAndAlert(ctx, w, h, t) {
+    // Browser chrome with active GIS Map tab
+    this.drawBrowserChrome(ctx, w, h, 'map', t);
+
+    const mainY = 110;
+    const cardH = h - mainY - 25;
+
+    // GIS Map viewport
+    ctx.fillStyle = '#0b192c';
+    this.roundRect(ctx, w * 0.03, mainY, w * 0.94, cardH, 12);
+    ctx.fill();
+    ctx.strokeStyle = '#0f766e';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Simulated GIS Map Terrain Grid & Rivers
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.12)';
+    ctx.lineWidth = 1;
+    for (let x = w * 0.05; x < w * 0.95; x += 45) {
+      ctx.beginPath(); ctx.moveTo(x, mainY); ctx.lineTo(x, mainY + cardH); ctx.stroke();
+    }
+    for (let y = mainY; y < mainY + cardH; y += 45) {
+      ctx.beginPath(); ctx.moveTo(w * 0.05, y); ctx.lineTo(w * 0.95, y); ctx.stroke();
+    }
+
+    // State / District borders
+    ctx.strokeStyle = '#1e3a8a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(w * 0.15, mainY + 50);
+    ctx.lineTo(w * 0.45, mainY + 120);
+    ctx.lineTo(w * 0.85, mainY + 80);
+    ctx.stroke();
+
+    // Map District Labels
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = "bold 13px system-ui";
+    ctx.fillText('📍 बीकानेर (Bikaner)', w * 0.2, mainY + 90);
+    ctx.fillText('📍 जोधपुर (Jodhpur)', w * 0.35, mainY + 260);
+    ctx.fillText('📍 नागौर (Nagaur)', w * 0.65, mainY + 220);
+
+    // Active Outbreak Epicenter
+    const epiX = w * 0.48;
+    const epiY = mainY + cardH * 0.55;
+    const pulse = Math.abs(Math.sin(t * 3));
+
+    // 10km Glowing Containment Ring
+    ctx.strokeStyle = "rgba(239, 68, 68, " + (0.4 + pulse * 0.5) + ")";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(epiX, epiY, 65 + pulse * 18, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(239, 68, 68, 0.15)';
+    ctx.beginPath();
+    ctx.arc(epiX, epiY, 65 + pulse * 18, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Ring Label
+    ctx.fillStyle = '#fee2e2';
+    ctx.font = "bold 12px system-ui";
+    ctx.textAlign = 'center';
+    ctx.fillText('🔴 10 KM सुरक्षा घेरा (Containment Zone)', epiX, epiY - 90);
+
+    // Village outbreak pin
+    ctx.font = "32px system-ui";
+    ctx.fillText('🚩', epiX, epiY);
+
+    // Doctor jeep moving toward village
+    const docX = w * 0.22 + (t / 14) * (epiX - w * 0.26);
+    const docY = mainY + 170 + (t / 14) * (epiY - mainY - 170);
+    ctx.font = "30px system-ui";
+    ctx.fillText('🚑👨‍⚕️', docX, docY);
+
+    // Top Right: Automatic SMS Toast Notification
+    const toastW = 340;
+    const toastH = 88;
+    const toastX = w * 0.97 - toastW;
+    const toastY = mainY + 14;
+
+    ctx.fillStyle = '#064e3b';
+    this.roundRect(ctx, toastX, toastY, toastW, toastH, 10);
+    ctx.fill();
+    ctx.strokeStyle = '#34d399';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#34d399';
+    ctx.font = "bold 14px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('📲 पशु चिकित्सक को स्वतः SMS अलर्ट प्रेषित', toastX + 14, toastY + 26);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = "500 12px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('डॉ. सुनील (DVO) को आपातकालीन अलर्ट भेजा गया', toastX + 14, toastY + 48);
+    ctx.fillStyle = '#fef08a';
+    ctx.fillText('पशु चिकित्सा दल 20 मिनट में मौके पर पहुंच रहा है।', toastX + 14, toastY + 68);
+
+    this.renderSceneTitleBanner(ctx, w, h, 'Scene 4 • जीआईएस आउटब्रेक मैप व डॉक्टर अलर्ट (GIS Surveillance)', 'डॉक्टर को स्वतः सूचना ➔ जीआईएस नक्शे पर 10 किमी सुरक्षा घेरा सक्रिय');
+  }
+
+  // =========================================================================
+  // SCENE 5 (56-67s): Animal EHR Passport & 1962 IVR Hotline
+  // =========================================================================
+  renderScene5_EHRAndHotline(ctx, w, h, t) {
+    // Browser chrome with active EHR tab
+    this.drawBrowserChrome(ctx, w, h, 'ehr', t);
+
+    const mainY = 110;
+    const cardH = h - mainY - 25;
+
+    // LEFT CARD: Digital Animal Health Passport
+    const leftW = w * 0.46;
+    const leftX = w * 0.03;
+
+    ctx.fillStyle = '#0f172a';
+    this.roundRect(ctx, leftX, mainY, leftW, cardH, 12);
+    ctx.fill();
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#10b981';
+    ctx.font = "bold " + Math.round(h * 0.042) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('📋 पशु डिजिटल स्वास्थ्य कार्ड (Animal EHR)', leftX + 18, mainY + 30);
+
+    // Tag Card Header
+    ctx.fillStyle = '#1e293b';
+    this.roundRect(ctx, leftX + 18, mainY + 46, leftW - 36, 56, 8);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = "bold 13px monospace";
+    ctx.fillText('12-DIGIT EAR TAG ID:', leftX + 28, mainY + 68);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = "bold 18px monospace";
+    ctx.fillText('#100982347101', leftX + 28, mainY + 92);
+
+    // Barcode representation
+    for (let b = 0; b < 16; b++) {
+      ctx.fillStyle = b % 3 === 0 ? '#38bdf8' : '#ffffff';
+      ctx.fillRect(leftX + leftW - 130 + b * 6, mainY + 58, 3, 32);
+    }
+
+    // Official Certified Vaccinated Badge
+    ctx.fillStyle = '#064e3b';
+    this.roundRect(ctx, leftX + 18, mainY + 114, leftW - 36, 46, 8);
+    ctx.fill();
+    ctx.strokeStyle = '#34d399';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = '#a7f3d0';
+    ctx.font = "bold 14px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('🛡️ प्रमाणित टीकाकृत (Verified Vaccinated)', leftX + 30, mainY + 142);
+
+    // Cattle Details
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = "500 13px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('प्रजाति: गीर गाय (Gir Cattle) • 4 वर्ष', leftX + 20, mainY + 185);
+    ctx.fillText('पशुपालक: रमेश पटेल (Ramesh Patel)', leftX + 20, mainY + 210);
+    ctx.fillText('दैनिक दुग्ध उत्पादन: 14 लीटर/दिन (Healthy)', leftX + 20, mainY + 235);
+    ctx.fillText('टीकाकरण: FMD Booster (खुरपका टीका 15-Aug)', leftX + 20, mainY + 260);
+
+    // RIGHT CARD: 1962 Toll-Free Hotline
+    const rightW = w * 0.46;
+    const rightX = w * 0.51;
+
+    ctx.fillStyle = '#0f172a';
+    this.roundRect(ctx, rightX, mainY, rightW, cardH, 12);
+    ctx.fill();
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = "bold " + Math.round(h * 0.042) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('📞 1962 टोल-फ्री हेल्पलाइन (IVR Hotline)', rightX + 18, mainY + 30);
+
+    // Phone graphic
+    ctx.font = "50px system-ui";
+    ctx.textAlign = 'center';
+    ctx.fillText('☎️', rightX + rightW * 0.25, mainY + 110);
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = "bold 16px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('बिना स्मार्टफोन वाले किसानों के लिए:', rightX + rightW * 0.42, mainY + 80);
+    ctx.fillStyle = '#fef08a';
+    ctx.font = "bold 20px monospace";
+    ctx.fillText('डायल करें: 1962', rightX + rightW * 0.42, mainY + 112);
+
+    // Voice instructions
+    ctx.fillStyle = '#1e293b';
+    this.roundRect(ctx, rightX + 18, mainY + 140, rightW - 36, cardH - 156, 8);
+    ctx.fill();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = "bold 13px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('🎙️ बोलकर लक्षण दर्ज कराएं:', rightX + 28, mainY + 168);
+
+    const ivrSteps = [
+      '1. अपने फोन से 1962 मिलाएं',
+      '2. अपनी भाषा चुनें (हिंदी के लिए 1 दबाएं)',
+      '3. पशु और लक्षण बोलकर बताएं',
+      '4. नजदीकी डॉक्टर तुरंत सहायता करेंगे'
+    ];
+    ivrSteps.forEach((st, i) => {
+      ctx.fillStyle = '#f1f5f9';
+      ctx.font = "500 12px 'Plus Jakarta Sans', system-ui, sans-serif";
+      ctx.fillText(st, rightX + 28, mainY + 195 + i * 24);
+    });
+
+    this.renderSceneTitleBanner(ctx, w, h, 'Scene 5 • पशु स्वास्थ्य कार्ड व हेल्पलाइन (EHR & 1962)', 'ई-स्वास्थ्य कार्ड (EHR) • 12-अंकीय टैग • टोल-फ्री हेल्पलाइन 1962');
+  }
+
+  // =========================================================================
+  // SCENE 6 (67-75s): Outro & Call to Action
+  // =========================================================================
+  renderScene6_Outro(ctx, w, h, t) {
     // Rich gradient twilight pasture
     const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
     bgGrad.addColorStop(0, '#0f172a');
@@ -716,20 +1013,20 @@ class FarmerVideoPlayer {
     // Central 3D Glowing Shield
     const pulse = 1 + Math.sin(t * 4) * 0.04;
     ctx.save();
-    ctx.translate(w * 0.5, h * 0.34);
+    ctx.translate(w * 0.5, h * 0.32);
     ctx.scale(pulse, pulse);
 
     // Outer glow
-    const glowGrad = ctx.createRadialGradient(0, 0, 10, 0, 0, 120);
-    glowGrad.addColorStop(0, 'rgba(52, 211, 153, 0.4)');
+    const glowGrad = ctx.createRadialGradient(0, 0, 10, 0, 0, 140);
+    glowGrad.addColorStop(0, 'rgba(52, 211, 153, 0.45)');
     glowGrad.addColorStop(1, 'rgba(52, 211, 153, 0)');
     ctx.fillStyle = glowGrad;
     ctx.beginPath();
-    ctx.arc(0, 0, 120, 0, Math.PI * 2);
+    ctx.arc(0, 0, 140, 0, Math.PI * 2);
     ctx.fill();
 
     // Emblem Shield Icon
-    ctx.font = Math.round(h * 0.24) + "px system-ui, sans-serif";
+    ctx.font = Math.round(h * 0.22) + "px system-ui, sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('🛡️🐄', 0, 20);
     ctx.restore();
@@ -738,31 +1035,155 @@ class FarmerVideoPlayer {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#ffffff';
     ctx.font = "bold " + Math.round(h * 0.08) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-    ctx.fillText('PashuSuraksha', w * 0.5, h * 0.60);
+    ctx.fillText('PashuSuraksha (पशु सुरक्षा)', w * 0.5, h * 0.58);
 
-    // Sub-titles
+    // Slogans
     ctx.fillStyle = '#fef08a';
-    ctx.font = "bold " + Math.round(h * 0.048) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-    ctx.fillText('बीमारी की पहचान जल्दी, कार्रवाई सही समय पर।', w * 0.5, h * 0.70);
+    ctx.font = "bold " + Math.round(h * 0.046) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('बीमारी की पहचान जल्दी, कार्रवाई सही समय पर।', w * 0.5, h * 0.68);
 
     ctx.fillStyle = '#a7f3d0';
-    ctx.font = "600 " + Math.round(h * 0.038) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-    ctx.fillText('Detect Early • Protect Livestock • Empower Farmers', w * 0.5, h * 0.78);
+    ctx.font = "600 " + Math.round(h * 0.036) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('Detect Early • Protect Livestock • Empower Farmers Everywhere', w * 0.5, h * 0.76);
 
-    // Interactive CTA button preview
+    // Action CTA Button
+    const btnW = w * 0.38;
+    const btnH = 44;
+    const btnX = w * 0.5 - btnW / 2;
+    const btnY = h * 0.83;
+
     ctx.fillStyle = '#10b981';
-    this.roundRect(ctx, w * 0.32, h * 0.83, w * 0.36, 38, 19);
+    this.roundRect(ctx, btnX, btnY, btnW, btnH, 22);
     ctx.fill();
     ctx.fillStyle = '#064e3b';
     ctx.font = "bold " + Math.round(h * 0.042) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-    ctx.fillText('⚡ अभी रिपोर्ट दर्ज करें (Report Now)', w * 0.5, h * 0.89);
+    ctx.fillText('⚡ अभी लक्षण दर्ज करें (Report Symptoms Now)', w * 0.5, btnY + 29);
+
+    // Animated hand pointer clicking CTA
+    if (t > 3) {
+      this.drawCursor(ctx, w * 0.5 + 40, btnY + 22, true);
+    }
   }
 
-  // ==========================================
-  // HELPER DRAWING METHODS
-  // ==========================================
+  // =========================================================================
+  // BROWSER CHROME MOCKUP BACKGROUND
+  // =========================================================================
+  drawBrowserChrome(ctx, w, h, activeTab, t) {
+    // Window header bar
+    ctx.fillStyle = '#090e17';
+    ctx.fillRect(0, 0, w, 28);
+
+    // Window controls (Red, Yellow, Green dots)
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath(); ctx.arc(16, 14, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#eab308';
+    ctx.beginPath(); ctx.arc(32, 14, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#22c55e';
+    ctx.beginPath(); ctx.arc(48, 14, 5, 0, Math.PI * 2); ctx.fill();
+
+    // Browser URL address bar
+    ctx.fillStyle = '#1e293b';
+    this.roundRect(ctx, 70, 4, w - 140, 20, 5);
+    ctx.fill();
+    ctx.fillStyle = '#34d399';
+    ctx.font = "bold 11px system-ui";
+    ctx.textAlign = 'center';
+    ctx.fillText('🔒 https://pashusuraksha.gov.in (पशु सुरक्षा पोर्टल)', w * 0.5, 18);
+
+    // Top Brand Bar (Pashu Suraksha Header)
+    ctx.fillStyle = '#0f766e';
+    ctx.fillRect(0, 28, w, 36);
+
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = "bold 16px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('🐄 पशु सुरक्षा (Pashu Suraksha)', 16, 52);
+
+    ctx.fillStyle = '#a7f3d0';
+    ctx.font = "500 11px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('Unified Animal Health Surveillance & Early Warning Decision Support', 240, 51);
+
+    // Right User Pill in header
+    ctx.fillStyle = '#064e3b';
+    this.roundRect(ctx, w - 210, 33, 195, 26, 6);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = "bold 11px 'Plus Jakarta Sans', system-ui, sans-serif";
+    ctx.fillText('👨‍⚕️ डॉ. सुनील (DVO) • Online', w - 198, 50);
+
+    // Navigation Tabs Bar
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(0, 64, w, 36);
+
+    const tabs = [
+      { id: 'map', name: '🗺️ Outbreak Map' },
+      { id: 'vision', name: '📸 AI Lens' },
+      { id: 'triage', name: '⚡ Syndromic Report' },
+      { id: 'ehr', name: '📋 Animal EHR' },
+      { id: 'labs', name: '🧪 Labs' },
+      { id: 'ivr', name: '📞 1962 Hotline' }
+    ];
+
+    const tabW = (w - 20) / tabs.length;
+    tabs.forEach((tab, i) => {
+      const tx = 10 + i * tabW;
+      const isActive = tab.id === activeTab;
+
+      if (isActive) {
+        ctx.fillStyle = '#0f766e';
+        this.roundRect(ctx, tx, 68, tabW - 4, 30, 4);
+        ctx.fill();
+        ctx.fillStyle = '#34d399';
+        ctx.fillRect(tx, 96, tabW - 4, 3);
+      }
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = isActive ? '#ffffff' : '#94a3b8';
+      ctx.font = (isActive ? "bold " : "500 ") + "12px 'Plus Jakarta Sans', system-ui, sans-serif";
+      ctx.fillText(tab.name, tx + (tabW - 4) / 2, 88);
+    });
+
+    // Content Background
+    ctx.fillStyle = '#020617';
+    ctx.fillRect(0, 100, w, h - 100);
+  }
+
+  // Helper cursor drawer
+  drawCursor(ctx, x, y, isClicking) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    // Click wave ripple
+    if (isClicking) {
+      ctx.strokeStyle = 'rgba(52, 211, 153, 0.8)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(0, 0, 18, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Cursor arrow
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, 18);
+    ctx.lineTo(5, 14);
+    ctx.lineTo(10, 22);
+    ctx.lineTo(13, 20);
+    ctx.lineTo(8, 12);
+    ctx.lineTo(14, 12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  // Top Scene Title Ribbon
   renderSceneTitleBanner(ctx, w, h, sceneTag, bannerText) {
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
     this.roundRect(ctx, w * 0.08, 14, w * 0.84, 48, 8);
     ctx.fill();
     ctx.strokeStyle = '#0f766e';
@@ -777,79 +1198,6 @@ class FarmerVideoPlayer {
     ctx.fillStyle = '#ffffff';
     ctx.font = "bold " + Math.round(h * 0.042) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
     ctx.fillText(bannerText, w * 0.5, 52);
-  }
-
-  renderWorkflowCard(ctx, x, y, w, h, title, items, active) {
-    ctx.fillStyle = active ? '#1e293b' : '#0f172a';
-    this.roundRect(ctx, x, y, w, h, 10);
-    ctx.fill();
-    ctx.strokeStyle = active ? '#10b981' : '#334155';
-    ctx.lineWidth = active ? 2.5 : 1;
-    ctx.stroke();
-
-    ctx.fillStyle = active ? '#34d399' : '#94a3b8';
-    ctx.font = "bold " + Math.round(h * 0.07) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-    ctx.textAlign = 'left';
-    ctx.fillText(title, x + 14, y + 28);
-
-    items.forEach((item, idx) => {
-      ctx.fillStyle = active ? '#ffffff' : '#64748b';
-      ctx.font = Math.round(h * 0.062) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-      ctx.fillText(item, x + 16, y + 68 + idx * 32);
-    });
-  }
-
-  renderRiskAlertCard(ctx, x, y, w, h, t, active) {
-    ctx.fillStyle = active ? '#1e293b' : '#0f172a';
-    this.roundRect(ctx, x, y, w, h, 10);
-    ctx.fill();
-    ctx.strokeStyle = active ? '#e11d48' : '#334155';
-    ctx.lineWidth = active ? 2.5 : 1;
-    ctx.stroke();
-
-    ctx.textAlign = 'left';
-    ctx.fillStyle = active ? '#f43f5e' : '#94a3b8';
-    ctx.font = "bold " + Math.round(h * 0.07) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-    ctx.fillText('3. एआई जोखिम व सूचना (AI Alert)', x + 14, y + 28);
-
-    if (active) {
-      // Risk meter badge
-      ctx.fillStyle = '#fee2e2';
-      this.roundRect(ctx, x + 14, y + 46, w - 28, 36, 6);
-      ctx.fill();
-      ctx.fillStyle = '#991b1b';
-      ctx.font = "bold " + Math.round(h * 0.055) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-      ctx.fillText('🚨 HIGH RISK: FMD / LSD', x + 24, y + 70);
-
-      // Automatic alert dispatch to DVO
-      ctx.fillStyle = '#dbeafe';
-      this.roundRect(ctx, x + 14, y + 92, w - 28, 55, 6);
-      ctx.fill();
-      ctx.fillStyle = '#1e40af';
-      ctx.font = "bold " + Math.round(h * 0.05) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-      ctx.fillText('📲 पशु चिकित्सक को अलर्ट प्रेषित:', x + 20, y + 114);
-      ctx.font = Math.round(h * 0.045) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-      ctx.fillText('डॉ. सुनील (DVO) को SMS प्रेषित', x + 20, y + 136);
-    } else {
-      ctx.fillStyle = '#64748b';
-      ctx.font = Math.round(h * 0.06) + "px 'Plus Jakarta Sans', system-ui, sans-serif";
-      ctx.fillText('Waiting for symptoms...', x + 16, y + 75);
-    }
-  }
-
-  drawArrow(ctx, x1, y1, x2, y2) {
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-
-    ctx.fillStyle = '#0f766e';
-    ctx.beginPath();
-    ctx.moveTo(x2, y2);
-    ctx.lineTo(x2 - 8, y2 - 5);
-    ctx.lineTo(x2 - 8, y2 + 5);
-    ctx.closePath();
-    ctx.fill();
   }
 
   renderVignette(ctx, w, h, color) {
