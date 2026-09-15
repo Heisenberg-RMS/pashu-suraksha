@@ -129,13 +129,16 @@
               <span data-i18n="map_title">📍 Live Geospatial Surveillance & Containment Rings</span>
             </h2>
             <div style="font-size:0.8rem; color:#64748b;" data-i18n="map_subtitle">
-              Active Layers: Outbreak Clusters • 3km Infected Zones • 10km Surveillance Buffers
+              Active Layers: 📍 Current Location • 🐄 Affected Cattle Markings • 🔴 Outbreak Hotspots • ⭕ 3km Infected Rings • 🟡 10km Surveillance Buffers
             </div>
           </div>
 
-          <!-- All-India Region Quick-Filter Buttons -->
+          <!-- All-India Region & Current Location Filter Bar -->
           <div class="map-region-filter-bar">
-            <button type="button" class="map-region-btn active" data-region="all" onclick="window.MapManager.focusRegion('all')" data-i18n="map_reg_all">
+            <button type="button" class="map-region-btn active" id="btnMapLocateMe" data-region="my-location" onclick="window.MapManager.locateUser(true)" data-i18n="map_reg_my_location">
+              📍 My Location (मेरी स्थिति)
+            </button>
+            <button type="button" class="map-region-btn" data-region="all" onclick="window.MapManager.focusRegion('all')" data-i18n="map_reg_all">
               🇮🇳 All India
             </button>
             <button type="button" class="map-region-btn" data-region="north" onclick="window.MapManager.focusRegion('north')" data-i18n="map_reg_north">
@@ -150,30 +153,78 @@
             <button type="button" class="map-region-btn" data-region="east" onclick="window.MapManager.focusRegion('east')" data-i18n="map_reg_east">
               🌅 East & Central Zone
             </button>
+
+            <!-- Quick Layer Filter Toggles -->
+            <div class="map-layer-toggles">
+              <label class="map-layer-toggle-label" title="Toggle individual field case markings for cattle, buffalo, goat">
+                <input type="checkbox" id="toggleLayerCattle" checked onchange="window.MapManager.toggleLayer('cattle', this.checked)">
+                <span>🐄 Affected Cattle</span>
+              </label>
+              <label class="map-layer-toggle-label" title="Toggle active outbreak clusters and 3km/10km containment rings">
+                <input type="checkbox" id="toggleLayerHotspots" checked onchange="window.MapManager.toggleLayer('hotspots', this.checked)">
+                <span>🔴 Hotspots & Rings</span>
+              </label>
+              <label class="map-layer-toggle-label" title="Toggle veterinary dispensaries and labs">
+                <input type="checkbox" id="toggleLayerFacilities" checked onchange="window.MapManager.toggleLayer('facilities', this.checked)">
+                <span>🏥 Vet Centers</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Real-Time Location & Proximity Status Bar -->
+          <div id="mapLocationStatusBar" class="map-location-status-bar">
+            <div class="map-status-pill">
+              <span class="status-indicator-dot pulse"></span>
+              <span class="status-pill-label">Current Location:</span>
+              <strong id="mapCurrentLocationText">Detecting location...</strong>
+            </div>
+            <div class="map-status-pill">
+              <span class="status-pill-icon">🛡️</span>
+              <span class="status-pill-label">Nearest Outbreak:</span>
+              <strong id="mapNearestHotspotText">Analyzing proximity...</strong>
+            </div>
+            <div class="map-status-pill">
+              <span class="status-pill-icon">🐄</span>
+              <span class="status-pill-label">Affected Livestock in Zone:</span>
+              <strong id="mapAffectedCattleSummary">Calculating...</strong>
+            </div>
+            <div class="map-status-actions">
+              <button type="button" class="map-recenter-btn" onclick="window.MapManager.locateUser(true)" title="Center on your current position">
+                🎯 Center View
+              </button>
+            </div>
           </div>
 
           <div id="surveillanceMap"></div>
 
           <div class="map-legend">
             <div class="legend-item">
+              <span class="legend-dot" style="background:#0284c7; box-shadow:0 0 6px #0284c7;"></span>
+              <span><b>📍 You Are Here</b> (Your Position)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-badge-sample" style="background:#fff; border:2px solid #e11d48; border-radius:12px; padding:1px 6px; font-size:11px; font-weight:bold; color:#e11d48;">🐄 x3</span>
+              <span><b>Affected Cattle Markings</b> (Field Case Reports)</span>
+            </div>
+            <div class="legend-item">
               <span class="legend-dot" style="background:#e11d48;"></span>
-              <span data-i18n="legend_outbreak"><b>Critical Outbreak Point</b> (Confirmed/Active)</span>
+              <span data-i18n="legend_outbreak"><b>Critical Outbreak Point</b> (Epicenter)</span>
             </div>
             <div class="legend-item">
               <span class="legend-dot" style="background:#ffe4e6; border:1px solid #e11d48;"></span>
-              <span data-i18n="legend_infected_zone"><b>3 km Infected Zone</b> (Strict Animal/Product Movement Ban)</span>
+              <span data-i18n="legend_infected_zone"><b>3 km Infected Zone</b> (Quarantine & Movement Ban)</span>
             </div>
             <div class="legend-item">
               <span class="legend-dot" style="background:#fef3c7; border:1px dashed #f59e0b;"></span>
-              <span data-i18n="legend_surv_zone"><b>10 km Surveillance Zone</b> (Clinical Ring Search & Emergency Vaccination)</span>
+              <span data-i18n="legend_surv_zone"><b>10 km Surveillance Zone</b> (Clinical Ring Search)</span>
             </div>
             <div class="legend-item">
               <span class="legend-dot" style="background:#059669;"></span>
-              <span data-i18n="legend_vet">Veterinary Dispensary / Hospital</span>
+              <span data-i18n="legend_vet">Veterinary Hospital / Dispensary</span>
             </div>
             <div class="legend-item">
               <span class="legend-dot" style="background:#7c3aed;"></span>
-              <span data-i18n="legend_lab">Regional Disease Diagnostic Laboratory</span>
+              <span data-i18n="legend_lab">Regional Diagnostic Lab</span>
             </div>
           </div>
         </div>

@@ -27,6 +27,7 @@ const I18N_TRANSLATIONS = {
     // Map & GIS
     map_title: "📍 Live Geospatial Surveillance & Containment Rings",
     map_subtitle: "Active Layers: Outbreak Clusters • 3km Infected Zones • 10km Surveillance Buffers",
+    map_reg_my_location: "📍 My Location (मेरी स्थिति)",
     map_reg_all: "🇮🇳 All India",
     map_reg_north: "🏔️ North Zone (HR/PB/UP)",
     map_reg_west: "🌾 West Zone (MH/GJ)",
@@ -177,6 +178,7 @@ const I18N_TRANSLATIONS = {
     // Map & GIS
     map_title: "📍 लाइव भौगोलिक निगरानी एवं नियंत्रण चक्र",
     map_subtitle: "सक्रिय परतें: प्रकोप क्लस्टर • 3 किमी संक्रमित क्षेत्र • 10 किमी निगरानी बफर",
+    map_reg_my_location: "📍 मेरी वर्तमान स्थिति",
     map_reg_all: "🇮🇳 संपूर्ण भारत",
     map_reg_north: "🏔️ उत्तर भारत (HR/PB/UP)",
     map_reg_west: "🌾 पश्चिम भारत (महाराष्ट्र/गुजरात)",
@@ -327,6 +329,7 @@ const I18N_TRANSLATIONS = {
     // Map & GIS
     map_title: "📍 थेट भौगोलिक देखरेख आणि नियंत्रण रिंग्ज",
     map_subtitle: "सक्रिय स्तर: प्रकोप क्लस्टर • ३ किमी बाधित क्षेत्र • १० किमी देखरेख बफर",
+    map_reg_my_location: "📍 माझे चालू स्थान",
     map_reg_all: "🇮🇳 संपूर्ण भारत",
     map_reg_north: "🏔️ उत्तर भारत (HR/PB/UP)",
     map_reg_west: "🌾 पश्चिम भारत (महाराष्ट्र/गुजरात)",
@@ -477,6 +480,7 @@ const I18N_TRANSLATIONS = {
     // Map & GIS
     map_title: "📍 ప్రత్యక్ష భౌగోళిక పర్యవేక్షణ & కట్టడి వలయాలు",
     map_subtitle: "క్రియాశీల లేయర్లు: వ్యాప్తి క్లస్టర్లు • 3 కి.మీ కట్టడి జోన్ • 10 కి.మీ నిఘా బఫర్",
+    map_reg_my_location: "📍 నా ప్రస్తుత స్థానం",
     map_reg_all: "🇮🇳 అఖిల భారత పటం",
     map_reg_north: "🏔️ ఉత్తర జోన్ (HR/PB/UP)",
     map_reg_west: "🌾 పశ్చిమ జోన్ (మహారాష్ట్ర/గుజరాత్)",

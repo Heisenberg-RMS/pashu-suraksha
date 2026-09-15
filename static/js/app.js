@@ -383,7 +383,7 @@ class AuthenticationManager {
 
 window.AuthManager = new AuthenticationManager();
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
   // Initialize subsystems
   if (window.I18n) window.I18n.init();
   window.OfflineManager.initDB();
@@ -395,11 +395,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (window.VisionManager) window.VisionManager.init();
   if (window.ChatbotManager) window.ChatbotManager.init();
   
+  // Fast direct map initialization on page startup
+  if (window.MapManager) {
+    window.MapManager.init();
+  }
+  
   setupNavigation();
   setupAdvisoriesUI();
   setupWeatherPanel();
   
-  await refreshDashboardData();
+  // Load dashboard stats asynchronously in background without blocking UI
+  refreshDashboardData().catch(err => console.error('Dashboard stats background error:', err));
 
   window.addEventListener('languageChanged', () => {
     if (window.AuthManager) window.AuthManager.updateRoleBanner();

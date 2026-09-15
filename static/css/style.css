@@ -336,6 +336,391 @@ body {
   display: inline-block;
 }
 
+/* Map Location Status Bar & Controls */
+.map-location-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.85rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.82rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.map-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #334155;
+  font-size: 0.8rem;
+}
+
+.map-status-pill .status-pill-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.status-indicator-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #0284c7;
+  display: inline-block;
+}
+
+.status-indicator-dot.pulse {
+  animation: dotPulse 1.8s infinite;
+}
+
+@keyframes dotPulse {
+  0% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.7); }
+  70% { box-shadow: 0 0 0 6px rgba(2, 132, 199, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0); }
+}
+
+.map-recenter-btn {
+  background: #0f766e;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.map-recenter-btn:hover {
+  background: #0d635d;
+  transform: translateY(-1px);
+}
+
+.map-layer-toggles {
+  display: flex;
+  gap: 0.75rem;
+  margin-left: auto;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.map-layer-toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  user-select: none;
+  background: #f8fafc;
+  padding: 0.25rem 0.55rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: background 0.15s;
+}
+
+.map-layer-toggle-label:hover {
+  background: #e2e8f0;
+}
+
+.map-layer-toggle-label input[type="checkbox"] {
+  accent-color: #0f766e;
+  cursor: pointer;
+}
+
+/* Pulsing Current Location Marker */
+.current-location-marker-container {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.current-location-pulse {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(2, 132, 199, 0.3);
+  border: 2px solid #0284c7;
+  animation: locationPulse 2s infinite ease-out;
+}
+
+@keyframes locationPulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.current-location-dot {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #0284c7;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #fff;
+  z-index: 2;
+}
+
+/* User Location Popup */
+.user-loc-popup-card {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+  padding: 2px;
+}
+
+.user-loc-header {
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+}
+
+.badge-loc-type {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.user-loc-header h4 {
+  margin: 2px 0;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.loc-coords {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.loc-status-alert {
+  padding: 6px 8px;
+  border-radius: 5px;
+  font-size: 11px;
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+.loc-status-alert.alert-critical {
+  background: #ffe4e6;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+}
+
+.loc-status-alert.alert-warning {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.loc-status-alert.alert-safe {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.user-loc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.loc-grid-cell {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 5px 6px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.loc-grid-cell small {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.loc-grid-cell strong {
+  font-size: 12px;
+  color: #0f172a;
+  margin: 1px 0;
+}
+
+.loc-grid-cell span {
+  font-size: 10px;
+  color: #0f766e;
+  font-weight: 600;
+}
+
+.user-loc-footer {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-popup-zoom, .btn-popup-regional {
+  flex: 1;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-popup-zoom {
+  background: #0f766e;
+  color: #fff;
+  border-color: #0f766e;
+}
+
+.btn-popup-zoom:hover {
+  background: #0d635d;
+}
+
+.btn-popup-regional:hover {
+  background: #f1f5f9;
+}
+
+/* Affected Cattle Field Marking Pins */
+.cattle-marking-icon-wrapper {
+  background: transparent;
+  border: none;
+}
+
+.cattle-marking-pin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: #ffffff;
+  border: 2px solid #e11d48;
+  border-radius: 16px;
+  padding: 2px 6px 2px 4px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cattle-marking-pin:hover {
+  transform: scale(1.18) translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+  z-index: 1000;
+}
+
+.cattle-marking-pin.urgency-critical {
+  border-color: #e11d48;
+  background: #fff1f2;
+  animation: cattlePinPulse 2.2s infinite;
+}
+
+.cattle-marking-pin.urgency-urgent {
+  border-color: #d97706;
+  background: #fffbeb;
+}
+
+.cattle-marking-pin.urgency-routine {
+  border-color: #0284c7;
+  background: #f0f9ff;
+}
+
+.cattle-species-icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.cattle-count-tag {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+}
+
+@keyframes cattlePinPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(225, 29, 72, 0);
+  }
+}
+
+/* Affected Cattle Popup */
+.cattle-report-popup-card {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 12px;
+}
+
+.cattle-popup-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.cattle-popup-header.urgency-critical {
+  background: #ffe4e6;
+  color: #9f1239;
+}
+
+.cattle-popup-header.urgency-urgent {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.cattle-popup-header.urgency-routine {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.badge-status-pill {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.symptom-mini-tag {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  text-transform: capitalize;
+}
+
 /* Environmental side panel */
 .env-metric-item {
   background: var(--gray-50);

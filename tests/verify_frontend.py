@@ -12,7 +12,8 @@ views = [
     "view-labs",
     "view-advisories",
     "view-ivr",
-    "view-dashboard"
+    "view-dashboard",
+    "view-chat"
 ]
 
 all_found = True
@@ -27,7 +28,7 @@ for v in views:
 print("\nTag Counts:")
 print("Open sections:", html.count("<section"))
 print("Close sections:", html.count("</section>"))
-assert html.count("<section") == html.count("</section>") == 8
+assert html.count("<section") == html.count("</section>") == 9
 
 scripts = [
     "offline_sync.js",
