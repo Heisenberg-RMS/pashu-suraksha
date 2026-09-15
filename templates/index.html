@@ -100,7 +100,7 @@
     <button class="tab-btn" data-tab="labs" data-roles="PARA_VET,DVO,DIRECTOR" data-i18n="tab_labs">
       🧪 Lab Referrals & Chain of Custody
     </button>
-    <button class="tab-btn" data-tab="advisories" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" data-i18n="tab_advisories">
+    <button class="tab-btn" data-tab="advisories" data-roles="DVO,DIRECTOR" data-i18n="tab_advisories">
       🔊 Multilingual Voice Advisories & SMS
     </button>
     <button class="tab-btn" data-tab="ivr" data-roles="FARMER,PARA_VET,DVO" data-i18n="tab_ivr">
@@ -240,14 +240,25 @@
             </div>
           </div>
 
-          <!-- Quick Actions -->
-          <div class="card">
+          <!-- Emergency Directives (Vet & Director Only) -->
+          <div class="card" data-roles="DVO,DIRECTOR">
             <h3 class="card-title" style="font-size:0.95rem; margin-bottom:0.75rem;">⚡ Emergency Directives</h3>
             <button class="btn btn-danger btn-block btn-sm" style="margin-bottom:0.5rem;" onclick="window.App.switchTab('advisories')">
               📢 Issue Multilingual Village Alert
             </button>
             <button class="btn btn-outline btn-block btn-sm" onclick="window.App.switchTab('labs')">
               🧪 Check Diagnostic Samples in Transit
+            </button>
+          </div>
+
+          <!-- Farmer Quick Help Card (Farmer & Para-Vet Only) -->
+          <div class="card" data-roles="FARMER,PARA_VET" style="border-top:4px solid #10b981;">
+            <h3 class="card-title" style="font-size:0.95rem; margin-bottom:0.75rem; color:#15803d;">🐄 Farmer Emergency Livestock Support</h3>
+            <button class="btn btn-primary btn-block btn-sm" style="margin-bottom:0.5rem; background:#059669;" onclick="window.App.switchTab('ivr')">
+              📞 Call Toll-Free 1962 (पशु हेल्पलाइन)
+            </button>
+            <button class="btn btn-outline btn-block btn-sm" onclick="window.App.switchTab('vision')">
+              📸 AI Camera Lesion Scan (पशु जांच)
             </button>
           </div>
         </div>
@@ -612,8 +623,27 @@
       </div>
     </section>
 
-    <!-- TAB 5: MULTILINGUAL VOICE ADVISORIES & SMS BROADCAST -->
+    <!-- TAB 5: MULTILINGUAL VOICE ADVISORIES & SMS BROADCAST (VET & DIRECTOR ONLY) -->
     <section id="view-advisories" class="tab-view">
+      <!-- Official Dispatch Authorization Header (Vet & Director Portal Exclusive) -->
+      <div class="card" style="margin-bottom:1.25rem; border-left: 6px solid var(--solid-advisory); background: linear-gradient(135deg, #fff1f2 0%, #ffffff 100%);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+          <div>
+            <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+              <span style="font-size:1.4rem;">📢</span>
+              <h2 style="font-size:1.15rem; font-weight:800; color:#9f1239; margin:0;">Multilingual Voice Advisory & Emergency SMS Broadcast Command</h2>
+              <span class="badge badge-solid-danger" style="font-size:0.68rem; text-transform:uppercase;">Vet Officer & State Directorate Authorized Only</span>
+            </div>
+            <p style="font-size:0.82rem; color:#64748b; margin:0.35rem 0 0 0;">
+              Administrative emergency broadcast console for Veterinary Officers (DVO) & State Directors. Generates synthesized local-dialect voice calls and mass SMS biosecurity alerts dispatched to livestock owners in 3km/10km containment rings.
+            </p>
+          </div>
+          <div id="advisoryDispatchingOfficer" style="font-size:0.82rem; color:#0f172a; background:#ffffff; padding:0.45rem 0.85rem; border-radius:8px; border:1px solid #fecdd3; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+            🛡️ <b>Authorized Dispatcher:</b> <span id="advisoryOfficerNameDisplay">Dr. Mohit Rao (DVO Hisar)</span>
+          </div>
+        </div>
+      </div>
+
       <div class="grid-2">
         <!-- Broadcast Configuration -->
         <div class="card">
@@ -775,6 +805,41 @@
 
           <div class="director-kpi-grid" id="directorKpisGrid" style="margin-top:1rem;">
             <!-- Populated via JS -->
+          </div>
+
+          <!-- Directorate Multilingual Mass Voice & SMS Emergency Broadcast Center -->
+          <div style="background:#ffffff; border:1px solid #d8b4fe; border-left:6px solid #9333ea; border-radius:10px; padding:1.15rem 1.25rem; margin-top:1.25rem; box-shadow:0 4px 12px rgba(147, 51, 234, 0.08);">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-bottom:0.75rem;">
+              <div>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <span style="font-size:1.3rem;">📢</span>
+                  <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:#581c87;">Statewide Voice Advisory & Mass Emergency SMS Broadcast Dispatch</h3>
+                  <span class="badge" style="background:#7e22ce; color:#fff; font-size:0.68rem; font-weight:700;">Directorate Exclusive</span>
+                </div>
+                <div style="font-size:0.8rem; color:#6b21a8; margin-top:3px;">
+                  Authorize and trigger emergency voice telephone calls and SMS notifications across all 22 districts or targeted containment rings in 7 regional languages (Hindi, Punjabi, Marathi, Telugu, Tamil, Bengali, English).
+                </div>
+              </div>
+              <button class="btn btn-sm" style="background:#7e22ce; color:#ffffff; font-weight:700;" onclick="window.App.switchTab('advisories')">
+                Open Full Advisory Console ➜
+              </button>
+            </div>
+
+            <!-- Quick Direct Broadcast Shortcuts for Director -->
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.75rem; padding-top:0.75rem; border-top:1px dashed #e9d5ff;">
+              <button class="btn btn-sm btn-outline" style="border-color:#a855f7; color:#6b21a8; font-size:0.78rem;" onclick="window.App.triggerQuickDirectorBroadcast('FMD_OUTBREAK', '3')">
+                🚨 Dispatch 3km FMD Ring Voice/SMS
+              </button>
+              <button class="btn btn-sm btn-outline" style="border-color:#a855f7; color:#6b21a8; font-size:0.78rem;" onclick="window.App.triggerQuickDirectorBroadcast('LSD_OUTBREAK', '10')">
+                🪰 Dispatch 10km LSD Vector Advisory
+              </button>
+              <button class="btn btn-sm btn-outline" style="border-color:#a855f7; color:#6b21a8; font-size:0.78rem;" onclick="window.App.triggerQuickDirectorBroadcast('ANTHRAX_BIOHAZARD', '25')">
+                ⚠️ Dispatch 25km Anthrax Biohazard Alert
+              </button>
+              <button class="btn btn-sm btn-outline" style="border-color:#a855f7; color:#6b21a8; font-size:0.78rem;" onclick="window.App.triggerQuickDirectorBroadcast('PRE_MONSOON_VACCINATION', '25')">
+                💉 Dispatch Statewide HS/BQ Vaccine Notice
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -1059,6 +1124,10 @@
     <button class="mobile-nav-item" data-tab="chat" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.ChatbotManager.openChat()">
       <span class="mobile-nav-icon">💬</span>
       <span>AI Chat</span>
+    </button>
+    <button class="mobile-nav-item" data-tab="advisories" data-roles="DVO,DIRECTOR" onclick="window.App.switchTab('advisories')">
+      <span class="mobile-nav-icon">📢</span>
+      <span>Alerts</span>
     </button>
     <button class="mobile-nav-item" data-tab="ehr" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.App.switchTab('ehr')">
       <span class="mobile-nav-icon">📋</span>

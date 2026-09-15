@@ -456,8 +456,17 @@ def preview_advisory():
 
 @app.route("/api/advisories/broadcast", methods=["POST"])
 def broadcast_advisory():
-    """Simulates broadcasting emergency advisory via SMS/WhatsApp/Voice to farmers."""
+    """Simulates broadcasting emergency advisory via SMS/WhatsApp/Voice to farmers.
+    Restricted to Veterinary Officers and State Directorate only.
+    """
     data = request.json or {}
+    role = data.get("role") or request.headers.get("X-User-Role")
+    if role in ("FARMER", "PARA_VET"):
+        return jsonify({
+            "success": False,
+            "error": "Access Denied: Multilingual Voice Advisory & SMS Broadcast is authorized for Veterinary Officers and State Directorate only. Farmers and field workers cannot broadcast public alerts."
+        }), 403
+
     alert_type = data.get("alert_type", "FMD_OUTBREAK")
     lang = data.get("language", "hi")
     district = data.get("district", "Hisar")

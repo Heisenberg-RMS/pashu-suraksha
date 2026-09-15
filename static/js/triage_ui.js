@@ -197,6 +197,21 @@ function renderTriageResultCard(result) {
     </div>
 
     ${diffListHtml}
+    ${(() => {
+      const role = (window.AuthManager && window.AuthManager.currentUser) ? window.AuthManager.currentUser.role : 'DVO';
+      if ((role === 'DVO' || role === 'DIRECTOR') && (urgencyClass === 'critical' || result.trigger_containment_ring)) {
+        const dCode = top.code || 'FMD_OUTBREAK';
+        const ringRad = result.containment_ring_radius_km || 10;
+        return `
+          <div style="margin-top:0.85rem; border-top:1px solid #fed7aa; padding-top:0.6rem;">
+            <button class="btn btn-sm btn-danger btn-block" onclick="window.App.openAdvisoryForDisease('${dCode}', '${ringRad}')">
+              📢 Dispatch Voice Advisory & SMS to ${ringRad}km Ring (Vet Directive)
+            </button>
+          </div>
+        `;
+      }
+      return '';
+    })()}
   `;
 }
 

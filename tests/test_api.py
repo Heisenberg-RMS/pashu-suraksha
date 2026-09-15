@@ -251,6 +251,47 @@ class TestPashuSuraksha(unittest.TestCase):
             self.assertTrue(login_data["success"])
             self.assertEqual(login_data["user"]["role"], role)
 
+    def test_17_advisory_role_restriction(self):
+        # 1. Farmer attempt to broadcast must be rejected with 403 Forbidden
+        res_farmer = self.client.post("/api/advisories/broadcast", json={
+            "role": "FARMER",
+            "alert_type": "FMD_OUTBREAK",
+            "language": "hi",
+            "radius_km": 10.0
+        })
+        self.assertEqual(res_farmer.status_code, 403)
+        farmer_data = res_farmer.get_json()
+        self.assertFalse(farmer_data["success"])
+        self.assertIn("Access Denied", farmer_data["error"])
+
+        # 2. DVO (Vet) broadcast attempt must succeed with 200 OK
+        res_dvo = self.client.post("/api/advisories/broadcast", json={
+            "role": "DVO",
+            "alert_type": "FMD_OUTBREAK",
+            "language": "hi",
+            "district": "Hisar",
+            "block": "Hansi",
+            "radius_km": 10.0
+        })
+        self.assertEqual(res_dvo.status_code, 200)
+        dvo_data = res_dvo.get_json()
+        self.assertTrue(dvo_data["success"])
+        self.assertGreater(dvo_data["farmers_reached"], 0)
+        self.assertIn("SMS", dvo_data["channels_used"])
+
+        # 3. DIRECTOR broadcast attempt must succeed with 200 OK
+        res_director = self.client.post("/api/advisories/broadcast", json={
+            "role": "DIRECTOR",
+            "alert_type": "ANTHRAX_BIOHAZARD",
+            "language": "en",
+            "district": "All Districts",
+            "radius_km": 25.0
+        })
+        self.assertEqual(res_director.status_code, 200)
+        dir_data = res_director.get_json()
+        self.assertTrue(dir_data["success"])
+        self.assertGreater(dir_data["farmers_reached"], 0)
+
 if __name__ == "__main__":
     unittest.main()
 

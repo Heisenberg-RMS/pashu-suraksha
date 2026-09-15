@@ -195,6 +195,7 @@ class AuthenticationManager {
         actionsEl.innerHTML = `
           <button class="role-action-btn" onclick="window.App.switchTab('dashboard')">${t('btn_director_stockpile')}</button>
           <button class="role-action-btn" onclick="window.App.switchTab('dashboard')">${t('btn_director_r0')}</button>
+          <button class="role-action-btn" onclick="window.App.switchTab('advisories')">📢 State Voice/SMS Broadcast</button>
           <button class="role-action-btn" onclick="window.App.switchTab('map')">🗺️ All India Surveillance</button>
           <button class="role-switch-btn" onclick="window.AuthManager.openModal()">${t('btn_switch_role')}</button>
         `;
@@ -215,26 +216,14 @@ class AuthenticationManager {
   }
 
   filterNavigationByRole(role) {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      const rolesStr = btn.dataset.roles;
+    document.querySelectorAll('[data-roles]').forEach(el => {
+      const rolesStr = el.dataset.roles;
       if (rolesStr) {
         const allowed = rolesStr.split(',').map(s => s.trim());
         if (!allowed.includes(role)) {
-          btn.classList.add('tab-hidden');
+          el.classList.add('tab-hidden');
         } else {
-          btn.classList.remove('tab-hidden');
-        }
-      }
-    });
-
-    document.querySelectorAll('.mobile-nav-item').forEach(btn => {
-      const rolesStr = btn.dataset.roles;
-      if (rolesStr) {
-        const allowed = rolesStr.split(',').map(s => s.trim());
-        if (!allowed.includes(role)) {
-          btn.classList.add('tab-hidden');
-        } else {
-          btn.classList.remove('tab-hidden');
+          el.classList.remove('tab-hidden');
         }
       }
     });
@@ -447,6 +436,12 @@ function setupNavigation() {
 }
 
 function switchTab(viewId) {
+  const currentRole = (window.AuthManager && window.AuthManager.currentUser) ? window.AuthManager.currentUser.role : 'DVO';
+  if (viewId === 'advisories' && currentRole !== 'DVO' && currentRole !== 'DIRECTOR') {
+    alert('⚠️ Access Restricted: Multilingual Voice Advisory & Emergency SMS Broadcast is authorized for Veterinary Officers and State Directorate only. Farmers cannot dispatch public broadcasts.');
+    return;
+  }
+
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tab === viewId);
   });
@@ -467,6 +462,12 @@ function switchTab(viewId) {
     }, 150);
   } else if (viewId === 'dashboard') {
     renderCharts();
+  } else if (viewId === 'advisories') {
+    const user = window.AuthManager ? window.AuthManager.currentUser : null;
+    const nameEl = document.getElementById('advisoryOfficerNameDisplay');
+    if (nameEl && user) {
+      nameEl.innerText = `${user.full_name} (${user.designation || user.role})`;
+    }
   }
 }
 
@@ -838,10 +839,12 @@ async function setupAdvisoriesUI() {
       broadcastBtn.innerText = 'Broadcasting Emergency Alerts...';
 
       try {
+        const userRole = (window.AuthManager && window.AuthManager.currentUser) ? window.AuthManager.currentUser.role : 'DVO';
         const res = await fetch('/api/advisories/broadcast', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            role: userRole,
             alert_type: alertType,
             language: lang,
             district: "Hisar",
@@ -851,6 +854,11 @@ async function setupAdvisoriesUI() {
           })
         });
         const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          alert(`❌ Broadcast Denied: ${data.error || 'Unauthorized action. Voice advisories and SMS broadcasts are authorized for Veterinary Officers and State Directorate only.'}`);
+          return;
+        }
 
         alert(`📢 Emergency Advisory Broadcast Dispatched!\n• Reached: ${data.farmers_reached} registered livestock keepers\n• Channels: SMS, Automated IVR Voice Broadcast & Pashu Sakhi App\n• Radius: ${radius} km quarantine containment zone.`);
         loadAdvisoriesHistory();
@@ -893,21 +901,46 @@ async function loadAdvisoriesHistory() {
 }
 
 function triggerEmergencyAction(diseaseCode, district, block) {
+  openAdvisoryForDisease(diseaseCode, 10);
+}
+
+function openAdvisoryForDisease(diseaseCode, radius = 10) {
+  const currentRole = (window.AuthManager && window.AuthManager.currentUser) ? window.AuthManager.currentUser.role : 'DVO';
+  if (currentRole !== 'DVO' && currentRole !== 'DIRECTOR') {
+    alert('⚠️ Advisory dispatch is restricted to Veterinary Officers and State Directorate.');
+    return;
+  }
   switchTab('advisories');
   const typeMap = {
     "FMD": "FMD_OUTBREAK",
+    "FMD_OUTBREAK": "FMD_OUTBREAK",
     "LSD": "LSD_OUTBREAK",
-    "ANTHRAX": "ANTHRAX_BIOHAZARD"
+    "LSD_OUTBREAK": "LSD_OUTBREAK",
+    "ANTHRAX": "ANTHRAX_BIOHAZARD",
+    "ANTHRAX_BIOHAZARD": "ANTHRAX_BIOHAZARD",
+    "HS": "PRE_MONSOON_VACCINATION",
+    "BQ": "PRE_MONSOON_VACCINATION",
+    "PRE_MONSOON_VACCINATION": "PRE_MONSOON_VACCINATION"
   };
   const typeSelect = document.getElementById('advisoryTypeSelect');
-  if (typeSelect && typeMap[diseaseCode]) {
-    typeSelect.value = typeMap[diseaseCode];
+  const radiusInput = document.getElementById('broadcastRadiusInput');
+  if (typeSelect && (typeMap[diseaseCode] || diseaseCode)) {
+    typeSelect.value = typeMap[diseaseCode] || diseaseCode;
     typeSelect.dispatchEvent(new Event('change'));
   }
+  if (radiusInput && radius) {
+    radiusInput.value = radius;
+  }
+}
+
+function triggerQuickDirectorBroadcast(alertType, radius = 10) {
+  openAdvisoryForDisease(alertType, radius);
 }
 
 window.App = {
   switchTab: switchTab,
   refreshData: refreshDashboardData,
-  triggerEmergencyAction: triggerEmergencyAction
+  triggerEmergencyAction: triggerEmergencyAction,
+  openAdvisoryForDisease: openAdvisoryForDisease,
+  triggerQuickDirectorBroadcast: triggerQuickDirectorBroadcast
 };
