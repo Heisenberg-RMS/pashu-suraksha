@@ -426,9 +426,7 @@ function setupNavigation() {
   mobileNavs.forEach(btn => {
     btn.addEventListener('click', () => {
       const targetView = btn.dataset.tab;
-      if (targetView === 'chat') {
-        if (window.ChatbotManager) window.ChatbotManager.openChat();
-      } else if (targetView) {
+      if (targetView) {
         switchTab(targetView);
       }
     });
@@ -467,6 +465,14 @@ function switchTab(viewId) {
     const nameEl = document.getElementById('advisoryOfficerNameDisplay');
     if (nameEl && user) {
       nameEl.innerText = `${user.full_name} (${user.designation || user.role})`;
+    }
+  } else if (viewId === 'chat') {
+    if (window.ChatbotManager) {
+      window.ChatbotManager.renderViewGreetingIfNeeded();
+      setTimeout(() => {
+        const inp = document.getElementById('chatViewTextInput');
+        if (inp) inp.focus();
+      }, 100);
     }
   }
 }

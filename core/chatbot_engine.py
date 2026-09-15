@@ -1,11 +1,14 @@
 """
 Pashu Suraksha - Intelligent Veterinary Chatbot Engine ("Pashu AI Sahayak")
 Conversational AI advisor for livestock keepers, field veterinarians, and para-vets.
-Handles clinical symptoms, emergency first-aid, vaccination timelines, withdrawal periods,
-and biosecurity in English, Hindi (हिन्दी), Marathi (मराठी), and Telugu (తెలుగు).
+Supports Google Gemini 2.0 Generative AI when connected, with seamless offline fallback
+to a comprehensive 14-condition veterinary knowledge base in English, Hindi, Marathi, and Telugu.
 """
 
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
+import os
+import json
+import urllib.request
 import re
 
 CHATBOT_KNOWLEDGE = [
@@ -20,7 +23,7 @@ CHATBOT_KNOWLEDGE = [
         "title": "Foot-and-Mouth Disease (खुरपका-मुंहपका / लाळ्या खुरकूत / గాలికుంటు)",
         "is_emergency": True,
         "reply_en": (
-            "Foot-and-Mouth Disease (FMD) is a highly contagious viral infection. "
+            "Foot-and-Mouth Disease (FMD) is a highly contagious viral infection.\n"
             "**Immediate First Aid Steps:**\n"
             "1. **Isolate Animal:** Segregate infected cattle immediately; halt shared grazing.\n"
             "2. **Oral Care:** Wash mouth ulcers twice daily with mild potassium permanganate solution (1:1000 ratio in water) or 2% baking soda.\n"
@@ -111,8 +114,292 @@ CHATBOT_KNOWLEDGE = [
     },
     {
         "keywords": [
+            "anthrax", "blood", "tarry", "dark blood", "sudden death", "orifices", "carcass",
+            "एंथ्रेक्स", "काला खून", "अचानक मृत्यु", "नाक से खून", "काळपुळी", "काळी रक्त", "ఆంత్రాక్స్", "నల్లటి రక్తం", "ఆకస్మిక మరణం"
+        ],
+        "intent": "ANTHRAX_BIOHAZARD",
+        "title": "Anthrax Emergency & Biohazard (एंथ्रेक्स / काळपुळी / ఆంత్రాక్స్)",
+        "is_emergency": True,
+        "reply_en": (
+            "🚨 **CRITICAL BIOHAZARD: Anthrax (Bacillus anthracis)**\n"
+            "Anthrax is a deadly zoonotic disease that spreads from animals to humans.\n"
+            "**STRICT PROTOCOL:**\n"
+            "1. **DO NOT OPEN OR FLAY CARCASS:** Exposure to air causes spores to form, contaminating soil for 50+ years.\n"
+            "2. **Deep Burial:** Bury carcass at least 6 feet deep covered completely with unslaked lime (चूना).\n"
+            "3. **Zero Contact:** Do not touch bloody discharges without PPE. Wash hands with disinfectant.\n"
+            "4. **Immediate Notice:** Call District Veterinary Officer or Toll-Free 1962 immediately."
+        ),
+        "reply_hi": (
+            "🚨 **अति-संवेदनशील चेतावनी: एंथ्रेक्स (छूत का भयंकर रोग)**\n"
+            "यह जानलेवा बीमारी पशुओं से इंसानों में भी तुरंत फैल सकती है।\n"
+            "**कठोर सुरक्षा नियम:**\n"
+            "1. **शव को बिल्कुल न चीरें या खोलें:** हवा लगते ही इसके जीवाणु 50 सालों तक मिट्टी में जीवित रहने वाले बीजाणु बना लेते हैं।\n"
+            "2. **दफनाने का तरीका:** शव को 6 फीट गहरे गड्ढे में डालकर ऊपर से भरपूर बिना बुझा चूना डालकर मिट्टी से ढकें।\n"
+            "3. **शव को न छुएं:** रक्त स्राव को बिना दस्तानों के न छुएं।\n"
+            "4. **तुरंत सूचना:** तुरंत पशु हेल्पलाइन 1962 या स्थानीय पशु चिकित्सक को सूचित करें।"
+        ),
+        "reply_mr": (
+            "🚨 **अत्यंत गंभीर इशारा: काळपुळी (अँथ्रॅक्स)**\n"
+            "हा प्राणघातक आजार जनावरांपासून माणसांमध्ये देखील पसरू शकतो.\n"
+            "**कडक सुरक्षा सूचना:**\n"
+            "१. **मृत जनावराचे शवविच्छेदन करू नका:** हवा लागल्यास याचे विषाणू ५० वर्षांपर्यंत जमिनीत जिवंत राहतात.\n"
+            "२. **खड्ड्यात पुरणे:** ६ फूट खोल खड्ड्यात भरपूर चुना टाकून जनावराला पुरावे.\n"
+            "३. **शवाला हात लावू नका:** रक्तस्त्रावाला उघड्या हाताने स्पर्श करू नका.\n"
+            "४. **त्वरित संपर्क:** १९६२ टोल-फ्री किंवा पशुवैद्यकीय अधिकाऱ्यांना तात्काळ कळवा."
+        ),
+        "reply_te": (
+            "🚨 **తీవ్రమైన హెచ్చరిక: ఆంత్రాక్స్ ప్రాణాంతక వ్యాధి**\n"
+            "ఈ వ్యాధి పశువుల నుండి మనుషులకు కూడా వేగంగా వ్యాపిస్తుంది.\n"
+            "**ముఖ్య నిబంధనలు:**\n"
+            "1. **కళేబరాన్ని కోయవద్దు:** గాలి తగిలితే బ్యాక్టీరియా స్పోర్స్ గా మారి దశాబ్దాల పాటు నేలలో జీవిస్తాయి.\n"
+            "2. **పూడ్చిపెట్టడం:** కళేబరాన్ని 6 అడుగుల లోతు గుంతలో సున్నం వేసి పూడ్చాలి.\n"
+            "3. **స్పర్శించవద్దు:** రక్తాన్ని చేతులతో తాకవద్దు.\n"
+            "4. **వెంటనే సమాచారం:** 1962 హెల్ప్‌లైన్ లేదా సమీప పశువైద్యుడికి తెలియజేయండి."
+        ),
+        "suggested_questions": [
+            "एंथ्रेक्स से इंसानों में क्या लक्षण होते हैं?",
+            "एंथ्रेक्स प्रभावित क्षेत्र में क्या सावधानी बरतें?",
+            "काळपुळी रोगाची लस कधी द्यावी?"
+        ]
+    },
+    {
+        "keywords": [
+            "hs", "galghontu", "throat", "neck", "swelling", "edema", "snoring", "ghatsarp", "breathing",
+            "गलघोंटू", "गले में सूजन", "घुर्र घुर्र", "घटसर्प", "గొంతువాపు", "శ్వాస ఆడకపోవడం", "గొంతు వాపు"
+        ],
+        "intent": "HS_GALGHONTU",
+        "title": "Hemorrhagic Septicemia (गलघोंटू / घटसर्प / గొంతువాపు)",
+        "is_emergency": True,
+        "reply_en": (
+            "🚨 **HIGH EMERGENCY: Hemorrhagic Septicemia (HS / Pasteurellosis)**\n"
+            "Peracute bacterial disease characterized by hot painful throat swelling and snoring respiration.\n"
+            "**Emergency Response:**\n"
+            "1. **Immediate Antibiotics:** Animal can asphyxiate within 12-24 hours. Call vet immediately for high-dose parenteral antibiotics (Oxytetracycline or Sulphonamides).\n"
+            "2. **Cold Water:** Gently pour cold water over the swollen neck/throat to soothe inflammation.\n"
+            "3. **Segregation:** Keep in a clean, ventilated, non-waterlogged shed.\n"
+            "4. **Pre-Monsoon Vaccination:** Annual HS alum-precipitated vaccine in May-June protects your herd."
+        ),
+        "reply_hi": (
+            "🚨 **आपातकालीन रोग: गलघोंटू (H.S. / घुर्रका)**\n"
+            "इस रोग में पशु के गले व जबड़े के नीचे गर्म, दर्दनाक सूजन आ जाती है और घुर्र-घुर्र की तेज आवाज के साथ सांस रुकने लगती है।\n"
+            "**तत्काल कदम:**\n"
+            "1. **तुरंत डॉक्टर को बुलाएं:** पशु की सांस रुकने से पहले एंटीबायोटिक (ऑक्सीटेट्रासाइक्लिन या सल्फा दवा) का इंजेक्शन लगना अति आवश्यक है।\n"
+            "2. **गले पर ठंडा पानी:** सूजन पर धीरे-धीरे ठंडा पानी डालें।\n"
+            "3. **बाड़े को सूखा रखें:** गीली व बदबूदार जगह से पशु को तुरंत हटाकर सूखे हवादार स्थान पर बांधें।\n"
+            "4. **टीकाकरण:** हर वर्ष वर्षा ऋतु से पूर्व (मई-जून) में गलघोंटू का टीका अवश्य लगवाएं।"
+        ),
+        "reply_mr": (
+            "🚨 **तातडीची आणीबाणी: घटसर्प (HS - Hemorrhagic Septicemia)**\n"
+            "गळ्याला व छातीला मोठी गरम सूज येऊन जनावराचा घुर्र-घुर्र आवाज येतो व श्वास गुदमरतो.\n"
+            "**त्वरित उपाय:**\n"
+            "१. **तात्काळ उपचार:** डॉक्टरांना त्वरित पाचारण करून अँटिबायोटिक इंजेक्शन देणे जीवन वाचवण्यासाठी आवश्यक आहे.\n"
+            "२. **थंड पाणी:** गळ्याच्या सुजेवर थंड पाण्याचा मारा करा.\n"
+            "३. **गोठा कोरडा ठेवा:** जनावराला दलदलीच्या ठिकाणाहून कोरड्या जागी हलवा.\n"
+            "४. **लसीकरण:** पावसाळ्यापूर्वी मे-जून महिन्यात घटसर्प प्रतिबंधक लस नक्की द्या."
+        ),
+        "reply_te": (
+            "🚨 **తీవ్రమైన అత్యవసరం: గొంతువాపు వ్యాధి (H.S.)**\n"
+            "గొంతు కింద తీవ్రమైన వాపు వచ్చి గురక శబ్దంతో ఊపిరాడక పశువు త్వరగా మరణించే ప్రమాదం ఉంది.\n"
+            "**తక్షణ రక్షణ చర్యలు:**\n"
+            "1. **వెంటనే డాక్టర్ ను పిలవండి:** కొన్ని గంటల్లోనే యాంటీబయోటిక్ ఇంజెక్షన్ ఇప్పించడం అత్యవసరం.\n"
+            "2. **చల్లటి నీరు:** వాపుపై చల్లటి నీటిని మెల్లగా చల్లండి.\n"
+            "3. **పొడి ప్రదేశం:** తడి లేని పొడి కొట్టంలో పశువును ఉంచండి.\n"
+            "4. **ముందస్తు టీకాలు:** వర్షాకాలం ప్రారంభానికి ముందే (మే-జూన్) గొంతువాపు టీకా వేయించండి."
+        ),
+        "suggested_questions": [
+            "गलघोंटू में तुरंत कौन सा इंजेक्शन लगाया जाता है?",
+            "घटसर्प रोगाची लक्षणे काय आहेत?",
+            "వర్షాకాలంలో గొంతువాపు రాకుండా ఏం చేయాలి?"
+        ]
+    },
+    {
+        "keywords": [
+            "blackleg", "bq", "langda", "crepitus", "thigh", "swelling", "lameness",
+            "लंगड़ा बुखार", "जहरबाद", "एकटांग्या", "फऱ्या", "జబ్బవాపు", "కుంటితనం"
+        ],
+        "intent": "BLACKLEG_BQ",
+        "title": "Blackleg / Black Quarter (लंगड़ा बुखार / एकटांग्या / జబ్బవాపు)",
+        "is_emergency": True,
+        "reply_en": (
+            "🚨 **Blackleg / Black Quarter (Clostridium chauvoei)**\n"
+            "Affects fast-growing young cattle (6-24 months). Characterized by severe lameness and crackling spongy muscle swelling.\n"
+            "**Care & Actions:**\n"
+            "1. **Urgent Penicillin:** High doses of crystalline penicillin under veterinary supervision are effective in early stages.\n"
+            "2. **Herd Quarantine:** Restrict movement of young cattle in the infected pasture.\n"
+            "3. **Annual Vaccination:** Immunize with Polyvalent Clostridial / BQ vaccine annually before monsoon."
+        ),
+        "reply_hi": (
+            "🚨 **लंगड़ा बुखार / जहरबाद (Black Quarter - BQ)**\n"
+            "यह 6 महीने से 2 साल के स्वस्थ व मोटे पशुओं में तेजी से फैलता है। जांघ या पुट्ठे पर सूजन आती है, दबाने पर चर्र-चर्र की आवाज होती है।\n"
+            "**उपचार व सावधानियां:**\n"
+            "1. **तत्काल पेनिसिलिन इंजेक्शन:** बीमारी के शुरुआती घंटों में ही पेनिसिलिन एंटीबायोटिक का बड़ा डोज पशु चिकित्सक से लगवाएं।\n"
+            "2. **पशु को विश्राम दें:** पशु को चलाने की कोशिश न करें, छायादार व शांत जगह रखें।\n"
+            "3. **टीकाकरण:** वर्षा से पूर्व (मई-जून) सभी बछड़े-बछड़ियों को BQ का टीका अवश्य लगवाएं।"
+        ),
+        "reply_mr": (
+            "🚨 **एकटांग्या / फऱ्या रोग (Black Quarter - BQ)**\n"
+            "हा रोग तरुण व सुदृढ जनावरांमध्ये जास्त आढळतो. मांडीवर मोठी सूज येऊन दाबल्यास चर्र-चर्र आवाज येतो व जनावर लंगडते.\n"
+            "**तातडीचे उपाय:**\n"
+            "१. **पेनिसिलिन उपचार:** डॉक्टरांच्या देखरेखीखाली ताबडतोब पेनिसिलिन इंजेक्शन देणे गरजेचे आहे.\n"
+            "२. **विश्रांती:** जनावराला चालवू नका, कोरड्या जागेवर ठेवा.\n"
+            "३. **लसीकरण:** मे-जून महिन्यात इतर सर्व वासरांना फऱ्याची लस टोचून घ्या."
+        ),
+        "reply_te": (
+            "🚨 **జబ్బవాపు వ్యాధి (Black Quarter - BQ)**\n"
+            "ఆరు నెలల నుండి రెండేళ్ల వయసున్న పుష్టికరమైన పశువులకు ఎక్కువగా సోకుతుంది. కండరాలపై వాపు వచ్చి నొక్కితే చటపట శబ్దం వస్తుంది.\n"
+            "**చికిత్స మరియు రక్షణ:**\n"
+            "1. **పెన్సిలిన్ ఇంజెక్షన్:** ప్రారంభ దశలోనే పశువైద్యుడితో పెన్సిలిన్ యాంటీబయోటిక్ ఇప్పించండి.\n"
+            "2. **విశ్రాంతి:** పశువును నడిపించకండి, ప్రశాంతంగా ఉంచండి.\n"
+            "3. **టీకాలు:** వర్షాకాలం ముందు తప్పనిసరిగా BQ టీకా వేయించండి."
+        ),
+        "suggested_questions": [
+            "लंगड़ा बुखार की पहचान कैसे करें?",
+            "एकटांग्या रोगावर कोणते इंजेक्शन द्यावे?",
+            "జబ్బవాపు టీకా ఎప్పుడు వేయించాలి?"
+        ]
+    },
+    {
+        "keywords": [
+            "tick", "ticks", "chichdi", "kilni", "parasite", "gochid", "gomarlu", "anemia", "chichadi",
+            "चिचड़ी", "किलनी", "गोचीड", "గోమార్లు", "పిడుదులు", "कीड़े", "परजीवी"
+        ],
+        "intent": "TICK_PARASITES",
+        "title": "Tick Infestation & Ectoparasites (चिचड़ी / गोचीड / గోమార్లు)",
+        "is_emergency": False,
+        "reply_en": (
+            "Tick infestations drain blood, cause Babesiosis / Theileriosis (Tick Fever), and reduce milk yield.\n"
+            "**Eradication Protocol:**\n"
+            "1. **Pour-on Treatment:** Apply Flumethrin 1% or Deltamethrin pour-on along the spine under veterinary advice.\n"
+            "2. **Shed Sanitation:** Ticks lay eggs in wall crevices. Spray shed walls with 2% Butox or sanitize crevices with flame torch.\n"
+            "3. **Herbal Spray:** Spray boiled neem leaves and camphor water on the animal coat twice a week.\n"
+            "4. **Never Crush Ticks by Hand:** Ticks carry zoonotic pathogens. Drop picked ticks into kerosene."
+        ),
+        "reply_hi": (
+            "चिचड़ी व किलनी पशु का खून चूसती हैं और बबेसिओसिस (लाल पेशाब वाला बुखार) जैसी घातक बीमारियां फैलाती हैं।\n"
+            "**रोकथाम के उपाय:**\n"
+            "1. **दवा का उपयोग:** पशु चिकित्सक की सलाह से ब्यूटॉक्स (Butox) या फ्लूमेथ्रिन दवा रीढ़ की हड्डी के साथ लगाएं।\n"
+            "2. **गौशाला की सफाई:** किलनी दीवारों की दरारों में अंडे देती है। दरारों में चूना पोतें या कीटनाशक का छिड़काव करें।\n"
+            "3. **देशी स्प्रे:** नीम की पत्तियां उबालकर उसमें कपूर मिलाकर पशु के शरीर पर छिड़कें।\n"
+            "4. **हाथ से न मसलें:** निकाली गई चिचड़ियों को मिट्टी के तेल (केरोसिन) में डालकर नष्ट करें।"
+        ),
+        "reply_mr": (
+            "गोचीड जनावरांचे रक्त शोषतात आणि तांबड्या लघवीचा ताप (बॅबेसियोसिस) पसरवतात.\n"
+            "**गोचीड निर्मूलन उपाय:**\n"
+            "१. **औषध फवारणी:** डॉक्टरांच्या सल्ल्याने ब्युटॉक्स (Butox) किंवा फ्लूमेथ्रीन औषध पाठीच्या कण्यावर लावा.\n"
+            "२. **गोठ्याची स्वच्छता:** गोठ्यातील भिंतींच्या भेगांमध्ये गोचीड अंडी घालतात. भेगांमध्ये चुना भरा व औषध फवारा.\n"
+            "३. **घरगुती उपाय:** कडुनिंबाचा अर्क व कापूर यांचे पाणी जनावरांच्या अंगावर आठवड्यातून दोनदा फवारा.\n"
+            "४. **काळजी:** गोचीड हाताने फोडू नका, रॉकेलच्या डब्यात टाकून नष्ट करा."
+        ),
+        "reply_te": (
+            "గోమార్లు మరియు పిడుదులు పశువుల రక్తాన్ని పీల్చి తీవ్రమైన రక్తహీనత మరియు మూత్రంలో రక్తం వచ్చే జ్వరాన్ని కలిగిస్తాయి.\n"
+            "**నివారణ చర్యలు:**\n"
+            "1. **మందుల పూత:** పశువైద్యుల సలహాతో బ్యూటాక్స్ లేదా ఫ్లూమెథ్రిన్ మందును వెన్నుపూస వెంట పూయండి.\n"
+            "2. **కొట్టం పరిశుభ్రత:** గోడల పగుళ్లలో సున్నం వేయండి లేదా క్రిమిసంహారక మందు పిచికారీ చేయండి.\n"
+            "3. **వేప చిట్కా:** వేపాకు కషాయంలో కర్పూరం కలిపి పశువు ఒంటిపై చల్లండి.\n"
+            "4. **జాగ్రత్త:** తీసిన గోమార్లను కిరోసిన్ లో వేసి నాశనం చేయండి."
+        ),
+        "suggested_questions": [
+            "चिचड़ी हटाने का सबसे सुरक्षित तरीका क्या है?",
+            "गोचीड तापाची लक्षणे काय आहेत?",
+            "గోమార్ల నివారణకు సరైన మందు ఏది?"
+        ]
+    },
+    {
+        "keywords": [
+            "fever", "temperature", "bukhar", "tap", "jwaram", "off feed", "anorexia", "khana", "susti",
+            "बुखार", "ताप", "జ్వరం", "మేత", "మేయడం లేదు", "चारा नहीं खा रही", "खाना नहीं खा रही", "सुस्त", "चारा न खाणे", "అనారోగ్యం", "bimar", "बीमार"
+        ],
+        "intent": "FEVER_ANOREXIA",
+        "title": "High Fever & Loss of Appetite (बुखार व सुस्ती / ताप / జ్వరం)",
+        "is_emergency": False,
+        "reply_en": (
+            "High fever (>103°F) and refusal to eat (off-feed) indicate acute systemic infection.\n"
+            "**Immediate Relief Steps:**\n"
+            "1. **Check Rectal Temperature:** Normal bovine temp is 101.5°F. Fever is >103°F.\n"
+            "2. **Cold Compress:** Sponge forehead and muzzle with wet cool cloth.\n"
+            "3. **Appetite Stimulant:** Give 50g jaggery mixed with 20g crushed ginger and 10g carom seeds (ajwain).\n"
+            "4. **Veterinary Visit:** If fever persists beyond 24 hours or animal stops ruminating (जुगाली), call vet for targeted antibiotics and antipyretics."
+        ),
+        "reply_hi": (
+            "पशु को तेज बुखार (>103°F) और चारा न खाना किसी अंदरूनी संक्रमण का संकेत है।\n"
+            "**घर पर क्या करें:**\n"
+            "1. **तापमान नापें:** स्वस्थ गाय/भैंस का तापमान 101.5°F होता है। 103°F से अधिक बुखार है।\n"
+            "2. **ठंडी पट्टी:** माथे व सिर पर ठंडे पानी की पट्टी रखें।\n"
+            "3. **भूख बढ़ाने का नुस्खा:** गुड़ 50 ग्राम, पिसी सोंठ/अदरक 20 ग्राम और अजवाइन 10 ग्राम मिलाकर खिलाएं।\n"
+            "4. **डॉक्टर को दिखाएं:** यदि पशु 24 घंटे से अधिक जुगाली न करे तो तुरंत पशु चिकित्सक से जांच करवाएं।"
+        ),
+        "reply_mr": (
+            "जनावराला ताप येणे (>१०३°F) आणि चारा न खाणे हा संसर्गाचा मुख्य इशारा आहे.\n"
+            "**प्राथमिक काळजी:**\n"
+            "१. **ताप तपासा:** सामान्य तापमान १०१.५°F असते. १०३°F च्या वर ताप असल्यास थंड पाण्याच्या पट्ट्या कपाळावर ठेवा.\n"
+            "२. **पचन सुधारक:** गूळ, सुंठ आणि ओवा एकत्र करून गोळा करून जनावराला खायला द्या.\n"
+            "३. **स्वच्छ पाणी:** पिण्यासाठी कोमट किंवा स्वच्छ पाणी मुबलक ठेवा.\n"
+            "४. **वैद्यकीय उपचार:** ताप २४ तासांत न उतरल्यास डॉक्टरांकडून तपासणी करून इंजेक्शन द्या."
+        ),
+        "reply_te": (
+            "పశువుకు తీవ్రమైన జ్వరం (>103°F) మరియు మేత మేయకపోవడం ఏదైనా ఇన్ఫెక్షన్ సంకేతం.\n"
+            "**తక్షణ ఉపశమనం:**\n"
+            "1. **చల్లటి నీటి కాపడం:** తల మరియు నుదిటిపై చల్లటి గుడ్డతో తుడవండి.\n"
+            "2. **ఆకలికి చిట్కా:** బెల్లం, అల్లం మరియు వాము కలిపి ముద్దగా చేసి తినిపించండి.\n"
+            "3. **స్వచ్ఛమైన నీరు:** తాగడానికి పరిశుభ్రమైన నీటిని అందించండి.\n"
+            "4. **డాక్టర్ సహాయం:** 24 గంటల్లో జ్వరం తగ్గకపోతే వెంటనే వెటర్నరీ డాక్టర్ కు చూపించండి."
+        ),
+        "suggested_questions": [
+            "पशु का सामान्य तापमान कितना होना चाहिए?",
+            "चारा न खाने पर क्या देशी दवा दें?",
+            "పశువుకు జ్వరం వస్తే ఏ ఇంజెక్షన్ ఇవ్వాలి?"
+        ]
+    },
+    {
+        "keywords": [
+            "diarrhea", "loose", "motion", "dung", "dast", "pechish", "julab", "virechanalu", "pichkari",
+            "दस्त", "पेचिश", "पतला गोबर", "जुलाब", "विरेचनाలు", "पातळ शेण"
+        ],
+        "intent": "DIARRHEA_ENTERITIS",
+        "title": "Bovine Diarrhea & Enteritis (पतला गोबर व दस्त / जुलाब / విరేచనాలు)",
+        "is_emergency": False,
+        "reply_en": (
+            "Watery dung causes rapid dehydration and electrolyte loss in cattle and calves.\n"
+            "**Hydration & Care Protocol:**\n"
+            "1. **Electrolyte Therapy (ORS):** Dissolve 50g salt and 100g sugar/jaggery in 5 liters clean water; offer frequently.\n"
+            "2. **Astringent Drench:** Administer rice congee water mixed with 50g powdered dried pomegranate peel or black tea.\n"
+            "3. **Deworming:** Heavy worm burden is a primary cause; deworm with Albendazole / Fenbendazole after diarrhea stops.\n"
+            "4. **Blood in Dung:** If feces contains dark blood or foul odor, call vet immediately for gut-acting antibiotics."
+        ),
+        "reply_hi": (
+            "पतले दस्त होने से पशु के शरीर में पानी और लवण की कमी (डिहाइड्रेशन) हो जाती है।\n"
+            "**घरेलू उपचार व सावधानी:**\n"
+            "1. **ओआरएस घोल:** 5 लीटर पानी में 50 ग्राम नमक और 100 ग्राम गुड़ मिलाकर दिन में 3 बार पिलाएं।\n"
+            "2. **दही व चावल का पानी:** पके चावल का मांड या छाछ में भुना जीरा मिलाकर दें।\n"
+            "3. **अनार के छिलके:** अनार के सूखे छिलकों का चूर्ण 50 ग्राम खिलाने से दस्त में तुरंत आराम मिलता है।\n"
+            "4. **खून आने पर:** यदि गोबर में खून या अत्यधिक बदबू हो तो तुरंत डॉक्टर को दिखाएं।"
+        ),
+        "reply_mr": (
+            "पातळ शेण किंवा जुलाब झाल्याने जनावराच्या शरीरातील पाण्याचे प्रमाण कमी होते.\n"
+            "**घरगुती उपाय:**\n"
+            "१. **इलेक्ट्रोलाइट पाणी:** ५ लिटर पाण्यात मूठभर मीठ व १०० ग्रॅम गूळ घालून वारंवार पाजा.\n"
+            "२. **ताक व जिरे:** ताकामध्ये भाजलेले जिरे व हळद टाकून दिल्यास आतड्यांना आराम मिळतो.\n"
+            "३. **डाळिंबाची साल:** वाळलेल्या डाळिंबाच्या सालीचे चूर्ण दिल्यास जुलाब थांबतात.\n"
+            "४. **जंतनिर्मूलन:** जुलाब बरे झाल्यावर जंताचे औषध नक्की द्या."
+        ),
+        "reply_te": (
+            "పశువులకు పారుడు రోగం లేదా విరేచనాలు అయినప్పుడు శరీరంలో నీరు తగ్గిపోయి నీరసించిపోతాయి.\n"
+            "**సంరక్షణ చిట్కాలు:**\n"
+            "1. **ఓఆర్ఎస్ ద్రావణం:** 5 లీటర్ల నీటిలో 50 గ్రాముల ఉప్పు మరియు 100 గ్రాముల బెల్లం కలిపి తాగించండి.\n"
+            "2. **గంజి నీరు:** వరి అన్నం గంజిలో మెంతులు లేదా జీలకర్ర పొడి కలిపి ఇవ్వండి.\n"
+            "3. **దానిమ్మ తొక్క:** ఎండిన దానిమ్మ తొక్కల పొడి విరేచనాలను అరికడుతుంది.\n"
+            "4. **రక్తం పడితే:** విరేచనాలలో రక్తం వస్తే వెంటనే పశువైద్యుడిని సంప్రదించండి."
+        ),
+        "suggested_questions": [
+            "बछड़े को सफेद दस्त होने पर क्या करें?",
+            "जुलाबावर घरगुती काढा कसा बनवावा?",
+            "విరేచనాలు తగ్గడానికి దేశవాళీ మందు ఏమిటి?"
+        ]
+    },
+    {
+        "keywords": [
             "bloat", "pet", "phoolna", "afra", "gas", "tympany", "अफारा", "पेट फूलना",
-            "पोट फुगणे", "पोटात गॅस", "కడుపుబ్బరం", "గ్యాస్", "కడుపు ఉబ్బడం"
+            "पोट फुगणे", "पोटात गॅस", "కడుపుబ్బరం", "కడుపు ఉబ్బరం", "ఉబ్బరం", "గ్యాస్", "కడుపు ఉబ్బడం"
         ],
         "intent": "BLOAT_EMERGENCY",
         "title": "Acute Rumen Bloat / Tympany (अफारा / पोट फुगणे / కడుపుబ్బరం)",
@@ -156,8 +443,7 @@ CHATBOT_KNOWLEDGE = [
         "suggested_questions": [
             "अफारा किस कारण से होता है?",
             "पोट फुगल्यावर काय काळजी घ्यावी?",
-            "కడుపుబ్బరానికి తక్షణ మందు ఏమిటి?",
-            "ट्रोकार कैन्युला कब इस्तेमाल किया जाता है?"
+            "కడుపుబ్బరానికి తక్షణ మందు ఏమిటి?"
         ]
     },
     {
@@ -167,6 +453,7 @@ CHATBOT_KNOWLEDGE = [
         ],
         "intent": "MASTITIS_CARE",
         "title": "Mastitis / Udder Infection (थनैला रोग / स्तनदाह / పొదుగువాపు)",
+        "is_emergency": False,
         "reply_en": (
             "Mastitis causes severe milk loss and permanent udder damage if untreated.\n"
             "**Care Instructions:**\n"
@@ -202,31 +489,74 @@ CHATBOT_KNOWLEDGE = [
         "suggested_questions": [
             "थनैला रोग से बचाव कैसे करें?",
             "दूध निकालने का सही तरीका क्या है?",
-            "स्तनदाहावर घरगुती उपाय काय?",
-            "పొదుగువాపు వ్యాధి రాకుండా ఎలాంటి జాగ్రత్తలు తీసుకోవాలి?"
+            "स्तनदाहावर घरगुती उपाय काय?"
         ]
     },
     {
         "keywords": [
-            "withdrawal", "dawa", "doodh", "mans", "safety", "antibiotic", "दवा का असर",
+            "milk", "doodh", "yield", "nutrition", "mineral", "mixture", "poshan", "growth",
+            "दूध कम", "दूध बढ़ाना", "खनिज मिश्रण", "संतुलित आहार", "दूध वाढवणे", "पोषक आहार", "పాలు పెరగడానికి", "మినరల్ మిశ్రమం"
+        ],
+        "intent": "MILK_NUTRITION",
+        "title": "Milk Production & Livestock Nutrition (दूध उत्पादन व पोषण)",
+        "is_emergency": False,
+        "reply_en": (
+            "**Boosting Milk Production & Dairy Herd Nutrition:**\n"
+            "1. **Mineral Mixture:** Feed 40g to 50g chelated mineral mixture daily with concentrate feed.\n"
+            "2. **Clean Water:** Dairy cows need 70-100 liters of clean, cool drinking water daily.\n"
+            "3. **Balanced Ration:** Provide 2/3 green fodder and 1/3 dry fodder along with balanced cattle feed pellets.\n"
+            "4. **Regular Deworming:** Internal parasites can steal up to 30% of dietary nutrients. Deworm twice yearly."
+        ),
+        "reply_hi": (
+            "**दूध उत्पादन बढ़ाने व स्वस्थ पशु पोषण के नियम:**\n"
+            "1. **खनिज मिश्रण:** रोजाना 40 से 50 ग्राम अच्छी गुणवत्ता का खनिज मिश्रण (Mineral Mixture) दाने में मिलाकर दें।\n"
+            "2. **भरपूर पानी:** एक दुधारू गाय को दिन में 70 से 100 लीटर साफ पानी चाहिए।\n"
+            "3. **संतुलित चारा:** चारे में 2 भाग हरा चारा और 1 भाग सूखा भूसा रखें।\n"
+            "4. **पेट के कीड़े की दवा:** साल में 2 बार पेट के कीड़ों की दवा (एल्बेंडाजोल) अवश्य दें।"
+        ),
+        "reply_mr": (
+            "**दूध उत्पादन वाढ व जनावरांचे संतुलित पोषण:**\n"
+            "१. **खनिज मिश्रण:** दररोज ४० ते ५० ग्रॅम चांगल्या दर्जाचे खनिज मिश्रण खाद्यातून द्या.\n"
+            "२. **स्वच्छ पाणी:** दुभत्या गाईला दररोज ७० ते १०० लिटर थंड व स्वच्छ पाणी लागते.\n"
+            "३. **संतुलित चारा:** २ भाग हिरवा चारा आणि १ भाग सुका चारा द्यावा.\n"
+            "४. **जंतनिर्मूलन:** वर्षातून दोनदा जंताचे औषध देणे अत्यंत गरजेचे आहे."
+        ),
+        "reply_te": (
+            "**పాల ఉత్పత్తి పెంపు మరియు పోషకాహారం:**\n"
+            "1. **ఖనిజ లవణాల మిశ్రమం:** ప్రతిరోజూ 40-50 గ్రాముల మినరల్ మిశ్రమాన్ని దాణాలో కలిపి ఇవ్వండి.\n"
+            "2. **మంచి నీరు:** రోజుకు 70-100 లీటర్ల స్వచ్ఛమైన నీటిని అందించాలి.\n"
+            "3. **సమతుల్య మేత:** పచ్చిమేత మరియు ఎండుమేత సమపాళ్లలో ఇవ్వండి.\n"
+            "4. **నట్టల నివారణ:** సంవత్సరానికి రెండుసార్లు నట్టల మందు వేయించండి."
+        ),
+        "suggested_questions": [
+            "दूध बढ़ाने के लिए कौन सा दाना सबसे अच्छा है?",
+            "खनिज मिश्रण देने का सही समय क्या है?",
+            "పాలు పెరగడానికి ఏం దాణా ఇవ్వాలి?"
+        ]
+    },
+    {
+        "keywords": [
+            "withdrawal", "withdrawal time", "enrofloxacin", "oxytetracycline", "ceftiofur", "residue", "residues",
+            "withholding", "dawa", "doodh", "mans", "safety", "antibiotic", "दवा का असर",
             "औषध", "निकासी", "మందుల ప్రభావం", "విత్ డ్రాయల్", "యాంటీబయోటిక్స్"
         ],
         "intent": "WITHDRAWAL_STEWARDSHIP",
         "title": "Antimicrobial Withdrawal Period (दवा निकासी अवधि / औषध विश्रांती काळ)",
+        "is_emergency": False,
         "reply_en": (
             "**Why Antimicrobial Withdrawal Matters:**\n"
-            "When cows/buffaloes are injected with antibiotics (e.g. Ceftiofur, Oxytetracycline, Enrofloxacin), drug residues remain in milk and meat.\n"
-            "• Drinking this milk causes antibiotic resistance and kidney/liver risks in children.\n"
+            "When cattle are treated with antibiotics, drug residues remain in milk and meat.\n"
+            "• Drinking this milk causes antibiotic resistance and health hazards in humans.\n"
             "• **Standard Withdrawal Times:**\n"
             "  - Intramammary tubes: 3 to 5 days milk withdrawal.\n"
             "  - Long-Acting Oxytetracycline: 7 days milk / 21 days meat.\n"
-            "  - Ceftiofur: 0-3 days milk (check formulation) / 4 days meat.\n"
+            "  - Ceftiofur: 0-3 days milk (check label) / 4 days meat.\n"
             "Always consult your attending veterinarian regarding the exact safe clearance date."
         ),
         "reply_hi": (
             "**एंटीबायोटिक दवा निकासी अवधि (Withdrawal Period):**\n"
-            "जब पशु को गंभीर बीमारी में एंटीबायोटिक इंजेक्शन या थन की दवा दी जाती है, तो उसका असर दूध और मांस में रहता है।\n"
-            "• ऐसा दूध पीने से बच्चों व वयस्कों में दवाओं के प्रति प्रतिरोध (Antibiotic Resistance) पैदा होता है।\n"
+            "जब पशु को गंभीर बीमारी में एंटीबायोटिक दवा दी जाती है, तो उसका असर दूध और मांस में रहता है।\n"
+            "• ऐसा दूध पीने से बच्चों व मनुष्यों में दवाइयों के प्रति प्रतिरोध (Resistance) पैदा हो जाता है।\n"
             "• **औसत सुरक्षित समय:**\n"
             "  - थन की नलियां (Intramammary): 3 से 5 दिन तक दूध न बेचें/न पिएं।\n"
             "  - लंबी अवधि का ऑक्सीटेट्रासाइक्लिन (LA): 7 दिन दूध / 21 दिन मांस।\n"
@@ -235,17 +565,17 @@ CHATBOT_KNOWLEDGE = [
         ),
         "reply_mr": (
             "**अँटिबायोटिक औषध विश्रांती काळ (Withdrawal Period):**\n"
-            "जनावरांना प्रतिजैविके (Antibiotics) दिल्यावर औषधाचा अंश दूध आणि मांसात उतरतो.\n"
-            "• असे दूध पिण्याने मानवी आरोग्यास आणि लहान मुलांच्या प्रतिकारशक्तीस मोठा धोका निर्माण होतो.\n"
+            "जनावरांना प्रतिजैविके दिल्यावर औषधाचा अंश दूध आणि मांसात उतरतो.\n"
+            "• असे दूध पिण्याने मानवी आरोग्यास मोठा धोका निर्माण होतो.\n"
             "• **सुरक्षित कालावधी:**\n"
             "  - कासेत सोडलेली औषधे: ३ ते ५ दिवस दूध वापरू नका.\n"
-            "  - ऑक्झिटेट्रासायक्लिन इंजेक्शन: ७ दिवस दूध व २१ दिवस मांस वापरू नये.\n"
+            "  - ऑक्झिटेट्रासायक्लिन: ७ दिवस दूध व २१ दिवस मांस वापरू नये.\n"
             "पशुवैद्यक डॉक्टरांकडून औषधाचा विश्रांती काळ विचारून घ्या."
         ),
         "reply_te": (
             "**యాంటీబయోటిక్ విత్‌డ్రాయల్ పిరియడ్ (మందుల విరామ సమయం):**\n"
             "పశువులకు యాంటీబయోటిక్ ఇంజెక్షన్లు ఇచ్చినప్పుడు ఆ మందుల అవశేషాలు పాలు మరియు మాంసంలో ఉంటాయి.\n"
-            "• అటువంటి పాలు తాగడం వల్ల మనుషులలో యాంటీబయోటిక్ రెసిస్టెన్స్ వచ్చి మందులు పనిచేయకుండా పోతాయి.\n"
+            "• అటువంటి పాలు తాగడం వల్ల మనుషులలో యాంటీబయోటిక్ రెసిస్టెన్స్ వస్తుంది.\n"
             "• **సురక్షిత కాలం:**\n"
             "  - చనులలోకి ఎక్కించే మందులు: 3 నుండి 5 రోజుల వరకు పాలను వినియోగించరాదు.\n"
             "  - ఆక్సిటెట్రాసైక్లిన్: 7 రోజుల వరకు పాలు మరియు 21 రోజుల వరకు మాంసం వాడకూడదు.\n"
@@ -264,6 +594,7 @@ CHATBOT_KNOWLEDGE = [
         ],
         "intent": "VACCINATION_SCHEDULE",
         "title": "National Livestock Vaccination Calendar (टीकाकरण कैलेंडर / लसीकरण वेळापत्रक)",
+        "is_emergency": False,
         "reply_en": (
             "**Standard Indian Livestock Vaccination Calendar:**\n"
             "1. **Foot-and-Mouth Disease (FMD):** Age 4+ months. Twice a year (Pre-monsoon: May; Pre-winter: Nov).\n"
@@ -300,6 +631,57 @@ CHATBOT_KNOWLEDGE = [
             "गर्भवती गाय को कौन सा टीका नहीं लगाना चाहिए?",
             "लसीकरणानंतर ताप आल्यास काय करावे?",
             "పశువుల టీకాలు ఎక్కడ ఉచితంగా వేస్తారు?"
+        ]
+    },
+    {
+        "keywords": [
+            "hello", "hi", "hey", "namaste", "pranam", "help", "sahayak", "madat",
+            "नमस्ते", "प्रणाम", "नमस्कार", "नमन", "నమస్కారం", "హలో", "मदत", "सहायता"
+        ],
+        "intent": "GREETINGS_HELP",
+        "title": "Pashu AI Veterinary Sahayak (पशु एआई सहायक)",
+        "is_emergency": False,
+        "reply_en": (
+            "Hello! I am **Pashu AI Sahayak**, your 24/7 veterinary health advisor.\n"
+            "You can ask me about:\n"
+            "• Disease symptoms and emergency first-aid (FMD, LSD, Anthrax, HS, Bloat)\n"
+            "• Vaccination timings and due dates\n"
+            "• Milk withdrawal periods for antibiotics\n"
+            "• Feeding and nutrition for healthy cows\n"
+            "How can I assist you and your livestock today?"
+        ),
+        "reply_hi": (
+            "नमस्ते! मैं **पशु एआई सहायक** हूँ, आपका 24x7 पशु स्वास्थ्य सलाहकार।\n"
+            "आप मुझसे पूछ सकते हैं:\n"
+            "• पशु रोगों के लक्षण व प्राथमिक उपचार (खुरपका-मुंहपका, लम्पी, गलघोंटू, अफारा)\n"
+            "• पशु टीकाकरण का समय व कैलेंडर\n"
+            "• एंटीबायोटिक दवाओं के बाद दूध का परहेज़ समय\n"
+            "• स्वस्थ पशु आहार व दूध बढ़ाने के उपाय\n"
+            "आज मैं आपके पशुओं की क्या सहायता कर सकता हूँ?"
+        ),
+        "reply_mr": (
+            "नमस्कार! मी **पशु एआय सहाय्यक** आहे, आपला २४x७ पशुवैद्यकीय सल्लागार.\n"
+            "आपण मला विचारू शकता:\n"
+            "• जनावरांचे आजार व प्रथमोपचार (लाळ्या खुरकूत, लम्पी, घटसर्प, पोट फुगणे)\n"
+            "• लसीकरण वेळापत्रक व माहिती\n"
+            "• औषधांनंतर दूध विश्रांती काळ\n"
+            "• दूध वाढ व संतुलित पशुखाद्य\n"
+            "आज मी आपल्या जनावरांच्या आरोग्यासाठी काय मदत करू शकतो?"
+        ),
+        "reply_te": (
+            "నమస్కారం! నేను **పశు ఏఐ సహాయక్**, మీ 24x7 పశు ఆరోగ్య సలహాదారుని.\n"
+            "మీరు నన్ను అడగవచ్చు:\n"
+            "• పశు వ్యాధులు మరియు ప్రథమ చికిత్స (గాలికుంటు, లంపీ స్కిన్, గొంతువాపు, కడుపుబ్బరం)\n"
+            "• పశువుల టీకాల షెడ్యూల్\n"
+            "• యాంటీబయోటిక్ మందుల విరామ సమయం\n"
+            "• పాల ఉత్పత్తి మరియు సమతుల్య ఆహారం\n"
+            "ఈరోజు మీ పశువుల ఆరోగ్యం గురించి నేను ఎలా సహాయపడగలను?"
+        ),
+        "suggested_questions": [
+            "गाय के मुंह में छाले हैं क्या करें?",
+            "लम्पी रोग से बचाव के घरेलू उपाय",
+            "पशु का पेट फूलने पर तुरंत क्या करें?",
+            "గాలికుంటు వ్యాధి నివారణ చర్యలు"
         ]
     }
 ]
@@ -355,18 +737,105 @@ DEFAULT_FALLBACK = {
 }
 
 
-def process_chat_message(user_message: str, language: str = "hi") -> Dict[str, Any]:
+def chat_with_gemini(user_message: str, language: str = "hi", user_api_key: Optional[str] = None) -> Optional[Dict[str, Any]]:
     """
-    Processes farmer query, matches veterinary intents, and returns localized actionable response
-    supporting English, Hindi, Marathi, and Telugu.
+    Direct zero-dependency integration with Google Gemini Generative AI.
+    Provides natural language veterinary conversational support.
     """
+    api_key = user_api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    if not api_key:
+        return None
+    
+    lang_names = {
+        "hi": "Hindi (हिन्दी)",
+        "mr": "Marathi (मराठी)",
+        "te": "Telugu (తెలుగు)",
+        "en": "English"
+    }
+    lang_name = lang_names.get(language, "Hindi")
+    
+    system_prompt = (
+        f"You are Pashu AI Sahayak (पशु एआई सहायक), an empathetic expert veterinary AI assisting Indian livestock farmers, para-vets, and veterinarians. "
+        f"Answer the user's livestock question clearly, practically, and empathetically in {lang_name}. "
+        f"Use simple language easily understood by rural farmers. Use bold headings and bullet points.\n"
+        f"Always provide:\n"
+        f"1. Possible condition / clinical insight.\n"
+        f"2. Immediate first-aid or home care steps.\n"
+        f"3. Biosecurity / prevention for herd.\n"
+        f"4. Urgency level: whether veterinary attendance is needed immediately.\n"
+        f"5. If medications are discussed, mention safe milk/meat withdrawal time."
+    )
+    
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {"text": f"{system_prompt}\n\nFarmer Query: {user_message}"}
+                ]
+            }
+        ],
+        "generationConfig": {
+            "temperature": 0.4,
+            "maxOutputTokens": 900
+        }
+    }
+    
+    models = ["gemini-2.0-flash", "gemini-1.5-flash"]
+    for model in models:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+        try:
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=8) as res:
+                if res.status == 200:
+                    resp_data = json.loads(res.read().decode("utf-8"))
+                    candidates = resp_data.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        if parts:
+                            reply_text = parts[0].get("text", "").strip()
+                            return {
+                                "success": True,
+                                "title": "Pashu AI Sahayak (✨ Powered by Google Gemini AI)",
+                                "intent": "GEMINI_AI_CHAT",
+                                "is_emergency": any(w in user_message.lower() for w in ["emergency", "die", "death", "blood", "marr", "mar", "urgent", "आपातकाल", "मृत्यु"]),
+                                "reply": reply_text,
+                                "suggested_questions": [
+                                    "पशु को क्या सुपाच्य आहार दें?",
+                                    "क्या यह बीमारी दूसरे पशुओं में भी फैल सकती है?",
+                                    "टीकाकरण कब करवाना चाहिए?"
+                                ],
+                                "language": language,
+                                "ai_engine": f"Google Gemini ({model})"
+                            }
+        except Exception:
+            continue
+            
+    return None
+
+
+def process_chat_message(user_message: str, language: str = "hi", user_api_key: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Processes farmer query, attempts Google Gemini Generative AI first if key is available,
+    and seamlessly falls back to the calibrated 14-condition veterinary knowledge base.
+    """
+    # 1. Attempt Google Gemini AI if API key is active
+    gemini_reply = chat_with_gemini(user_message, language=language, user_api_key=user_api_key)
+    if gemini_reply:
+        return gemini_reply
+
+    # 2. Offline Rule-Based Veterinary Knowledge Engine
     msg_clean = user_message.strip().lower()
     
     matched_entry = None
     best_score = 0
     
     for entry in CHATBOT_KNOWLEDGE:
-        score = sum(1 for kw in entry["keywords"] if kw in msg_clean)
+        score = sum(1 for kw in entry["keywords"] if kw.lower() in msg_clean)
         if score > best_score:
             best_score = score
             matched_entry = entry
@@ -387,5 +856,6 @@ def process_chat_message(user_message: str, language: str = "hi") -> Dict[str, A
         "is_emergency": bool(matched_entry.get("is_emergency", False)),
         "reply": reply_text,
         "suggested_questions": matched_entry.get("suggested_questions", []),
-        "language": language
+        "language": language,
+        "ai_engine": "Pashu Suraksha Veterinary AI Engine"
     }

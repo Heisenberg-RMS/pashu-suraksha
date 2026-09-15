@@ -17,6 +17,7 @@ const I18N_TRANSLATIONS = {
     tab_map: "🗺️ Outbreak Map & GIS Surveillance",
     tab_vision: "📸 AI Vision Lens & Lesion Scan",
     tab_triage: "⚡ Rapid Syndromic Report & AI Triage",
+    tab_chat: "💬 Pashu AI Sahayak (Chatbot)",
     tab_ehr: "📋 Animal EHR & Health Passport",
     tab_labs: "🧪 Lab Referrals & Chain of Custody",
     tab_advisories: "🔊 Multilingual Voice Advisories & SMS",

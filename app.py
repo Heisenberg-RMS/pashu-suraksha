@@ -245,7 +245,13 @@ def chatbot_reply():
     if not message:
         return jsonify({"success": False, "error": "Message cannot be empty"}), 400
         
-    reply = process_chat_message(message, language=language)
+    api_key = (
+        request.headers.get("X-Gemini-API-Key")
+        or data.get("api_key")
+        or session.get("gemini_api_key")
+        or os.environ.get("GEMINI_API_KEY")
+    )
+    reply = process_chat_message(message, language=language, user_api_key=api_key)
     return jsonify(reply)
 
 # ==========================================

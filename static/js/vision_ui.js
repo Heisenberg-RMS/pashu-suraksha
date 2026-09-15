@@ -14,6 +14,7 @@ class VisionDiagnosticsManager {
     this.atlasCatalog = [];
     this.currentAtlasFilter = 'ALL';
     this.geminiActive = false;
+    this.currentSearchQuery = '';
 
     window.addEventListener('languageChanged', (e) => {
       // Re-render photo atlas with newly selected language
@@ -28,7 +29,6 @@ class VisionDiagnosticsManager {
 
   init() {
     this.setupDropzone();
-    this.setupSamplePresets();
     this.setupTargetRegionPills();
     this.checkGeminiStatus();
     this.loadPhotoAtlas();
@@ -522,14 +522,22 @@ class VisionDiagnosticsManager {
     this.renderPhotoAtlas();
   }
 
+  searchAtlas(query) {
+    this.currentSearchQuery = (query || '').trim().toLowerCase();
+    this.renderPhotoAtlas();
+  }
+
   renderPhotoAtlas() {
     const grid = document.getElementById('visionAtlasGrid');
     if (!grid || !this.atlasCatalog || !this.atlasCatalog.length) return;
 
     const lang = (window.I18n && window.I18n.currentLanguage) ? window.I18n.currentLanguage : 'hi';
     const filter = this.currentAtlasFilter;
+    const search = this.currentSearchQuery;
 
     let items = this.atlasCatalog;
+
+    // Apply Category Filter
     if (filter === 'HEALTHY') {
       items = items.filter(item => item.category === 'HEALTHY');
     } else if (filter === 'EPIDEMIC') {
@@ -538,9 +546,43 @@ class VisionDiagnosticsManager {
       items = items.filter(item => item.category === 'DISEASED' && ['MASTITIS', 'TICK_INFESTATION'].includes(item.disease_code));
     }
 
+    // Apply Search Query Filter if active
+    if (search) {
+      items = items.filter(item => {
+        const textToSearch = [
+          item.id,
+          item.filename,
+          item.disease_code || '',
+          item.title_en || '',
+          item.title_hi || '',
+          item.title_mr || '',
+          item.title_te || '',
+          item.hallmark_en || '',
+          item.hallmark_hi || '',
+          item.hallmark_mr || '',
+          item.hallmark_te || ''
+        ].join(' ').toLowerCase();
+        return textToSearch.includes(search);
+      });
+    }
+
+    if (items.length === 0) {
+      grid.innerHTML = `
+        <div style="grid-column:1/-1; text-align:center; padding:3rem 1.5rem; color:#64748b;">
+          <div style="font-size:2.5rem; margin-bottom:0.5rem;">🔍</div>
+          <div style="font-weight:700; font-size:1.05rem;">कोई फोटो नहीं मिली (No matching reference photos)</div>
+          <p style="font-size:0.85rem; margin-top:0.25rem;">कृपया दूसरा शब्द खोजें या सभी नमूने (All Specimens) देखें।</p>
+          <button class="btn btn-outline btn-sm" onclick="window.VisionManager.filterAtlas('ALL')" style="margin-top:0.5rem;">
+            सभी 13 नमूने देखें (Show All 13)
+          </button>
+        </div>
+      `;
+      return;
+    }
+
     const btnLabel = (window.I18n && typeof window.I18n.t === 'function')
-      ? window.I18n.t('btn_test_scan')
-      : '🔬 Test AI Scan';
+      ? (window.I18n.t('btn_test_scan') || '⚡ 1-Click Test Scan')
+      : '⚡ 1-Click Test Scan';
 
     grid.innerHTML = items.map(item => {
       const title = item['title_' + lang] || item.title_en;
@@ -555,7 +597,7 @@ class VisionDiagnosticsManager {
       }
 
       return `
-        <div class="vision-atlas-card" onclick="window.VisionManager.loadSampleImage('${item.id}')">
+        <div class="vision-atlas-card" onclick="window.VisionManager.loadSampleImage('${item.id}')" title="Click to test this image with AI Lens">
           <div class="atlas-card-thumbnail-wrap">
             <img class="atlas-card-thumbnail" src="/static/images/samples/${item.filename}" alt="${title}" loading="lazy">
             <span class="atlas-card-badge ${badgeClass}">${badgeText}</span>

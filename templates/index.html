@@ -94,6 +94,9 @@
     <button class="tab-btn" data-tab="triage" data-roles="FARMER,PARA_VET,DVO" data-i18n="tab_triage">
       ⚡ Rapid Syndromic Report & AI Triage
     </button>
+    <button class="tab-btn" data-tab="chat" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" data-i18n="tab_chat">
+      💬 Pashu AI Sahayak (Chatbot)
+    </button>
     <button class="tab-btn" data-tab="ehr" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" data-i18n="tab_ehr">
       📋 Animal EHR & Health Passport
     </button>
@@ -371,38 +374,7 @@
             <input type="file" id="visionCameraInput" accept="image/*" capture="environment" style="display:none;">
           </div>
 
-          <!-- Sample Lesion Presets -->
-          <div style="margin-top:1.25rem; border-top:1px solid #e2e8f0; padding-top:1rem;">
-            <label style="font-size:0.78rem; font-weight:700; color:#64748b; text-transform:uppercase;" data-i18n="presets_label">
-              ⚡ Or Test With Quick Synthetic Presets:
-            </label>
-            <div class="sample-presets-bar">
-              <button class="sample-preset-btn" data-hint="healthy" data-name="Healthy Bovine" data-icon="🐄" data-i18n="preset_healthy">
-                <span>🐄</span> Healthy Cattle
-              </button>
-              <button class="sample-preset-btn" data-hint="lsd" data-name="Lumpy Skin Disease" data-icon="⚪" data-i18n="preset_lsd">
-                <span>⚪</span> LSD Skin Nodules
-              </button>
-              <button class="sample-preset-btn" data-hint="fmd" data-name="FMD Vesicles" data-icon="👅" data-i18n="preset_fmd">
-                <span>👅</span> FMD Oral Blisters
-              </button>
-              <button class="sample-preset-btn" data-hint="mastitis" data-name="Bovine Mastitis" data-icon="🥛" data-i18n="preset_mastitis">
-                <span>🥛</span> Udder Mastitis
-              </button>
-              <button class="sample-preset-btn" data-hint="tick" data-name="Tick Cluster" data-icon="🪰" data-i18n="preset_ticks">
-                <span>🪰</span> Tick Parasites
-              </button>
-              <button class="sample-preset-btn" data-hint="anthrax" data-name="Anthrax Carcass" data-icon="⚠️" data-i18n="preset_anthrax">
-                <span>⚠️</span> Anthrax Post-Mortem
-              </button>
-              <button class="sample-preset-btn" data-hint="hs" data-name="HS Throat Swelling" data-icon="🧣" data-i18n="preset_hs">
-                <span>🧣</span> HS Neck Edema
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Vision AI Diagnostic Output Card -->
+          <!-- Vision AI Diagnostic Output Card -->
         <div>
           <div class="card" id="visionResultCard">
             <div style="text-align:center; padding:3rem 1.5rem; color:#94a3b8;">
@@ -414,39 +386,47 @@
         </div>
       </div>
 
-      <!-- Photographic Reference Atlas & Dataset Gallery -->
-      <div class="card" style="margin-top:1.5rem; border-top:4px solid #0f766e;">
-        <div class="card-header" style="flex-wrap:wrap; gap:0.75rem;">
+      <!-- Photographic Reference Atlas & Dataset Gallery (Unified) -->
+      <div class="card" style="margin-top:1.5rem; border-top:4px solid #0f766e; box-shadow:0 4px 14px rgba(0,0,0,0.06);">
+        <div class="card-header" style="flex-wrap:wrap; gap:0.75rem; align-items:center; justify-content:space-between;">
           <div>
-            <div style="display:flex; align-items:center; gap:0.5rem;">
-              <span style="font-size:1.4rem;">🖼️</span>
-              <h2 class="card-title" data-i18n="atlas_title">Livestock Photo Reference Atlas & Training Dataset</h2>
-              <span class="badge" style="background:#ccfbf1; color:#0f766e; font-weight:700;">13 Verified Clinical Specimens</span>
+            <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+              <span style="font-size:1.5rem;">📸</span>
+              <h2 class="card-title" data-i18n="atlas_title" style="margin:0; color:#0f766e; font-weight:800;">
+                एकीकृत पशु फोटो संदर्भ संग्रह व प्रशिक्षण डेटासेट (Livestock Photo Reference Atlas & Training Dataset)
+              </h2>
+              <span class="badge" style="background:#ccfbf1; color:#0f766e; font-weight:700; font-size:0.8rem;">13 Verified Clinical Specimens</span>
             </div>
-            <p style="font-size:0.82rem; color:#64748b; margin-top:0.2rem;" data-i18n="atlas_sub">
-              Curated photographic atlas of healthy cattle anatomy & pathognomonic disease lesions. Click any photo below to instantly test and benchmark AI Vision Diagnostics.
+            <p style="font-size:0.84rem; color:#64748b; margin-top:0.35rem; line-height:1.4;" data-i18n="atlas_sub">
+              सभी 13 स्वस्थ एवं रोगग्रस्त तस्वीरें एक ही जगह एकीकृत हैं। किसी भी फोटो पर क्लिक करें या <strong>"⚡ 1-Click Test Scan"</strong> बटन दबाएं ताकि लेंस में फोटो लोड होकर तुरंत एआई रोग निदान व प्राथमिक उपचार दिशा-निर्देश प्राप्त हो सकें।
             </p>
           </div>
           
-          <!-- Category Filter Bar -->
-          <div class="atlas-filter-bar">
-            <button type="button" class="atlas-filter-btn active" data-category="ALL" onclick="window.VisionManager.filterAtlas('ALL')">
-              🌐 <span data-i18n="filter_all">All Specimens (13)</span>
-            </button>
-            <button type="button" class="atlas-filter-btn" data-category="HEALTHY" onclick="window.VisionManager.filterAtlas('HEALTHY')">
-              ✅ <span data-i18n="filter_healthy">Healthy Bovines (5)</span>
-            </button>
-            <button type="button" class="atlas-filter-btn" data-category="EPIDEMIC" onclick="window.VisionManager.filterAtlas('EPIDEMIC')">
-              🚨 <span data-i18n="filter_epidemics">Critical Epidemics (5)</span>
-            </button>
-            <button type="button" class="atlas-filter-btn" data-category="COMMON" onclick="window.VisionManager.filterAtlas('COMMON')">
-              🩺 <span data-i18n="filter_common">Common Conditions (3)</span>
-            </button>
+          <!-- Quick Search Input within Atlas -->
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <input type="text" id="atlasSearchInput" placeholder="🔍 खोजें (लम्पी, छाले, थन, स्वस्थ, fever)..." oninput="window.VisionManager.searchAtlas(this.value)" class="form-control" style="font-size:0.82rem; padding:0.4rem 0.75rem; border-radius:6px; min-width:260px; border:1px solid #cbd5e1;">
           </div>
         </div>
 
+        <!-- Unified Category Filter Bar -->
+        <div style="padding:0.75rem 1.25rem 0.25rem 1.25rem; display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center; border-top:1px solid #f1f5f9;">
+          <span style="font-size:0.8rem; font-weight:700; color:#475569; margin-right:0.25rem;">श्रेणी (Category):</span>
+          <button type="button" class="atlas-filter-btn active" data-category="ALL" onclick="window.VisionManager.filterAtlas('ALL')">
+            🌐 <span data-i18n="filter_all">All Specimens (सभी 13 नमूने)</span>
+          </button>
+          <button type="button" class="atlas-filter-btn" data-category="HEALTHY" onclick="window.VisionManager.filterAtlas('HEALTHY')">
+            ✅ <span data-i18n="filter_healthy">Healthy Bovines (5 स्वस्थ गोवंश)</span>
+          </button>
+          <button type="button" class="atlas-filter-btn" data-category="EPIDEMIC" onclick="window.VisionManager.filterAtlas('EPIDEMIC')">
+            🚨 <span data-i18n="filter_epidemics">Critical Epidemics (6 घातक महामारियां)</span>
+          </button>
+          <button type="button" class="atlas-filter-btn" data-category="COMMON" onclick="window.VisionManager.filterAtlas('COMMON')">
+            🩺 <span data-i18n="filter_common">Common Conditions (2 सामान्य रोग)</span>
+          </button>
+        </div>
+
         <!-- Dynamic Grid of Atlas Cards -->
-        <div id="visionAtlasGrid" class="vision-atlas-grid">
+        <div id="visionAtlasGrid" class="vision-atlas-grid" style="padding:1rem 1.25rem 1.5rem 1.25rem;">
           <div style="grid-column:1/-1; text-align:center; padding:2rem; color:#94a3b8;">
             Loading reference photo catalog...
           </div>
@@ -1010,6 +990,49 @@
       </div>
     </section>
 
+    <!-- TAB: PASHU AI SAHAYAK (CHATBOT DEDICATED VIEW) -->
+    <section id="view-chat" class="tab-view">
+      <div class="card" style="max-width:1000px; margin:0 auto; padding:0; overflow:hidden; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.08);">
+        <!-- Dedicated Chat Header -->
+        <div style="background:linear-gradient(135deg, #0f766e 0%, #115e59 100%); color:#ffffff; padding:1.2rem 1.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+          <div style="display:flex; align-items:center; gap:0.85rem;">
+            <div style="font-size:2.2rem; background:rgba(255,255,255,0.18); width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,0.2);">🤖</div>
+            <div>
+              <h2 style="margin:0; font-size:1.35rem; font-weight:800; color:#ffffff;" data-i18n="chat_header">पशु एआई सहायक (Pashu AI Sahayak)</h2>
+              <div style="font-size:0.84rem; color:#ccfbf1; margin-top:2px;">
+                24x7 बुद्धिमान पशु चिकित्सा, लक्षण जांच, आपातकालीन प्राथमिक उपचार एवं रोग निवारण
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+            <div id="chatViewGeminiBadge" class="gemini-status-pill active" style="font-size:0.8rem; padding:0.35rem 0.75rem; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:20px; color:#ffffff;">
+              ✨ Gemini 2.0 Flash / AI Engine Active
+            </div>
+            <select id="chatViewLanguageSelect" onchange="window.I18n.setLanguage(this.value); window.ChatbotManager.setLanguage(this.value);" style="background:#ffffff; border:1px solid #cbd5e1; color:#0f766e; font-size:0.85rem; border-radius:8px; padding:0.4rem 0.65rem; font-weight:700; cursor:pointer; outline:none;">
+              <option value="en">English</option>
+              <option value="hi" selected>हिन्दी (Hindi)</option>
+              <option value="mr">मराठी (Marathi)</option>
+              <option value="te">తెలుగు (Telugu)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Chat Conversation Thread -->
+        <div id="chatViewMessagesThread" class="chat-thread" style="min-height:440px; max-height:560px; overflow-y:auto; padding:1.5rem; background:#f8fafc; display:flex; flex-direction:column; gap:1rem;">
+          <!-- Populated dynamically by chatbot_ui.js -->
+        </div>
+
+        <!-- Chat Input Bar -->
+        <div style="padding:1rem 1.25rem; background:#ffffff; border-top:1px solid #e2e8f0; display:flex; gap:0.75rem; align-items:center;">
+          <input type="text" id="chatViewTextInput" class="form-control" placeholder="पशु के लक्षण, बीमारी, दवा या प्राथमिक उपचार के बारे में पूछें (उदा. गाय को बुखार है)..." style="flex:1; padding:0.8rem 1.1rem; font-size:0.95rem; border-radius:8px; border:2px solid #cbd5e1;" onkeydown="if(event.key==='Enter') window.ChatbotManager.sendMessageFromView()">
+          <button id="chatViewSendBtn" class="btn btn-primary" onclick="window.ChatbotManager.sendMessageFromView()" style="padding:0.8rem 1.6rem; font-weight:700; font-size:0.95rem; border-radius:8px; display:flex; align-items:center; gap:0.5rem; background:#0f766e; border:none; color:#ffffff; cursor:pointer;">
+            <span>भेजें (Send)</span> ➤
+          </button>
+        </div>
+      </div>
+    </section>
+
+
   <!-- Login & Identity Modal -->
   <div id="loginModal" class="modal-backdrop">
     <div class="modal-container">
@@ -1140,7 +1163,7 @@
       </div>
     </div>
   <!-- Floating Action Button for Chatbot -->
-  <div id="chatFloatBtn" class="chat-float-btn" title="Chat with Pashu AI Sahayak (पशु एआई सहायक)">
+  <div id="chatFloatBtn" class="chat-float-btn" onclick="window.ChatbotManager.toggleChat()" title="Chat with Pashu AI Sahayak (पशु एआई सहायक)">
     <span class="chat-badge-pulse"></span>
     💬
   </div>
@@ -1162,7 +1185,7 @@
           <option value="mr" style="color:#000;">मराठी (Marathi)</option>
           <option value="te" style="color:#000;">తెలుగు (Telugu)</option>
         </select>
-        <button id="chatDrawerCloseBtn" style="background:transparent; border:none; color:#fff; font-size:1.4rem; cursor:pointer; line-height:1;">&times;</button>
+        <button id="chatDrawerCloseBtn" onclick="window.ChatbotManager.closeChat()" style="background:transparent; border:none; color:#fff; font-size:1.4rem; cursor:pointer; line-height:1;">&times;</button>
       </div>
     </div>
 
@@ -1171,8 +1194,8 @@
     </div>
 
     <div class="chat-input-bar">
-      <input type="text" id="chatTextInput" class="form-control" placeholder="Ask about symptoms, first-aid, vaccines..." data-i18n-placeholder="chat_placeholder" style="font-size:0.85rem;">
-      <button id="chatSendBtn" class="btn btn-primary btn-sm" style="padding:0 1rem;">
+      <input type="text" id="chatTextInput" class="form-control" onkeydown="if(event.key==='Enter') window.ChatbotManager.sendMessage()" placeholder="Ask about symptoms, first-aid, vaccines..." data-i18n-placeholder="chat_placeholder" style="font-size:0.85rem;">
+      <button id="chatSendBtn" class="btn btn-primary btn-sm" onclick="window.ChatbotManager.sendMessage()" style="padding:0 1rem;">
         ➤
       </button>
     </div>
