@@ -152,7 +152,7 @@ function renderTriageResultCard(result) {
   let containmentRingHtml = '';
   if (result.trigger_containment_ring) {
     containmentRingHtml = `
-      <div style="background:#fef3c7; border:1px solid #fcd34d; padding:0.6rem 0.8rem; border-radius:6px; font-size:0.82rem; margin:0.6rem 0; color:#92400e;">
+      <div class="pattern-hazard" style="border:1px solid #fcd34d; border-left:6px solid #d97706; padding:0.75rem 1rem; border-radius:6px; font-size:0.84rem; margin:0.6rem 0; color:#92400e; font-weight:600;">
         <b>🚨 Automated Quarantine Ring Activated:</b> 
         3 km Infected Zone + ${result.containment_ring_radius_km || 10} km Surveillance Zone buffer recommended.
       </div>

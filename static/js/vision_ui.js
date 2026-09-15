@@ -158,14 +158,17 @@ class VisionDiagnosticsManager {
 
   async analyzeImage(dataUrl, filename, hint) {
     const resultCard = document.getElementById('visionResultCard');
+    const dropzone = document.getElementById('visionDropzone');
     const lang = (window.I18n && window.I18n.currentLanguage) ? window.I18n.currentLanguage : 'hi';
+
+    if (dropzone) dropzone.classList.add('scanning');
 
     if (resultCard) {
       resultCard.innerHTML = `
-        <div style="text-align:center; padding:2.5rem 1.5rem; color:#0f766e;">
-          <div class="spinner" style="font-size:2.5rem; margin-bottom:1rem; animation:spin 1s linear infinite;">⚙️</div>
-          <h3 style="color:#0f766e; margin-bottom:0.35rem;">AI Deep Lesion Analysis in Progress...</h3>
-          <p style="font-size:0.85rem; color:#64748b;">Scanning morphological patterns, erythema, vesicular contours, and ulcer margins...</p>
+        <div style="text-align:center; padding:2.5rem 1.5rem; color:#8b5cf6;">
+          <div class="spinner" style="font-size:2.8rem; margin-bottom:1rem; animation:spin 1s linear infinite;">🔮</div>
+          <h3 style="color:#6d28d9; margin-bottom:0.35rem;">AI Visual Lesion Scanning in Progress...</h3>
+          <p style="font-size:0.85rem; color:#64748b;">Extracting erythema vectors, mucosal contours, and nodular roughness...</p>
         </div>
       `;
     }
@@ -191,6 +194,8 @@ class VisionDiagnosticsManager {
       if (resultCard) {
         resultCard.innerHTML = `<div style="padding:1.5rem; color:#e11d48;">Error running visual AI analysis. Please check connection.</div>`;
       }
+    } finally {
+      if (dropzone) dropzone.classList.remove('scanning');
     }
   }
 

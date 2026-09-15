@@ -125,12 +125,16 @@ function renderAnimalPassport(animal) {
     </div>
 
     ${activeWithdrawal ? `
-      <div style="background:#fff1f2; border:2px solid #fda4af; border-radius:8px; padding:0.85rem; margin-bottom:1.25rem; color:#9f1239; font-size:0.85rem;">
+      <div class="pattern-hazard" style="border:1px solid #fda4af; border-radius:8px; padding:0.85rem 1rem; margin-bottom:1.25rem; color:#991b1b; font-size:0.85rem; font-weight:600;">
         <b>⚠️ ANTIMICROBIAL RESIDUE WITHDRAWAL ACTIVE:</b><br>
         Treated with <i>${activeWithdrawal.drug_administered}</i> on ${activeWithdrawal.treatment_date}.
         <b>Milk and meat are strictly UNFIT for human consumption</b> until <b>${activeWithdrawal.withdrawal_end_date}</b> (${activeWithdrawal.withdrawal_period_days} days withdrawal).
       </div>
-    ` : ''}
+    ` : `
+      <div class="pattern-safe" style="border:1px solid #86efac; border-radius:8px; padding:0.75rem 1rem; margin-bottom:1.25rem; color:#166534; font-size:0.85rem; font-weight:600;">
+        🥛 <b>Safe Dairy & Livestock Baseline:</b> No active antimicrobial residue withdrawal. Milk and dairy products are certified safe for human consumption.
+      </div>
+    `}
 
     <!-- Vaccination History -->
     <div class="card" style="margin-bottom:1.25rem;">
