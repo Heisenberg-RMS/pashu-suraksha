@@ -17,54 +17,58 @@ class VeterinaryChatbotManager {
     this.greetingsConfig = {
       hi: {
         botName: 'पशु एआई सहायक (Pashu AI Sahayak)',
-        greeting: 'नमस्ते! मैं पशु स्वास्थ्य एवं रोग निवारण सहायक हूँ। आप मुझसे पशु रोगों के लक्षण, प्राथमिक उपचार, टीकाकरण, अफारा, थनैला या दवाइयों के बारे में कभी भी पूछ सकते हैं।',
+        greeting: 'नमस्ते! मैं पशु स्वास्थ्य, पोषण एवं फार्म प्रबंधन सहायक हूँ। आप मुझसे पशु आहार (संतुलित दाना, साइलेज), नवजात बछड़े की देखभाल, गाभिन पशु की देखभाल, मद (गर्मी) के लक्षण व AI, मौसम अनुसार बाड़ा प्रबंधन तथा रोगों के प्राथमिक उपचार के बारे में कभी भी पूछ सकते हैं।',
         prompts: [
-          { text: '🐮 मुंह और खुर में छाले (FMD)', query: 'गाय के मुंह और खुर में छाले हैं क्या करें?' },
-          { text: '⚪ लम्पी स्किन रोग रोकथाम', query: 'लम्पी स्किन रोग से बचाव व उपचार' },
-          { text: '⚠️ अफारा (पेट फूलना)', query: 'पशु का पेट फूलने (अफारा) का तुरंत उपचार' },
-          { text: '🧣 गलघोंटू (HS) के लक्षण', query: 'गलघोंटू रोग के लक्षण और बचाव' },
-          { text: '🔥 तेज बुखार और चारा न खाना', query: 'गाय को तेज बुखार है और चारा नहीं खा रही' },
-          { text: '🥛 थनैला रोग (Mastitis)', query: 'थनैला रोग का प्राथमिक उपचार' },
-          { text: '💉 टीकाकरण समय-सारिणी', query: 'पशु टीकाकरण कैलेंडर' }
+          { text: '🌾 संतुलित पशु आहार व साइलेज', query: 'दुधारू गाय के लिए संतुलित आहार और साइलेज कैसे तैयार करें?' },
+          { text: '🍼 नवजात बछड़े की देखभाल व खीस', query: 'नवजात बछड़े को खीस कब और कितनी मात्रा में पिलानी चाहिए?' },
+          { text: '🐄 गाभिन पशु की देखभाल व जेर', query: 'गाभिन गाय की देखभाल और जेर न रुकने के उपाय बताएं' },
+          { text: '🧬 मद (गर्मी) के लक्षण व AI का समय', query: 'गाय के मद (गर्मी) के लक्षण क्या हैं और सीमन कब कराएं?' },
+          { text: '☀️ गर्मी व सर्दी से पशु का बचाव', query: 'गर्मियों में लू से गाय का बचाव और बाड़ा प्रबंधन' },
+          { text: '🥛 स्वच्छ दूध निकालने का सही तरीका', query: 'स्वच्छ दूध निकालने का सही तरीका और अंगूठा मोड़कर क्यों न दुहें?' },
+          { text: '⚠️ गाय मिट्टी/प्लास्टिक क्यों खाती है?', query: 'गाय मिट्टी और प्लास्टिक खाती है इसका इलाज क्या है?' },
+          { text: '🚨 अफारा / खुरपका / लम्पी उपचार', query: 'पशु का पेट फूलने (अफारा) व मुंहपका का तुरंत उपचार' }
         ]
       },
       mr: {
         botName: 'पशु एआय सहाय्यक (Pashu AI Sahayak)',
-        greeting: 'नमस्कार! मी पशु आरोग्य व रोग प्रतिबंधक सहाय्यक आहे. आपण मला जनावरांचे आजार, लक्षणे, प्रथमोपचार, लाळ्या-खुरकूत, लंपी, पोटफुगी किंवा लसीकरणाविषयी कधीही विचारू शकता.',
+        greeting: 'नमस्कार! मी पशु आरोग्य, पोषण व गोठा व्यवस्थापन सहाय्यक आहे. आपण मला संतुलित पशुखाद्य, सायलेज निर्मिती, वासरांचे संगोपन, गाभण जनावरांची काळजी, माजाची लक्षणे व कृत्रिम रेतन, गोठा व्यवस्थापन आणि रोगांवरील प्रथमोपचाराबद्दल विचारू शकता.',
         prompts: [
-          { text: '🐮 लाळ्या खुरकूत (FMD)', query: 'गाय आणि म्हशीच्या तोंडात फोड व लाळ गळणे (लाळ्या खुरकूत)' },
-          { text: '⚪ लंपी चर्मरोग प्रतिबंध', query: 'लंपी चर्मरोग प्रतिबंध आणि काळजी' },
-          { text: '⚠️ पोट फुगणे / अफारा', query: 'पशुचे पोट फुगणे तात्काळ उपाय' },
-          { text: '🧣 घटसर्प (HS) लक्षणे', query: 'घटसर्प रोगाची लक्षणे व काळजी' },
-          { text: '🔥 ताप व चारा न खाणे', query: 'गायीला ताप आला आहे आणि चारा खात नाही' },
-          { text: '🥛 मस्टायटिस (स्तनदाह)', query: 'स्तनदाह किंवा थनैला आजार उपाय' },
-          { text: '💉 लसीकरण वेळापत्रक', query: 'पशु लसीकरण वेळापत्रक' }
+          { text: '🌾 संतुलित खाद्य व सायलेज निर्मिती', query: 'जनावरांसाठी संतुलित पशुखाद्य आणि सायलेज कसे बनवावे?' },
+          { text: '🍼 नवजात वासराची काळजी व चीक', query: 'वासरू जन्मल्यावर चीक दूध कधी व किती पाजावे?' },
+          { text: '🐄 गाभण गाईची काळजी व प्रसूती', query: 'गाभण गाईची काळजी आणि विण्याची वेळ काय?' },
+          { text: '🧬 माजाची लक्षणे व कृत्रिम रेतन', query: 'गाय माजावर आल्याची लक्षणे आणि कृत्रिम रेतन वेळ' },
+          { text: '☀️ उन्हाळ्यात गोठा व्यवस्थापन', query: 'उन्हाळ्यात जनावरांची काळजी आणि गोठा व्यवस्थापन' },
+          { text: '🥛 स्वच्छ दूध काढण्याची योग्य पद्धत', query: 'स्वच्छ दुग्ध उत्पादन आणि दूध काढण्याची योग्य पद्धत' },
+          { text: '⚠️ जनावरे माती खाण्यावर उपाय', query: 'जनावरे माती खातात त्यावर काय उपाय करावा?' },
+          { text: '🚨 लाळ्या खुरकूत / पोटफुगी उपचार', query: 'लाळ्या खुरकूत आणि पोट फुगणे यावर तात्काळ उपाय' }
         ]
       },
       te: {
         botName: 'పశు AI సహాయక్ (Pashu AI Sahayak)',
-        greeting: 'నమస్కారం! నేను పశు ఆరోగ్య మరియు వ్యాధి నివారణ సహాయకుడిని. పశువుల వ్యాధులు, లక్షణాలు, ప్రథమ చికిత్స, గాలికుంటు, లంపి చర్మ వ్యాధి, కడుపు ఉబ్బరం లేదా టీకాల గురించి ఎప్పుడైనా నన్ను అడగవచ్చు.',
+        greeting: 'నమస్కారం! నేను పశు ఆరోగ్య, పోషణ మరియు పాడి యాజమాన్య సహాయకుడిని. సమతుల్య దాణా, సైలేజ్ తయారీ, దూడల సంరక్షణ, చూడి పశువుల పోషణ, ఎద లక్షణాలు & AI సమయం, మరియు వ్యాధుల నివారణ గురించి నన్ను అడగవచ్చు.',
         prompts: [
-          { text: '🐮 గాలికుంటు వ్యాధి (FMD)', query: 'ఆవు నోటిలో మరియు గిట్టలలో పుండ్లు ఉన్నాయి ఏం చేయాలి?' },
-          { text: '⚪ లంపి చర్మ వ్యాధి రక్షణ', query: 'లంపి చర్మ వ్యాధి నివారణ మరియు సంరక్షణ' },
-          { text: '⚠️ కడుపు ఉబ్బరం (Bloat)', query: 'పశువుకు కడుపు ఉబ్బరం వచ్చినప్పుడు తక్షణ ప్రథమ చికిత్స' },
-          { text: '🧣 గొంతువాపు వ్యాధి (HS)', query: 'గొంతువాపు వ్యాధి లక్షణాలు మరియు నివారణ' },
-          { text: '🔥 తీవ్రమైన జ్వరం', query: 'ఆవుకు ఎక్కువ జ్వరం వచ్చి మేత మేయడం లేదు' },
-          { text: '🥛 పొదుగువాపు వ్యాధి', query: 'పొదుగువాపు వ్యాధి ప్రథమ చికిత్స' },
-          { text: '💉 టీకాల క్యాలెండర్', query: 'పశువుల టీకాల షెడ్యూల్' }
+          { text: '🌾 సమతుల్య దాణా & సైలేజ్ తయారీ', query: 'పాడి పశువుల సమతుల్య ఆహారం దాణా మరియు సైలేజ్ తయారీ విధానం' },
+          { text: '🍼 దూడల సంరక్షణ & జున్ను పాలు', query: 'దూడకు జున్ను పాలు ఎప్పుడు ఎంత తాగించాలి?' },
+          { text: '🐄 చూడి ఆవుల సంరక్షణ & ఈత', query: 'చూడి ఆవుల సంరక్షణ మరియు ఈత యాజమాన్యం' },
+          { text: '🧬 ఎద లక్షణాలు & AI సరైన సమయం', query: 'ఆవులలో ఎద లక్షణాలు మరియు కృత్రిమ గర్భధారణ సమయం' },
+          { text: '☀️ వేసవి ఎండదెబ్బ నివారణ', query: 'వేసవి ఎండదెబ్బ నివారణ మరియు కొట్టం యాజమాన్యం' },
+          { text: '🥛 పరిశుభ్రమైన పాల ఉత్పత్తి', query: 'పరిశుభ్రమైన పాల ఉత్పత్తి మరియు పాలు పితికే పద్ధతి' },
+          { text: '⚠️ ఆవు మట్టి తినే పైకా రోగం', query: 'ఆవు మట్టి తినే అలవాటు పైకా నివారణ' },
+          { text: '🚨 గాలికుంటు / కడుపుబ్బరం చికిత్స', query: 'గాలికుంటు వ్యాధి మరియు కడుపుబ్బరం అత్యవసర చికిత్స' }
         ]
       },
       en: {
-        botName: 'Pashu AI Sahayak (Veterinary Assistant)',
-        greeting: 'Hello! I am Pashu AI Sahayak, your intelligent veterinary first-aid and livestock health assistant. Ask me anytime about livestock symptoms, emergency first-aid, vaccines, bloat, or biosecurity protocols.',
+        botName: 'Pashu AI Sahayak (Veterinary & Dairy Husbandry Assistant)',
+        greeting: 'Hello! I am Pashu AI Sahayak, your intelligent advisor for livestock rearing, dairy nutrition, farm management, and veterinary care. Ask me about balanced rations, silage making, calf colostrum, pregnancy care, heat detection, housing, or disease first-aid.',
         prompts: [
-          { text: '🐮 Foot & Mouth Disease (FMD)', query: 'Cow has mouth vesicles and hoof sores (FMD treatment)' },
-          { text: '⚪ Lumpy Skin Disease (LSD)', query: 'Lumpy skin disease prevention and supportive care' },
-          { text: '⚠️ Acute Ruminal Bloat', query: 'Immediate emergency relief for cattle bloat' },
-          { text: '🧣 Hemorrhagic Septicemia (HS)', query: 'Hemorrhagic Septicemia symptoms and immediate action' },
-          { text: '🔥 High Fever & Anorexia', query: 'Cow has high fever and has stopped eating' },
-          { text: '🥛 Bovine Mastitis Care', query: 'First-aid protocol for acute mastitis and swollen udder' },
-          { text: '💉 Vaccination Calendar', query: 'Recommended livestock vaccination schedule' }
+          { text: '🌾 Balanced Dairy Feed & Silage', query: 'How to formulate balanced ration and make maize silage?' },
+          { text: '🍼 Newborn Calf Care & Colostrum', query: 'How much colostrum should be fed to a newborn calf?' },
+          { text: '🐄 Pregnant Cow & Transition Care', query: 'How to care for pregnant cattle and prevent milk fever?' },
+          { text: '🧬 Heat Detection Signs & AI Timing', query: 'What are heat detection signs in cattle and AI timing?' },
+          { text: '☀️ Summer Heat Stress & Housing', query: 'Summer heat stress management for dairy cattle shed' },
+          { text: '🥛 Clean Milk & Correct Milking', query: 'Clean milk production and full-hand milking method' },
+          { text: '⚠️ Cattle Eating Mud / Plastic (Pica)', query: 'Treatment for cattle eating soil, bones, and plastic (Pica)' },
+          { text: '🚨 Emergency Bloat & FMD Treatment', query: 'Immediate emergency relief for cattle bloat and FMD ulcers' }
         ]
       }
     };

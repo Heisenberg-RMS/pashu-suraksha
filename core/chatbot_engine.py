@@ -683,6 +683,448 @@ CHATBOT_KNOWLEDGE = [
             "पशु का पेट फूलने पर तुरंत क्या करें?",
             "గాలికుంటు వ్యాధి నివారణ చర్యలు"
         ]
+    },
+    {
+        "keywords": [
+            "calf", "bachhda", "bachhdi", "katda", "khees", "colostrum", "navel", "nabhi", "starter", "weaning",
+            "बछड़ा", "बछिया", "कटड़ा", "कटड़ी", "खीस", "चीक", "नाभि", "नवजात", "पहला दूध", "बछड़े की देखभाल",
+            "वासरू", "नाची काळजी", "दूध पाजणे", "नाळ", "चीक दूध",
+            "దూడ", "జున్ను పాలు", "దూడల సంరక్షణ", "బొడ్డు", "మొదటి పాలు"
+        ],
+        "intent": "CALF_REARING_COLOSTRUM",
+        "title": "Newborn Calf Rearing & Colostrum Care (नवजात बछड़ा देखभाल व खीस / वासरू संगोपन / దూడల సంరక్షణ)",
+        "is_emergency": False,
+        "reply_en": (
+            "**Newborn Calf Care & Colostrum Management Protocol:**\n"
+            "1. **Navel Cord Antisepsis:** Cut the umbilical cord 2 inches from the abdomen with a sterile blade. Dip immediately in Tincture of Iodine (7%) to prevent naval-ill and joint infection.\n"
+            "2. **Colostrum (First Milk / Khees) Timing:** Feed warm mother's colostrum within **1 to 2 hours of birth** (never delay beyond 6 hours). Colostrum contains vital immunoglobulins (antibodies) for lifelong immunity.\n"
+            "3. **Colostrum Quantity:** Feed 10% of calf's body weight daily (e.g., a 25kg calf needs 2.5 liters of colostrum daily, divided into 2-3 feedings) for the first 3 days.\n"
+            "4. **Calf Starter Feed:** Introduce palatable calf starter pellets and tender green grass from 2 weeks of age to stimulate early rumen development.\n"
+            "5. **Deworming Schedule:** Administer first oral dewormer (Piperazine / Albendazole syrup) at 15 days of age to eliminate roundworms (Toxocara vitulorum)."
+        ),
+        "reply_hi": (
+            "**नवजात बछड़े/बछिया की देखभाल व खीस (चीक) पिलाने के नियम:**\n"
+            "1. **नाभि का उपचार:** जन्म के तुरंत बाद नाभि को 2 इंच छोड़कर साफ धागे से बांधें व नए ब्लेड से काटकर उस पर 7% टिंचर आयोडीन लगाएं ताकि नाभि का संक्रमण न हो।\n"
+            "2. **खीस (Colostrum) का महत्व:** बछड़े के जन्म के **1 से 2 घंटे के भीतर** मां का पहला गाढ़ा दूध (खीस/चीक) अवश्य पिलाएं। इसमें रोग-प्रतिरोधक एंटीबॉडीज होती हैं जो जीवनभर बीमारियों से बचाती हैं।\n"
+            "3. **खीस की मात्रा:** बछड़े के शरीर के वजन का 10वां भाग (लगभग 2 से 2.5 लीटर प्रतिदिन) पहले 3 दिन तक 2-3 बार में पिलाएं।\n"
+            "4. **काफ स्टार्टर व चारा:** 15 दिन की उम्र से बछड़े को थोड़ा-थोड़ा सुपाच्य काफ स्टार्टर दाना व मुलायम हरा चारा देना शुरू करें ताकि उसका पेट (रूमेन) जल्दी विकसित हो।\n"
+            "5. **कीड़े की दवा:** बछड़े को 15 दिन का होने पर पेट के कीड़ों (राउंडवॉर्म) की पहली सिरप (एल्बेंडाजोल या पाइपरजीन) जरूर पिलाएं।"
+        ),
+        "reply_mr": (
+            "**नवजात वासराची देखभाल आणि चीक दूध व्यवस्थापन:**\n"
+            "१. **नाळेची स्वच्छता:** जन्मानंतर नाळ २ इंच सोडून निर्जंतुक ब्लेडने कापावी आणि त्यावर ७% टिंचर आयोडीन लावावे, जेणेकरून जंतुसंसर्ग होणार नाही.\n"
+            "२. **चीक दूध (Colostrum) पाजणे:** वासरू जन्मल्यानंतर **१ ते २ तासांच्या आत** गाईचा पहिला चीक पाजावा. यामुळे वासराची रोगप्रतिकारक शक्ती मजबूत होते.\n"
+            "३. **चीकाचे प्रमाण:** वासराच्या वजनाच्या १०% (साधारण २ ते २.५ लिटर रोज) पहिल्या ३ दिवसांत दोन ते तीन वेळा विभागून द्यावे.\n"
+            "४. **काफ स्टार्टर:** १५ दिवसांनंतर वासराला मऊ हिरवे गवत व काफ स्टार्टर दाणा खाण्याची सवय लावावी.\n"
+            "५. **जंताचे औषध:** वासरू १५ दिवसांचे झाल्यावर जंताचे औषध (पायपराजिन किंवा अल्बेंडाझोल) अवश्य द्यावे."
+        ),
+        "reply_te": (
+            "**నవజాత దూడల సంరక్షణ మరియు జున్ను పాల యాజమాన్యం:**\n"
+            "1. **బొడ్డు తాడు సంరక్షణ:** దూడ పుట్టిన వెంటనే బొడ్డు తాడును 2 అంగుళాలు ఉంచి శుభ్రమైన బ్లేడుతో కత్తిరించి టిించర్ అయోడిన్ లో ముంచాలి.\n"
+            "2. **జున్ను పాలు (కొలొస్ట్రమ్):** పుట్టిన **1 నుండి 2 గంటల లోపు** తప్పనిసరిగా తల్లి జున్ను పాలు తాగించాలి. ఇవి దూడకు రోగనిరోధక శక్తిని అందిస్తాయి.\n"
+            "3. **పాల పరిమాణం:** దూడ శరీర బరువులో 10% (సుమారు 2 నుండి 2.5 లీటర్లు) మొదటి 3 రోజులు రోజుకు 2-3 సార్లు తాగించాలి.\n"
+            "4. **దూడల మేత (కాఫ్ స్టార్టర్):** 15 రోజుల వయస్సు నుండి మెత్తటి పచ్చిగడ్డి మరియు కాఫ్ స్టార్టర్ దాణా అలవాటు చేయాలి.\n"
+            "5. **నట్టల నివారణ:** 15 రోజుల వయసులో దూడలకు తప్పనిసరిగా నట్టల మందు (సిరప్) తాగించాలి."
+        ),
+        "suggested_questions": [
+            "बछड़े को पहली बार कीड़े की दवा कब दें?",
+            "खीस न मिलने पर क्या विकल्प है?",
+            "दూడ పుట్టిన వెంటనే ఏ టీకా వేయించాలి?"
+        ]
+    },
+    {
+        "keywords": [
+            "ration", "feed", "chara", "fodder", "dana", "khali", "chokar", "maize", "concentrate", "balanced",
+            "diet", "nutrition", "आहार", "संतुलित आहार", "दाना", "खली", "चोकर", "बिनौला", "पशु आहार", "चारा", "राशन",
+            "संतुलित खाद्य", "दाणा", "पेंड", "भुसा", "पशुखाद्य",
+            "దాణా", "సమతుల్య ఆహారం", "మేత", "పచ్చిమేత", "ఎండుమేత", "తౌడు"
+        ],
+        "intent": "BALANCED_FEED_RATION",
+        "title": "Balanced Cattle Feed & Dairy Nutrition (संतुलित पशु आहार / संतुलित खाद्य / సమతుల్య పశుదాణా)",
+        "is_emergency": False,
+        "reply_en": (
+            "**Balanced Dairy Ration Formulation ( thumb-rules for high milk yield):**\n"
+            "1. **Roughage Ratio:** Maintain a ratio of **2 parts Green Fodder to 1 part Dry Fodder (Wheat straw / Maize stover)**. Green fodder provides carotene (Vitamin A) and moisture.\n"
+            "2. **Standard Concentrate Mixture Formula (100 kg batch):**\n"
+            "   • Crushed Grains (Maize / Barley / Wheat): 30 kg\n"
+            "   • Protein Oil Cakes (Mustard / Cottonseed / Soybean meal): 32 kg\n"
+            "   • Bran / Fiber (Wheat bran / Rice polish): 35 kg\n"
+            "   • Chelated Mineral Mixture: 2 kg\n"
+            "   • Common Salt: 1 kg\n"
+            "3. **Daily Feeding Quantity:**\n"
+            "   • Body Maintenance: 1.5 kg concentrate daily.\n"
+            "   • Milk Production: Add 400g concentrate per liter of Cow milk (500g per liter of Buffalo milk).\n"
+            "4. **Bypass Fat:** For high yielders (>15L/day), add 100g rumen-protected bypass fat daily to prevent negative energy balance."
+        ),
+        "reply_hi": (
+            "**दुधारू पशुओं के लिए संतुलित आहार (राशन) बनाने का वैज्ञानिक तरीका:**\n"
+            "1. **चारे का अनुपात:** पशु के भोजन में **2 भाग हरा चारा और 1 भाग सूखा भूसा** होना चाहिए। हरा चारा विटामिन-ए और सुपाच्यता देता है।\n"
+            "2. **घर पर 100 किलो संतुलित दाना बनाने का फॉर्मूला:**\n"
+            "   • पिसा अनाज (मक्का, जौ या गेहूं): 30 किलो\n"
+            "   • खली (सरसों, बिनौला या सोयाबीन खली): 32 किलो\n"
+            "   • चोकर या राइस पॉलिश: 35 किलो\n"
+            "   • अच्छी गुणवत्ता का खनिज मिश्रण (Mineral Mixture): 2 किलो\n"
+            "   • सादा नमक: 1 किलो\n"
+            "3. **दाना देने का नियम:**\n"
+            "   • शरीर निर्वाह (जिंदा रहने के लिए): 1.5 किलो दाना प्रतिदिन।\n"
+            "   • दूध उत्पादन: गाय के लिए प्रति लीटर दूध पर 400 ग्राम दाना, और भैंस के लिए प्रति लीटर दूध पर 500 ग्राम दाना अतिरिक्त दें।\n"
+            "4. **साफ पानी:** पशु को 24 घंटे साफ, ताजा पानी उपलब्ध कराएं।"
+        ),
+        "reply_mr": (
+            "**दुभत्या जनावरांसाठी संतुलित पशुखाद्य तयार करण्याचे सूत्र:**\n"
+            "१. **चाऱ्याचे प्रमाण:** जनावरांच्या आहारात **२ भाग हिरवा चारा आणि १ भाग सुका चारा** असावा.\n"
+            "२. **१०० किलो संतुलित खाद्य तयार करण्याचे प्रमाण:**\n"
+            "   • भरडलेले धान्य (मका, गहू किंवा ज्वारी): ३० किलो\n"
+            "   • पेंड (सरकी, शेंगदाणा किंवा सोयाबीन पेंड): ३२ किलो\n"
+            "   • गव्हाचा कोंडा किंवा राईस पॉलिश: ३५ किलो\n"
+            "   • खनिज मिश्रण (Mineral Mixture): २ किलो\n"
+            "   • मीठ: १ किलो\n"
+            "३. **खाद्य देण्याचे प्रमाण:**\n"
+            "   • शरीराच्या देखभालीसाठी: १.५ किलो खाद्य दररोज.\n"
+            "   • दुधासाठी: गायीला प्रति लिटर दुधामागे ४०० ग्रॅम, आणि म्हशीला प्रति लिटर दुधामागे ५०० ग्रॅम अधिक खाद्य द्यावे."
+        ),
+        "reply_te": (
+            "**పాడి పశువుల సమతుల్య ఆహారం (దాణా) తయారీ విధానం:**\n"
+            "1. **మేత నిష్పత్తి:** రోజువారీ ఆహారంలో **2 వంతులు పచ్చిమేత మరియు 1 వంతు ఎండుమేత** ఉండాలి.\n"
+            "2. **100 కిలోల సమతుల్య దాణా మిశ్రమం:**\n"
+            "   • గింజ ధాన్యాలు (మొక్కజొన్న / జొన్నలు): 30 కిలోలు\n"
+            "   • చెక్క/పిండి (వేరుశనగ / సోయాబీన్ / పత్తి చెక్క): 32 కిలోలు\n"
+            "   • తవుడు (గోధుమ తవుడు లేదా రైస్ పాలిష్): 35 కిలోలు\n"
+            "   • మినరల్ మిశ్రమం: 2 కిలోలు\n"
+            "   • ఉప్పు: 1 కిలో\n"
+            "3. **దాణా ఇచ్చే పరిమాణం:**\n"
+            "   • శరీర నిర్వహణకు: రోజుకు 1.5 కిలోలు.\n"
+            "   • పాల ఉత్పత్తికి: ఆవుకు ప్రతి లీటరు పాలకు 400 గ్రాములు, గేదెకు ప్రతి లీటరు పాలకు 500 గ్రాముల చొప్పున అదనంగా దాణా ఇవ్వాలి."
+        ),
+        "suggested_questions": [
+            "दूध बढ़ाने के लिए कौन सी खली सबसे अच्छी है?",
+            "पशु को बाईपास फैट कब देना चाहिए?",
+            "పాడి పశువులకు మినరల్ మిశ్రమం ఎందుకు అవసరం?"
+        ]
+    },
+    {
+        "keywords": [
+            "silage", "achar", "pit", "trench", "preservation", "maize silage", "corn silage", "green fodder",
+            "साइलेज", "आचार", "हरा चारा आचार", "साइलो", "मक्का साइलेज", "घास संरक्षण", "मक्का का आचार",
+            "सायलेज", "हिरवा चारा साठवण", "मका सायलेज", "चारा साठा",
+            "సాయిలేజ్", "పచ్చిమేత నిల్వ", "మొక్కజొన్న సాయిలేజ్", "సైలేజ్ తయారీ"
+        ],
+        "intent": "SILAGE_FODDER_PRESERVATION",
+        "title": "Silage Making & Fodder Preservation (साइलेज / हरे चारे का आचार / सायलेज निर्मिती / సైలేజ్ తయారీ)",
+        "is_emergency": False,
+        "reply_en": (
+            "**Silage Making (Green Fodder Preservation for Dry Months):**\n"
+            "1. **Best Crops:** Maize (Corn), Sorghum (Jowar), Pearl Millet (Bajra), Oats, and Hybrid Napier grass.\n"
+            "2. **Harvesting Stage:** Harvest when grains are in the **milk-to-dough stage** (30% to 35% Dry Matter). The plant should be green with milky grain kernel.\n"
+            "3. **Chopping & Compacting:** Chop green stalks into 1.5 to 2.5 cm lengths. Pack tightly layer-by-layer into a pit or silo bag and press thoroughly (with tractor or feet) to expel all trapped air.\n"
+            "4. **Air-tight Sealing:** Cover immediately with high-density UV plastic sheet. Weigh down with sandbags or 4 inches of soil. Anaerobic fermentation begins immediately.\n"
+            "5. **Ready to Feed:** Silage matures in **45 days**. It possesses a pleasant fruity-sour aroma and greenish-yellow color. Feed 15-20 kg per adult cow daily during summer/drought."
+        ),
+        "reply_hi": (
+            "**साइलेज (हरे चारे का आचार) बनाने की सरल व वैज्ञानिक विधि:**\n"
+            "1. **सर्वोत्तम फसल:** मक्का (सबसे उत्तम), ज्वार, बाजरा, जई या नेपियर घास।\n"
+            "2. **कटाई का सही समय:** जब मक्के के भुट्टे में दाने दूधिया (दूध-दांत) अवस्था में हों (फसल में लगभग 30-35% सूखा पदार्थ हो)।\n"
+            "3. **कुट्टी काटना व दबाना:** चारे को 1.5 से 2 सेमी के छोटे टुकड़ों में काटें। गड्ढे (पिट) या साइलेज बैग में चारे की परतें बिछाकर ट्रैक्टर या पैरों से खूब दबाएं ताकि सारी हवा बाहर निकल जाए।\n"
+            "4. **हवाबंद सील:** गड्ढे को अच्छी प्लास्टिक तिरपाल से ढककर ऊपर मिट्टी या रेत की बोरियों से पूरी तरह एयरटाइट (हवाबंद) कर दें।\n"
+            "5. **तैयार होने का समय:** साइलेज **45 दिनों में तैयार** हो जाता है। इसका हल्का खट्टा-मीठा स्वाद पशु बड़े चाव से खाते हैं। गर्मी व चारे की कमी के दिनों में 15-20 किलो साइलेज रोज खिलाएं।"
+        ),
+        "reply_mr": (
+            "**सायलेज (हिरव्या चाऱ्याचे लोणचे) बनवण्याची पद्धत:**\n"
+            "१. **उत्तम पिके:** मका, ज्वारी, बाजरी किंवा हायब्रिड नेपियर गवत.\n"
+            "२. **कापणीची वेळ:** कणसातील दाणे दुधाळ अवस्थेत असताना कापणी करावी (साधारण ३०-३५% शुष्क घटक).\n"
+            "३. **कुट्टी व दाबणे:** चाऱ्याची १.५ ते २ सेमी लांबीची कुट्टी करावी. खड्ड्यात थराथराने टाकून ट्रॅक्टरच्या साहाय्याने हवा पूर्ण बाहेर पडेपर्यंत दाबून घ्यावे.\n"
+            "४. **हवाबंद करणे:** खड्डा जाड प्लास्टिक कागदाने हवाबंद झाकून त्यावर माती टाकावी.\n"
+            "५. **तयार होण्याचा कालावधी:** **४५ दिवसांत** उत्तम दर्जाचे सायलेज तयार होते. उन्हाळ्यात चारा टंचाईच्या काळात जनावरांना २० किलोपर्यंत सायलेज द्यावे."
+        ),
+        "reply_te": (
+            "**సైలేజ్ (పచ్చిమేత ఊరగాయ) తయారీ విధానం:**\n"
+            "1. **అనుకూలమైన పంటలు:** మొక్కజొన్న, జొన్న, సజ్జ లేదా హైబ్రిడ్ నేపియర్ గడ్డి.\n"
+            "2. **కోత సమయం:** మొక్కజొన్న కంకిలోని గింజలు పాలు పోసుకునే దశలో (30-35% తేమ ఉన్నప్పుడు) కోయాలి.\n"
+            "3. **ముక్కలు చేయడం & తొక్కడం:** చొప్పను 1.5 నుండి 2 సెం.మీ పరిమాణంలో ముక్కలు చేసి గుంతలో పొరలు పొరలుగా వేసి గాలి చొరబడకుండా బాగా తొక్కించాలి.\n"
+            "4. **గాలి చొరబడకుండా మూసివేయడం:** ప్లాస్టిక్ షీట్ తో కప్పి దానిపై మట్టి లేదా ఇసుక బస్తాలు వేసి సీల్ చేయాలి.\n"
+            "5. **ఉపయోగించే సమయం:** **45 రోజులలో** సైలేజ్ సిద్ధమవుతుంది. ఎండాకాలంలో పచ్చిమేత కొరత ఉన్నప్పుడు రోజుకు 15-20 కిలోల వరకు తినిపించవచ్చు."
+        ),
+        "suggested_questions": [
+            "साइलेज में फफूंद लगने से कैसे बचाएं?",
+            "एक गाय को रोजाना कितना साइलेज देना चाहिए?",
+            "మొక్కజొన్న సైలేజ్ లో బెల్లం కలపవచ్చా?"
+        ]
+    },
+    {
+        "keywords": [
+            "pregnant", "pregnancy", "gabhin", "calving", "transition", "dry period", "placenta", "jer", "milk fever", "calve",
+            "गाभिन", "गर्भवती", "ब्याने वाली", "जेर", "सूतक ज्वर", "गाभिन गाय", "प्रसव", "बछड़ा देना", "मिल्क फीवर",
+            "गाभण", "विण्याची वेळ", "वार", "दूध ताप", "प्रसूती",
+            "గర్భం", "చూడి", "ఈత", "మాయ", "పాల జ్వరం", "చూడి ఆవు సంరక్షణ"
+        ],
+        "intent": "PREGNANCY_TRANSITION_CARE",
+        "title": "Pregnant Animal & Transition Care (गाभिन पशु की देखभाल व प्रसव / गाभण जनावरांची काळजी / చూడి పశువుల సంరక్షణ)",
+        "is_emergency": False,
+        "reply_en": (
+            "**Pregnant Cattle Management & Transition Period Protocol:**\n"
+            "1. **Dry Period (2 Months Before Calving):** Discontinue milking 60 days before expected calving date. This resting period allows udder tissue recovery and fetal growth.\n"
+            "2. **Transition Diet (Steaming Up):** In the final 3 weeks before calving, gradually feed 2 to 3 kg of high-energy concentrate feed along with clean greens to prepare rumen microbes.\n"
+            "3. **Milk Fever Prevention:** Do NOT feed excessive calcium during late pregnancy (keep calcium low to prime hormonal mobilization); immediately *after calving*, drench with oral calcium gel.\n"
+            "4. **Calving Pen:** Transfer to a sanitized, dry, well-ventilated stall with clean dry straw bedding 5-7 days before delivery.\n"
+            "5. **Placenta Delivery (Jer):** The fetal placenta should expel within 4 to 8 hours. If retained past 12 hours, call a veterinary doctor (never yank manually)."
+        ),
+        "reply_hi": (
+            "**गाभिन गाय-भैंस की देखभाल व प्रसव (ब्याने) के समय की सावधानियां:**\n"
+            "1. **दूध सुखाना (Dry Period):** ब्याने से ठीक **2 महीने (60 दिन) पहले** गाय का दूध निकालना बंद कर दें ताकि थनों को आराम मिले और गर्भ में पल रहे बच्चे का वजन अच्छा हो।\n"
+            "2. **आखिरी महीने का दाना:** ब्याने के 20 दिन पहले से दाने की मात्रा बढ़ाकर 2.5 से 3 किलो प्रतिदिन करें। दाने में खनिज मिश्रण अवश्य शामिल करें।\n"
+            "3. **सूतक ज्वर (मिल्क फीवर) से बचाव:** ब्याने से पहले अधिक चूना या कैल्शियम सिरप न पिलाएं। ब्याने के तुरंत बाद ही कैल्शियम जेल की शीशी पिलाएं।\n"
+            "4. **प्रसव कक्ष:** ब्याने से 1 हफ्ता पहले पशु को साफ, सूखे, हवादार कमरे में अलग बांधें और फर्श पर सूखी पुआल बिछाएं।\n"
+            "5. **जेर (Placenta) गिरना:** सामान्यतः ब्याने के 4 से 6 घंटे में जेर गिर जानी चाहिए। यदि 12 घंटे तक जेर न गिरे तो डॉक्टर को दिखाएं, हाथ से जबरदस्ती न खींचें।"
+        ),
+        "reply_mr": (
+            "**गाभण जनावरांची काळजी आणि प्रसूती व्यवस्थापन:**\n"
+            "१. **दूध आटवणे:** विण्याच्या **२ महिने (६० दिवस) आधी** दूध काढणे पूर्णपणे बंद करावे, ज्यामुळे कासेचे आरोग्य सुधारते.\n"
+            "२. **शेवटच्या महिन्यातील खुराक:** विण्याच्या शेवटच्या ३ आठवड्यांत रोज २ ते ३ किलो चांगला खुराक व खनिज मिश्रण द्यावे.\n"
+            "३. **मिल्क फिव्हरपासून बचाव:** विण्यापूर्वी जास्त कॅल्शियम देऊ नका. विल्यानंतर लगेच कॅल्शियम जेल पाजावे.\n"
+            "४. **विण्याची जागा:** विण्याच्या ५ दिवस आधी जनावराला स्वतंत्र, स्वच्छ व कोरड्या जागेत बांधावे.\n"
+            "५. **वार (Placenta) पडणे:** विल्यानंतर ४ ते ६ तासांत वार पडली पाहिजे. १२ तासांपेक्षा जास्त वेळ लागल्यास पशुवैद्यकास बोलवावे, स्वतः ओढू नये."
+        ),
+        "reply_te": (
+            "**చూడి ఆవుల సంరక్షణ మరియు ఈత యాజమాన్యం:**\n"
+            "1. **పాలు ఆపడం (డ్రై పీరియడ్):** ఈతకు **2 నెలల (60 రోజుల) ముందు** పాలు పితకడం ఆపేయాలి. ఇది దూడ ఎదుగుదలకు అవసరం.\n"
+            "2. **చివరి నెల దాణా:** ఈతకు 3 వారాల ముందు నుండి రోజుకు 2-3 కిలోల బలవర్ధకమైన దాణా అందించాలి.\n"
+            "3. **పాల జ్వరం నివారణ:** ఈతకు ముందు ఎక్కువ క్యాల్షియం ఇవ్వకూడదు; ఈనిన వెంటనే క్యాల్షియం జెల్ తాగించాలి.\n"
+            "4. **ఈత స్థలం:** ఈనడానికి వారం రోజుల ముందు శుభ్రమైన, పొడిగా ఉండే గదిలోకి మార్చాలి.\n"
+            "5. **మాయ పడటం:** ఈనిన 4 నుండి 6 గంటలలోపు మాయ పడాలి. 12 గంటలు దాటినా పడకపోతే డాక్టర్ ను సంప్రదించాలి."
+        ),
+        "suggested_questions": [
+            "ब्याने के बाद जेर न गिरे तो क्या देशी काढ़ा दें?",
+            "गाभिन गाय का दूध कब सुखाना चाहिए?",
+            "ఈనిన ఆవుకు ఏ దాణా పెట్టాలి?"
+        ]
+    },
+    {
+        "keywords": [
+            "heat", "mad", "garmi", "ai", "insemination", "semen", "mucus", "repeat breeding", "bhav", "estrus",
+            "मद", "गर्मी में आना", "सीमन", "कृत्रिम गर्भाधान", "लार गिरना", "तार", "बार बार फिरना", "गाभिन न ठहरना", "मद के लक्षण",
+            "माजावर", "उलथणे", "गाभण न राहणे", "माजाची लक्षणे", "कृत्रिम रेतन",
+            "ఎద", "ఎద లక్షణాలు", "కృత్రిమ గర్భధారణ", "వీర్యం", "తిరిగి ఎదకు రావడం"
+        ],
+        "intent": "BREEDING_HEAT_DETECTION",
+        "title": "Breeding & Heat Detection Signs (मद / गर्मी के लक्षण व कृत्रिम गर्भाधान / माज व कृत्रिम रेतन / ఎద లక్షణాలు & AI)",
+        "is_emergency": False,
+        "reply_en": (
+            "**Heat (Estrus) Detection & Artificial Insemination (AI) Timing:**\n"
+            "1. **Key Heat Symptoms:**\n"
+            "   • Frequent bellowing (roaring), restlessness, reduced appetite and milk yield.\n"
+            "   • Clear, transparent, hanging mucus rope (तार) from vulva like egg-white.\n"
+            "   • Standing heat: stands still when mounted by other animals.\n"
+            "2. **AM-PM Rule for Artificial Insemination (AI):**\n"
+            "   • Heat noticed in **Morning** -> Perform AI in the **Evening** of the same day.\n"
+            "   • Heat noticed in **Evening** -> Perform AI next **Morning**.\n"
+            "3. **Post-Calving Waiting Period:** Wait at least 60 to 90 days after calving before breeding again to ensure complete uterine involution.\n"
+            "4. **Repeat Breeding (Fails to conceive after 3 AI):** Check for subclinical uterine infection (white discharge), mineral deficiency (Zinc/Copper/Phosphorus), or timing error."
+        ),
+        "reply_hi": (
+            "**गाय-भैंस के मद (गर्मी) के प्रमुख लक्षण व सीमन (AI) रखवाने का सही समय:**\n"
+            "1. **मद (गर्मी) के प्रमुख लक्षण:**\n"
+            "   • बार-बार रंभाना, बेचैन रहना, पूंछ बार-बार उठाना व पेशाब करना।\n"
+            "   • योनि से कांच जैसा साफ, पारदर्शी और लसदार स्राव (तार) निकलना।\n"
+            "   • दूसरी गायों के चढ़ने पर चुपचाप खड़ी रहना (स्टैंडिंग हीट)।\n"
+            "2. **सीमन (कृत्रिम गर्भाधान - AI) कराने का AM-PM नियम:**\n"
+            "   • यदि पशु **सुबह** मद में आए -> तो उसी दिन **शाम** को सीमन रखवाएं।\n"
+            "   • यदि पशु **शाम या रात** में मद में आए -> तो अगले दिन **सुबह** सीमन रखवाएं।\n"
+            "3. **ब्याने के कितने दिन बाद गाभिन कराएं:** ब्याने के कम से कम **60 से 90 दिन** बाद ही दोबारा सीमन कराना चाहिए।\n"
+            "4. **बार-बार फिरने (Repeat Breeding) पर:** यदि 3 बार में भी न ठहरे तो गर्भाशय में संक्रमण या खनिज की कमी की डॉक्टर से जांच करवाएं।"
+        ),
+        "reply_mr": (
+            "**गाय-म्हशीच्या माजाची लक्षणे आणि कृत्रिम रेतन (AI) करण्याची योग्य वेळ:**\n"
+            "१. **माजाची मुख्य लक्षणे:**\n"
+            "   • जनावराचे ओरडणे, अस्वस्थ होणे आणि वारंवार लघवी करणे.\n"
+            "   • योनीतून काचेसारखा स्वच्छ आणि चिकट स्राव (तार) पडणे.\n"
+            "   • इतर जनावरांच्या अंगावर उडी मारणे किंवा स्वतः उभे राहणे.\n"
+            "२. **कृत्रिम रेतन (AI) करण्याचा नियम (AM-PM Rule):**\n"
+            "   • जनावर **सकाळी** माजावर आले -> तर त्याच दिवशी **संध्याकाळी** रेतन करावे.\n"
+            "   • जनावर **संध्याकाळी** माजावर आले -> तर दुसऱ्या दिवशी **सकाळी** रेतन करावे.\n"
+            "३. **विण्यानंतर कधी भरावी:** विल्यानंतर ६० ते ९० दिवसांनंतरच रेतन करावे.\n"
+            "४. **वारंवार उलटत असल्यास:** गर्भाशयात जंतुसंसर्ग असू शकतो, डॉक्टरांकडून तपासणी करून घ्यावी."
+        ),
+        "reply_te": (
+            "**ఆవులలో ఎద లక్షణాలు మరియు కృత్రిమ గర్భధారణ (AI) సరైన సమయం:**\n"
+            "1. **ఎద ముఖ్య లక్షణాలు:**\n"
+            "   • తరచుగా అరవడం, అసహనంగా ఉండటం, తరచుగా మూత్ర విసర్జన చేయడం.\n"
+            "   • యోని నుండి గుడ్డు తెల్లసొన వంటి స్వచ్ఛమైన తీగ (స్రావం) కారడం.\n"
+            "   • ఇతర పశువులు ఎక్కినప్పుడు కదలకుండా నిలబడటం.\n"
+            "2. **కృత్రిమ గర్భధారణ (AI) సమయం (AM-PM సూత్రం):**\n"
+            "   • **ఉదయం** ఎద లక్షణాలు కనిపిస్తే -> అదే రోజు **సాయంత్రం** AI చేయించాలి.\n"
+            "   • **సాయంత్రం** ఎద లక్షణాలు కనిపిస్తే -> మరుసటి రోజు **ఉదయం** AI చేయించాలి.\n"
+            "3. **ఈనిన తర్వాత సమయం:** ఈనిన 60 నుండి 90 రోజుల తర్వాతే మళ్లీ చూడి కట్టించాలి."
+        ),
+        "suggested_questions": [
+            "गाय बार-बार फिर जाती है, क्या उपाय करें?",
+            "सीमन कराने के कितने घंटे तक नहलाना नहीं चाहिए?",
+            "ఆవు ఎదకు రాకపోతే ఏం చేయాలి?"
+        ]
+    },
+    {
+        "keywords": [
+            "summer", "winter", "monsoon", "heat stress", "cold", "shed", "housing", "ventilation", "garmi", "sardi", "barish",
+            "गर्मी", "सर्दी", "बरसात", "लू", "ठंड", "बाड़ा", "गौशाला", "हवादार", "छाया", "पंखे", "गौशाला की सफाई",
+            "उन्हाळा", "हिवाळा", "पावसाळा", "गोठा", "उष्णता", "थंडी",
+            "ఎండకాలం", "చలికాలం", "వర్షాకాలం", "కొట్టం", "ఎండదెబ్బ", "వాతావరణం"
+        ],
+        "intent": "SEASONAL_CARE_HOUSING",
+        "title": "Seasonal Livestock Care & Shed Housing (गर्मी-सर्दी से बचाव व बाड़ा प्रबंधन / गोठा व्यवस्थापन / కాలానుగుణ సంరక్షణ)",
+        "is_emergency": False,
+        "reply_en": (
+            "**Seasonal Animal Management & Shed Ventilation:**\n"
+            "1. **Summer Heat Stress Mitigation:**\n"
+            "   • When temperature exceeds 35°C, milk yield drops 20-30%. Spray water / misting fans 3-4 times daily between 11 AM and 3 PM.\n"
+            "   • Paint shed roof white or cover with thatch / dry fodder to deflect thermal radiation.\n"
+            "   • Provide cool, clean drinking water continuously under shade; feed green fodder during cooler morning and late evening hours.\n"
+            "2. **Winter Cold Protection:**\n"
+            "   • Cover shed walls with gunny bags / curtains at night to block icy wind drafts while keeping top ridge open for moisture ventilation.\n"
+            "   • Provide dry straw bedding (6 inches) for calves and dairy cattle to prevent hypothermia and pneumonia.\n"
+            "3. **Monsoon Care & Hygiene:**\n"
+            "   • Keep floor dry; sprinkle slaked lime (चूना) weekly to disinfect ground and prevent foot rot (खुर गलन).\n"
+            "   • Smoke dry neem leaves in the evening to repel vector mosquitoes and flies."
+        ),
+        "reply_hi": (
+            "**मौसम के अनुसार पशुओं की देखभाल व गौशाला (बाड़े) का प्रबंधन:**\n"
+            "1. **गर्मी व लू से बचाव:**\n"
+            "   • तापमान 35°C से ऊपर जाने पर दूध 20-30% घट जाता है। दिन में 11 से 3 बजे के बीच पशुओं पर ठंडा पानी छिड़कें या पंखे लगाएं।\n"
+            "   • टीन की छत पर पुआल डालें या सफेद चूने की पुताई करें ताकि गर्मी अंदर न आए।\n"
+            "   • 24 घंटे छाया में ठंडा व ताजा पानी रखें। दाना और हरा चारा सुबह व शाम के ठंडे समय में खिलाएं।\n"
+            "2. **सर्दी व पाले से बचाव:**\n"
+            "   • रात में बाड़े के खुले हिस्सों पर टाट/बोरी के पर्दे लगाएं, लेकिन ऊपर से हवा निकासी (वेंटिलेशन) खुली रखें ताकि अमोनिया गैस न बने।\n"
+            "   • बछड़ों और गायों के नीचे सूखी पुआल की बिछावन (बेडिंग) बिछाएं।\n"
+            "3. **बरसात व कीचड़ से बचाव:**\n"
+            "   • बाड़े में कीचड़ न होने दें। फर्श पर सूखा चूना छिड़कें ताकि खुरों की सड़न (फुट रॉट) न हो।\n"
+            "   • शाम को नीम की पत्तियों का धुआं करें ताकि मच्छर व मक्खियां भाग जाएं।"
+        ),
+        "reply_mr": (
+            "**ऋतूनुसार जनावरांची काळजी आणि गोठ्याचे व्यवस्थापन:**\n"
+            "१. **उन्हाळ्यात काळजी:**\n"
+            "   • दुपारी ११ ते ३ च्या दरम्यान जनावरांच्या अंगावर पाणी मारावे किंवा फॉगर्स वापरावेत.\n"
+            "   • पत्र्याच्या छतावर गवताचे आच्छादन घालावे किंवा पांढरा चुना लावावा.\n"
+            "   • जनावरांना सावलीत २४ तास स्वच्छ थंड पाणी उपलब्ध ठेवावे.\n"
+            "२. **हिवाळ्यात थंडीपासून बचाव:**\n"
+            "   • रात्रीच्या वेळी गोठ्याच्या बाजूने गोणपाटाचे पडदे लावावेत.\n"
+            "   • लहान वासरांसाठी खाली वाळलेल्या गवताची गादी (बेडिंग) करावी.\n"
+            "३. **पावसाळ्यात निगा:**\n"
+            "   • गोठ्यात चिखल साचू देऊ नये; आठवड्यातून एकदा चुन्याची पावडर टाकावी जेणेकरून खुरांचे आजार होणार नाहीत."
+        ),
+        "reply_te": (
+            "**కాలానుగుణ పశువుల సంరక్షణ మరియు కొట్టం యాజమాన్యం:**\n"
+            "1. **వేసవి ఎండదెబ్బ నివారణ:**\n"
+            "   • ఉదయం 11 నుండి మధ్యాహ్నం 3 గంటల మధ్య పశువులపై చల్లటి నీరు చల్లాలి లేదా ఫ్యాన్లు అమర్చాలి.\n"
+            "   • రేకుల పైకప్పుపై గడ్డి వేయడం లేదా తెల్లటి సున్నం పూయడం ద్వారా వేడిని తగ్గించవచ్చు.\n"
+            "   • నీడలో 24 గంటలు చల్లటి తాగునీరు అందుబాటులో ఉంచాలి.\n"
+            "2. **శీతాకాలం రక్షణ:**\n"
+            "   • రాత్రి వేళల్లో చల్లటి గాలులు రాకుండా గోనె సంచుల తెరలు కట్టాలి.\n"
+            "   • దూడల కింద పొడి ఎండుగడ్డి పరచాలి.\n"
+            "3. **వర్షాకాలం శుభ్రత:**\n"
+            "   • కొట్టంలో బురద లేకుండా చూడాలి; గిట్టల కుళ్లు రోగం రాకుండా సున్నం చల్లాలి."
+        ),
+        "suggested_questions": [
+            "गर्मियों में दूध घटने से कैसे रोकें?",
+            "गौशाला का सही वेंटिलेशन कैसा होना चाहिए?",
+            "ఎండాకాలంలో ఆవులకు ఎన్నిసార్లు నీళ్లు తాగించాలి?"
+        ]
+    },
+    {
+        "keywords": [
+            "milking", "clean milk", "duhan", "doodh nikalna", "mastitis prevention", "hygiene", "teat dip", "thumb", "fisting",
+            "दूध दुहना", "स्वच्छ दूध", "दूध निकालने का तरीका", "अंगूठा", "कास", "दूध की धार", "अंगूठा मोड़कर दुहना",
+            "दूध काढणे", "स्वच्छ दुग्ध", "सडांची काळजी", "अंगठा",
+            "పాలు పిండడం", "పరిశుభ్రమైన పాలు", "పాలు పితికే పద్ధతి", "చనుల సంరక్షణ"
+        ],
+        "intent": "CLEAN_MILK_PRODUCTION",
+        "title": "Clean Milk Production & Correct Milking Method (स्वच्छ दुग्ध उत्पादन व दुहने का सही तरीका / स्वच्छ दूध निर्मिती / పరిశుభ్రమైన పాల ఉత్పత్తి)",
+        "is_emergency": False,
+        "reply_en": (
+            "**Clean Milk Production & Correct Milking Techniques:**\n"
+            "1. **Full-Hand Milking Method (Fisting):** Always milk using the **full hand (palm and fingers)** without bending the thumb. Never use knuckling (bending thumb against teat), as it tears delicate inner mucosal tissues causing mastitis and teat cracks.\n"
+            "2. **Milking Duration:** Complete milking swiftly within **5 to 7 minutes**, while the hormone oxytocin remains active in the bloodstream.\n"
+            "3. **Strip Cup Hygiene:** Strip the first two streams of milk from each quarter into a black strip cup to inspect for mastitis clots; never drop initial streams on the floor.\n"
+            "4. **Post-Milking Teat Dip:** Dip teats in a 0.5% povidone-iodine solution immediately after milking to create an antiseptic barrier.\n"
+            "5. **Standing Posture:** Provide fresh green fodder immediately after milking to keep cows standing for at least 30 minutes, allowing the teat sphincter canal to seal against bacteria."
+        ),
+        "reply_hi": (
+            "**स्वच्छ दूध उत्पादन एवं दूध दुहने की सही वैज्ञानिक विधि:**\n"
+            "1. **पूरे हाथ से दुहना (फुल हैंड मिल्किंग):** दूध हमेशा **पूरे हाथ और उंगलियों के दबाव से** दुहें। अंगूठा मोड़कर (नकलिंग) कभी न दुहें, क्योंकि इससे थन की अंदरूनी नसें टूट जाती हैं और थनैला रोग हो जाता है।\n"
+            "2. **दूध दुहने का समय:** दूध निकालने की प्रक्रिया **5 से 7 मिनट** में पूरी कर लें, क्योंकि ऑक्सीटोसिन हॉर्मोन का असर इतनी ही देर रहता है।\n"
+            "3. **पहली धार अलग करें:** प्रत्येक थन की पहली 2 धार अलग बर्तन में निकालें और जांचें कि दूध में छिछड़े या खून तो नहीं है। इसे फर्श पर न गिराएं।\n"
+            "4. **दुहने के बाद टीट डिप (दवा में डुबोना):** दुहने के तुरंत बाद थनों को 0.5% बीटाडीन या पोटाश के घोल में डुबोएं ताकि कीटाणु अंदर न जाएं।\n"
+            "5. **दुहने के बाद बैठने न दें:** दुहने के तुरंत बाद पशु के आगे हरा चारा डालें ताकि वह कम से कम 30 मिनट तक खड़ी रहे, क्योंकि थन का सुराख बंद होने में 30 मिनट लगते हैं।"
+        ),
+        "reply_mr": (
+            "**स्वच्छ दुग्ध उत्पादन आणि दूध काढण्याची शास्त्रीय पद्धत:**\n"
+            "१. **पूर्ण हाताने दूध काढणे (Fisting):** दूध नेहमी **पूर्ण हाताने (तळहात व बोटांनी)** काढावे. अंगठा मोडून दूध काढू नये, यामुळे सडांना इजा होऊन मस्टायटिस (स्तनदाह) होतो.\n"
+            "२. **कालावधी:** दूध काढण्याची प्रक्रिया **५ ते ७ मिनिटांत** पूर्ण करावी.\n"
+            "३. **पहिली धार वेगळी करणे:** प्रत्येक सडाची पहिली दोन धारे वेगळ्या पात्रात काढून तपासावी.\n"
+            "४. **टीट डीपिंग (सडांची स्वच्छता):** दूध काढल्यानंतर सडांची टोके जंतुनाशक द्रावणात (बीटाडीन) बुडवावीत.\n"
+            "५. **जनावराला बसू न देणे:** दूध काढल्यानंतर लगेच चारा टाकावा जेणेकरून जनावर किमान ३० मिनिटे उभे राहील व सडांचे छिद्र बंद होईल."
+        ),
+        "reply_te": (
+            "**పరిశుభ్రమైన పాల ఉత్పత్తి మరియు పాలు పితికే సరైన పద్ధతి:**\n"
+            "1. **పూర్తి చేతితో పాలు పితకడం:** పాలను ఎల్లప్పుడూ **పూర్తి అరచేతితో** పితకాలి. బొటనవేలు మడిచి పితకరాదు; అలా చేస్తే చనులకు గాయమై పొదుగువాపు వస్తుంది.\n"
+            "2. **సమయం:** పాలు పితకడం ప్రారంభించిన **5 నుండి 7 నిమిషాలలోపు** పూర్తి చేయాలి.\n"
+            "3. **మొదటి ధారల తనిఖీ:** ప్రతి చను నుండి మొదటి రెండు ధారలను వేరే గిన్నెలోకి పితికి పాలలో గడ్డలు ఉన్నాయేమో చూడాలి.\n"
+            "4. **చనులను ద్రావణంలో ముంచడం:** పాలు పితికిన వెంటనే చనుల కొనలను అయోడిన్ ద్రావణంలో ముంచాలి.\n"
+            "5. **పాలు పితికిన వెంటనే కూర్చోనివ్వకూడదు:** పాలు పితికిన తర్వాత వెంటనే పచ్చిమేత వేస్తే పశువు కనీసం 30 నిమిషాలు నిలబడుతుంది, తద్వారా చనుల రంధ్రాలు మూసుకుంటాయి."
+        ),
+        "suggested_questions": [
+            "दूध दुहने के बाद गाय को तुरंत क्यों नहीं बैठने देना चाहिए?",
+            "अंगूठा मोड़कर दूध दुहने से क्या नुकसान होता है?",
+            "పాలు పితికిన తర్వాత చనుల రక్షణ ఎలా చేయాలి?"
+        ]
+    },
+    {
+        "keywords": [
+            "water", "salt", "mineral block", "pica", "mitti", "plastic", "kapda", "phosphorus", "chatai", "lick", "soil",
+            "पानी", "नमक", "मिट्टी", "प्लास्टिक", "हड्डी", "खनिज ईंट", "चाटना", "पाइका", "पानी की मात्रा", "मिट्टी खाना", "प्लास्टिक खाना",
+            "पाणी", "मीठ", "माती", "माती खाणे", "चाटण वीट", "खनिज वीट", "माती खातात",
+            "నీరు", "ఉప్పు", "మట్టి", "మట్టి తినడం", "రాయి నమలడం", "ఖనిజ లవణాల ఇటుక", "పైకా"
+        ],
+        "intent": "WATER_SALT_MINERALS_PICA",
+        "title": "Water, Salt & Pica Deficiency (पानी, नमक व मिट्टी खाना / माती खाणे / మట్టి తినే రోగం)",
+        "is_emergency": False,
+        "reply_en": (
+            "**Water Intake, Salt Lick & Pica (Eating Mud / Plastic) Management:**\n"
+            "1. **Daily Water Needs:** High-yielding dairy cattle require **70 to 100+ liters of fresh water daily** (roughly 4 to 5 liters of water per liter of milk produced). Water deprivation drops milk yield immediately by 25%.\n"
+            "2. **Pica (Eating Soil, Plastic, Bones, Licking Walls):**\n"
+            "   • **Root Cause:** Severe deficiency of **Phosphorus, Sodium, and Trace Minerals**.\n"
+            "   • **Treatment:** Feed 50g Di-Calcium Phosphate (DCP) or Sodaphos along with 50g Chelated Mineral Mixture daily for 15 days.\n"
+            "3. **Mineral Salt Block:** Hang an enriched mineral salt lick block in the shed so cattle can lick freely according to physiological needs.\n"
+            "4. **Urea Molasses Mineral Block (UMMB):** Supplement with UMMB licks to provide non-protein nitrogen and minerals for rumen microbes."
+        ),
+        "reply_hi": (
+            "**पशु के लिए पानी, नमक व मिट्टी/प्लास्टिक खाने (पाइका रोग) का उपचार:**\n"
+            "1. **पानी की दैनिक आवश्यकता:** एक दुधारू गाय को रोजाना **70 से 100 लीटर** साफ, ताजा पानी चाहिए (प्रति 1 लीटर दूध पर लगभग 4 लीटर पानी)।\n"
+            "2. **पशु का मिट्टी, दीवार, कपड़ा या प्लास्टिक खाना (पाइका रोग):**\n"
+            "   • **कारण:** शरीर में **फास्फोरस, नमक और जरूरी खनिजों की भारी कमी**।\n"
+            "   • **तुरंत उपचार:** पशु को रोजाना 50 ग्राम डाई-कैल्शियम फास्फेट (DCP) या सोडाफॉस और 50 ग्राम खनिज मिश्रण (Mineral Mixture) दाने में मिलाकर 15 दिन तक दें।\n"
+            "3. **नमक की ईंट (Salt Lick):** बाड़े में खनिज युक्त नमक की ईंट लटकाएं ताकि पशु अपनी जरूरत अनुसार उसे चाट सके।\n"
+            "4. **पेट के कीड़े:** हर 6 महीने में पेट के कीड़ों की दवा (एल्बेंडाजोल) जरूर दें।"
+        ),
+        "reply_mr": (
+            "**पाणी, मीठ आणि जनावरांचे माती खाणे (पायका आजार) उपाय:**\n"
+            "१. **पाण्याची गरज:** दुभत्या गाईला दररोज **७० ते १०० लिटर** स्वच्छ पाणी लागते.\n"
+            "२. **जनावरांचे माती, कपडे किंवा प्लास्टिक खाणे:**\n"
+            "   • **कारण:** शरीरात **फॉस्फरस व क्षारांची कमतरता** असणे.\n"
+            "   • **उपाय:** जनावराला रोज ५० ग्रॅम डीसीपी (DCP) किंवा सोडाफॉस आणि ५० ग्रॅम मिनरल मिक्स्चर खाद्यातून द्यावे.\n"
+            "३. **चाटण वीट:** गोठ्यात मिनरल सॉल्ट ब्लॉक टांगावा, जेणेकरून जनावर ते चाटेल.\n"
+            "४. **जंतनिर्मूलन:** वर्षातून दोनदा जंताचे औषध द्यावे."
+        ),
+        "reply_te": (
+            "**నీరు, ఉప్పు మరియు మట్టి తినే అలవాటు (పైకా) నివారణ:**\n"
+            "1. **రోజువారీ నీటి అవసరం:** పాడి పశువుకు రోజుకు **70 నుండి 100 లీటర్ల** పరిశుభ్రమైన నీరు అవసరం.\n"
+            "2. **పశువులు మట్టి, బట్టలు, ప్లాస్టిక్ తినడం (పైకా లోపం):**\n"
+            "   • **కారణం:** శరీరంలో **భాస్వరం (ఫాస్పరస్) మరియు ఖనిజ లవణాల లోపం**.\n"
+            "   • **చికిత్స:** ప్రతిరోజూ 50 గ్రాముల డి.సి.పి (DCP) పొడి మరియు 50 గ్రాముల మినరల్ మిశ్రమం దాణాలో కలిపి 15 రోజులు ఇవ్వాలి.\n"
+            "3. **ఖనిజ లవణాల ఇటుక:** కొట్టంలో ఖనిజ లవణాల ఇటుకను వేలాడదీయాలి."
+        ),
+        "suggested_questions": [
+            "गाय मिट्टी क्यों खाती है, इसका पक्का इलाज क्या है?",
+            "दुधारू गाय को दिन में कितना पानी पिलाना चाहिए?",
+            "ఆవు మట్టి తినకుండా ఏం మందు వేయాలి?"
+        ]
     }
 ]
 
@@ -696,7 +1138,7 @@ DEFAULT_FALLBACK = {
         "• 'How to prevent Lumpy Skin Disease?'\n"
         "• 'Emergency care for animal bloat / swollen belly'\n"
         "• 'FMD vaccination due dates'\n"
-        "• 'Is milk safe to drink after antibiotic injection?'"
+        "• 'Is milk safe to drink after antibiotic injection?'\n• 'Balanced cattle feed ration & silage making'\n• 'Colostrum feeding for newborn calf'\n• 'Heat signs & AI timing'"
     ),
     "reply_hi": (
         "पशु एआई सहायक में आपका स्वागत है। मैं गाय, भैंस, भेड़, बकरी और मुर्गियों के रोगों, प्राथमिक उपचार, "
@@ -706,7 +1148,7 @@ DEFAULT_FALLBACK = {
         "• 'लम्पी स्किन रोग से बचाव के उपाय'\n"
         "• 'पशु का पेट फूलने (अफारा) का तुरंत उपचार'\n"
         "• 'गलघोंटू और मुंहपका का टीका कब लगता है?'\n"
-        "• 'एंटीबायोटिक इंजेक्शन के बाद कितने दिन दूध नहीं बेचना चाहिए?'"
+        "• 'एंटीबायोटिक इंजेक्शन के बाद कितने दिन दूध नहीं बेचना चाहिए?'\n• 'संतुलित पशु आहार व साइलेज कैसे बनाएं?'\n• 'नवजात बछड़े को खीस कब और कितना पिलाएं?'\n• 'गाय के मद (गर्मी) के लक्षण व AI का सही समय'"
     ),
     "reply_mr": (
         "पशु एआय सहाय्यक मध्ये आपले स्वागत आहे! मी गाय, म्हैस, शेळी, मेंढी यांच्या आजारांचे निदान, प्राथमिक उपचार, "
@@ -716,7 +1158,7 @@ DEFAULT_FALLBACK = {
         "• 'लम्पी त्वचा रोगापासून बचावाचे घरगुती उपाय'\n"
         "• 'जनावराचे पोट फुगल्यावर त्वरित काय करावे?'\n"
         "• 'लाळ्या खुरकूत आणि घटसर्प लस कधी टोचावी?'\n"
-        "• 'अँटिबायोटिक औषध दिल्यानंतर किती दिवस दूध विकू नये?'"
+        "• 'अँटिबायोटिक औषध दिल्यानंतर किती दिवस दूध विकू नये?'\n• 'संतुलित पशुखाद्य व सायलेज कसे बनवावे?'\n• 'नवजात वासराला चीक पाजण्याची पद्धत'\n• 'गाय माजावर आल्यावर कृत्रिम रेतन कधी करावे?'"
     ),
     "reply_te": (
         "పశు ఏఐ సహాయక్ కి స్వాగతం! ఆవులు, గేదెలు, గొర్రెలు మరియు మేకల వ్యాధులు, ప్రాథమిక చికిత్స, "
@@ -726,7 +1168,7 @@ DEFAULT_FALLBACK = {
         "• 'లంపీ స్కిన్ వ్యాధి నివారణ చర్యలు'\n"
         "• 'పశువుకు కడుపుబ్బరం వచ్చినప్పుడు తక్షణ చికిత్స'\n"
         "• 'గాలికుంటు టీకాలు ఎప్పుడు వేయించాలి?'\n"
-        "• 'యాంటీబయోటిక్ ఇచ్చిన తర్వాత ఎన్ని రోజులు పాలు వాడకూడదు?'"
+        "• 'యాంటీబయోటిక్ ఇచ్చిన తర్వాత ఎన్ని రోజులు పాలు వాడకూడదు?'\n• 'పాడి పశువులకు సమతుల్య దాణా తయారీ'\n• 'దూడకు జున్ను పాలు ఎప్పుడు తాగించాలి?'\n• 'ఆవులలో ఎద లక్షణాలు & AI సరైన సమయం'"
     ),
     "suggested_questions": [
         "गाय के मुंह में छाले हैं क्या करें?",
@@ -755,15 +1197,16 @@ def chat_with_gemini(user_message: str, language: str = "hi", user_api_key: Opti
     lang_name = lang_names.get(language, "Hindi")
     
     system_prompt = (
-        f"You are Pashu AI Sahayak (पशु एआई सहायक), an empathetic expert veterinary AI assisting Indian livestock farmers, para-vets, and veterinarians. "
-        f"Answer the user's livestock question clearly, practically, and empathetically in {lang_name}. "
-        f"Use simple language easily understood by rural farmers. Use bold headings and bullet points.\n"
-        f"Always provide:\n"
-        f"1. Possible condition / clinical insight.\n"
-        f"2. Immediate first-aid or home care steps.\n"
-        f"3. Biosecurity / prevention for herd.\n"
-        f"4. Urgency level: whether veterinary attendance is needed immediately.\n"
-        f"5. If medications are discussed, mention safe milk/meat withdrawal time."
+        f"You are Pashu AI Sahayak (पशु एआई सहायक), an empathetic expert Veterinary & Livestock Husbandry AI assisting Indian dairy and livestock farmers, para-vets, and veterinarians. "
+        f"Answer the user's question clearly, practically, and empathetically in {lang_name}.\n"
+        f"Your expertise comprehensively covers:\n"
+        f"1. Livestock Rearing & Calf Care (Newborn calf management, naval dipping, colostrum timing, calf starter, deworming).\n"
+        f"2. Feed & Dairy Nutrition (Balanced ration formulation, 2:1 green-to-dry fodder ratio, silage making, concentrate feed, bypass fat, mineral mixture, salt, daily water requirements).\n"
+        f"3. Breeding & Reproduction (Heat detection signs, AM-PM AI timing rule, repeat breeding, pregnancy care, drying off, calving assistance, placenta care).\n"
+        f"4. Housing & Seasonal Care (Summer heat stress mitigation, winter cold protection, monsoon shed hygiene, ventilation, fly/mosquito vector control).\n"
+        f"5. Disease Diagnostics & First Aid (FMD, LSD, Anthrax, HS, BQ, Mastitis, Bloat, Fever, Ticks, Diarrhea, and common health doubts).\n"
+        f"6. Clean Milk Production & Drug Withdrawal (Correct milking technique without thumb folding, teat dipping, milk/meat withdrawal clearance periods).\n"
+        f"Use simple language easily understood by rural farmers. Use bold headings, bullet points, and practical home dosages."
     )
     
     payload = {

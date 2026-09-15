@@ -211,6 +211,56 @@ class TestPashuSuraksha(unittest.TestCase):
         self.assertEqual(data_te["intent"], "LSD_CARE")
         self.assertIn("లంపీ", data_te["reply"])
 
+        # 5. Hindi query about Newborn Calf Rearing & Colostrum (खीस)
+        res_calf = self.client.post("/api/chatbot", json={
+            "message": "नवजात बछड़े को खीस कब और कितनी मात्रा में पिलानी चाहिए?",
+            "language": "hi"
+        })
+        self.assertEqual(res_calf.status_code, 200)
+        data_calf = res_calf.get_json()
+        self.assertEqual(data_calf["intent"], "CALF_REARING_COLOSTRUM")
+        self.assertIn("खीस", data_calf["reply"])
+
+        # 6. English query about Balanced Cattle Feed & Ration
+        res_feed = self.client.post("/api/chatbot", json={
+            "message": "What is the balanced ration formulation for dairy cows?",
+            "language": "en"
+        })
+        self.assertEqual(res_feed.status_code, 200)
+        data_feed = res_feed.get_json()
+        self.assertEqual(data_feed["intent"], "BALANCED_FEED_RATION")
+        self.assertIn("Roughage Ratio", data_feed["reply"])
+
+        # 7. Marathi query about Silage Fodder Preservation
+        res_silage = self.client.post("/api/chatbot", json={
+            "message": "सायलेज बनवण्याची पद्धत सांगा",
+            "language": "mr"
+        })
+        self.assertEqual(res_silage.status_code, 200)
+        data_silage = res_silage.get_json()
+        self.assertEqual(data_silage["intent"], "SILAGE_FODDER_PRESERVATION")
+        self.assertIn("सायलेज", data_silage["reply"])
+
+        # 8. Telugu query about Heat Detection & Artificial Insemination (AI)
+        res_heat = self.client.post("/api/chatbot", json={
+            "message": "ఆవులలో ఎద లక్షణాలు మరియు కృత్రిమ గర్భధారణ సమయం",
+            "language": "te"
+        })
+        self.assertEqual(res_heat.status_code, 200)
+        data_heat = res_heat.get_json()
+        self.assertEqual(data_heat["intent"], "BREEDING_HEAT_DETECTION")
+        self.assertIn("ఎద", data_heat["reply"])
+
+        # 9. Hindi query about Pica (मिट्टी व प्लास्टिक खाना)
+        res_pica = self.client.post("/api/chatbot", json={
+            "message": "गाय मिट्टी और प्लास्टिक खाती है इसका इलाज क्या है?",
+            "language": "hi"
+        })
+        self.assertEqual(res_pica.status_code, 200)
+        data_pica = res_pica.get_json()
+        self.assertEqual(data_pica["intent"], "WATER_SALT_MINERALS_PICA")
+        self.assertIn("फास्फोरस", data_pica["reply"])
+
     def test_15_healthy_cattle_vision(self):
         # A normal healthy scan with no hints should NOT diagnose anthrax or FMD
         res = self.client.post("/api/image-diagnosis", json={
