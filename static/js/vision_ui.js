@@ -11,8 +11,14 @@ class VisionDiagnosticsManager {
     this.currentImageDataUrl = null;
     this.currentFilename = null;
     this.selectedTargetRegion = 'auto';
+    this.atlasCatalog = [];
+    this.currentAtlasFilter = 'ALL';
+    this.geminiActive = false;
 
     window.addEventListener('languageChanged', (e) => {
+      // Re-render photo atlas with newly selected language
+      this.renderPhotoAtlas();
+
       if (this.currentDiagnosis && this.currentImageDataUrl) {
         // Re-analyze with new language to refresh translated diagnostic report
         this.analyzeImage(this.currentImageDataUrl, this.currentFilename || "scan.jpg", this.selectedTargetRegion);
@@ -24,7 +30,10 @@ class VisionDiagnosticsManager {
     this.setupDropzone();
     this.setupSamplePresets();
     this.setupTargetRegionPills();
+    this.checkGeminiStatus();
+    this.loadPhotoAtlas();
   }
+
 
   setupTargetRegionPills() {
     const pills = document.querySelectorAll('.scan-target-pill');
@@ -210,7 +219,26 @@ class VisionDiagnosticsManager {
     const metrics = d.metrics || {};
     const metricSummary = metrics.summary || 'Visual Feature Extraction Complete';
 
+    const isGemini = d.is_gemini || (d.ai_engine && d.ai_engine.toLowerCase().includes('gemini'));
+    const engineBadgeHtml = isGemini
+      ? `<span class="badge" style="background:#ede9fe; color:#5b21b6; border:1px solid #c4b5fd; font-weight:700; margin-bottom:6px; display:inline-flex; align-items:center; gap:0.25rem;">✨ Google Gemini 2.0 Vision AI</span>`
+      : `<span class="badge" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; font-weight:600; margin-bottom:6px; display:inline-flex; align-items:center; gap:0.25rem;">⚡ Local Veterinary Neural Engine</span>`;
+
+    const lang = (window.I18n && window.I18n.currentLanguage) ? window.I18n.currentLanguage : 'hi';
+    const adviceTitle = isHealthy
+      ? (window.I18n ? window.I18n.t('precaution_title_healthy') : 'Farmer Biosecurity & Maintenance Advice')
+      : (window.I18n ? window.I18n.t('precaution_title_disease') : 'Immediate Farmer Precautionary & Biosecurity Advice');
+
+    const adviceBg = isHealthy ? '#f0fdf4' : (urgencyClass === 'critical' ? '#fff1f2' : '#fffbeb');
+    const adviceBorder = isHealthy ? '#86efac' : (urgencyClass === 'critical' ? '#fda4af' : '#fde68a');
+    const adviceColor = isHealthy ? '#166534' : (urgencyClass === 'critical' ? '#9f1239' : '#92400e');
+    const adviceIcon = isHealthy ? '🛡️' : '🚨';
+
     card.innerHTML = `
+      <div style="margin-bottom:0.6rem;">
+        ${engineBadgeHtml}
+      </div>
+
       <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.75rem;">
         <div>
           <span class="badge ${isHealthy ? 'badge-healthy' : 'badge-' + urgencyClass}" style="${isHealthy ? 'background:#dcfce7; color:#15803d; font-weight:700;' : ''}">
@@ -242,6 +270,18 @@ class VisionDiagnosticsManager {
         </div>
       ` : ''}
 
+      <!-- FARMER PRECAUTIONARY & BIOSECURITY ADVICE CARD -->
+      ${d.precautionary_advice ? `
+        <div class="precautionary-advice-card" style="background:${adviceBg}; border:1.5px solid ${adviceBorder}; border-radius:8px; padding:0.85rem; margin-bottom:1rem; color:${adviceColor};">
+          <b style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.35rem; font-size:0.9rem;">
+            <span>${adviceIcon}</span> ${adviceTitle}
+          </b>
+          <p style="margin:0; font-size:0.85rem; line-height:1.45; font-weight:600;">
+            ${d.precautionary_advice}
+          </p>
+        </div>
+      ` : ''}
+
       <!-- Visual Hallmarks -->
       <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.85rem; margin-bottom:1rem; font-size:0.85rem;">
         <b style="color:#334155;">🔍 Detected Pathognomonic Visual Markers:</b>
@@ -259,6 +299,7 @@ class VisionDiagnosticsManager {
           ${(d.immediate_home_care || []).map(care => `<li style="margin-bottom:0.35rem;">${care}</li>`).join('')}
         </ol>
       </div>
+
 
       <!-- Lab specimen needed -->
       <div style="font-size:0.82rem; color:#475569; margin-bottom:1rem; background:#fff; border:1px solid #e2e8f0; padding:0.6rem 0.8rem; border-radius:6px;">
@@ -368,6 +409,211 @@ class VisionDiagnosticsManager {
       `;
     }
   }
+
+  /* ==========================================
+     GEMINI MULTIMODAL VISION AI METHODS
+     ========================================== */
+  async checkGeminiStatus() {
+    try {
+      const res = await fetch('/api/vision/gemini-status');
+      const data = await res.json();
+      this.geminiActive = !!data.gemini_active;
+      const badge = document.getElementById('geminiStatusBadge');
+      if (badge) {
+        if (this.geminiActive) {
+          badge.className = 'gemini-status-pill active';
+          badge.innerHTML = '✨ Gemini 2.0 Flash Active';
+        } else {
+          badge.className = 'gemini-status-pill local';
+          badge.innerHTML = '⚡ Local Neural Engine Active';
+        }
+      }
+    } catch (err) {
+      console.warn('Gemini status check skipped/failed:', err);
+    }
+  }
+
+  toggleApiKeyModal() {
+    const panel = document.getElementById('geminiKeyPanel');
+    if (panel) {
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      if (panel.style.display === 'block') {
+        const input = document.getElementById('geminiApiKeyInput');
+        if (input) input.focus();
+      }
+    }
+  }
+
+  async saveApiKey() {
+    const input = document.getElementById('geminiApiKeyInput');
+    const feedback = document.getElementById('geminiKeyFeedback');
+    const key = input ? input.value.trim() : '';
+
+    if (!key) {
+      if (feedback) feedback.innerHTML = '<span style="color:#e11d48; font-weight:600;">Please enter a valid Google Gemini API Key.</span>';
+      return;
+    }
+
+    if (feedback) feedback.innerHTML = '<span style="color:#6366f1;">Verifying & storing key...</span>';
+
+    try {
+      const res = await fetch('/api/vision/gemini-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: key })
+      });
+      const data = await res.json();
+      if (feedback) {
+        feedback.innerHTML = '<span style="color:#059669; font-weight:700;">✅ Gemini API Key successfully saved for this session!</span>';
+      }
+      await this.checkGeminiStatus();
+      setTimeout(() => this.toggleApiKeyModal(), 1200);
+    } catch (err) {
+      if (feedback) feedback.innerHTML = `<span style="color:#e11d48;">Error connecting: ${err.message}</span>`;
+    }
+  }
+
+  async clearApiKey() {
+    const input = document.getElementById('geminiApiKeyInput');
+    const feedback = document.getElementById('geminiKeyFeedback');
+    if (input) input.value = '';
+
+    try {
+      await fetch('/api/vision/gemini-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: '' })
+      });
+      if (feedback) {
+        feedback.innerHTML = '<span style="color:#475569;">Key cleared. Switched back to local neural vision engine.</span>';
+      }
+      await this.checkGeminiStatus();
+      setTimeout(() => this.toggleApiKeyModal(), 1000);
+    } catch (err) {
+      console.error('Error clearing key:', err);
+    }
+  }
+
+  /* ==========================================
+     PHOTO REFERENCE ATLAS & SAMPLE DATASET
+     ========================================== */
+  async loadPhotoAtlas() {
+    try {
+      const res = await fetch('/api/vision/catalog');
+      this.atlasCatalog = await res.json();
+      this.renderPhotoAtlas();
+    } catch (err) {
+      console.error('Error loading photo catalog:', err);
+      const grid = document.getElementById('visionAtlasGrid');
+      if (grid) grid.innerHTML = '<div style="color:#e11d48; padding:1.5rem; text-align:center;">Failed to load reference photo catalog.</div>';
+    }
+  }
+
+  filterAtlas(category) {
+    this.currentAtlasFilter = category || 'ALL';
+    const buttons = document.querySelectorAll('.atlas-filter-btn');
+    buttons.forEach(btn => {
+      if (btn.dataset.category === this.currentAtlasFilter) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+    this.renderPhotoAtlas();
+  }
+
+  renderPhotoAtlas() {
+    const grid = document.getElementById('visionAtlasGrid');
+    if (!grid || !this.atlasCatalog || !this.atlasCatalog.length) return;
+
+    const lang = (window.I18n && window.I18n.currentLanguage) ? window.I18n.currentLanguage : 'hi';
+    const filter = this.currentAtlasFilter;
+
+    let items = this.atlasCatalog;
+    if (filter === 'HEALTHY') {
+      items = items.filter(item => item.category === 'HEALTHY');
+    } else if (filter === 'EPIDEMIC') {
+      items = items.filter(item => item.category === 'DISEASED' && ['FMD', 'LSD', 'ANTHRAX', 'HS', 'BLACKLEG_BQ'].includes(item.disease_code));
+    } else if (filter === 'COMMON') {
+      items = items.filter(item => item.category === 'DISEASED' && ['MASTITIS', 'TICK_INFESTATION'].includes(item.disease_code));
+    }
+
+    const btnLabel = (window.I18n && typeof window.I18n.t === 'function')
+      ? window.I18n.t('btn_test_scan')
+      : '🔬 Test AI Scan';
+
+    grid.innerHTML = items.map(item => {
+      const title = item['title_' + lang] || item.title_en;
+      const hallmark = item['hallmark_' + lang] || item.hallmark_en;
+      const isHealthy = item.category === 'HEALTHY';
+      const isEpidemic = ['FMD', 'LSD', 'ANTHRAX', 'HS', 'BLACKLEG_BQ'].includes(item.disease_code);
+
+      let badgeClass = 'atlas-badge-healthy';
+      let badgeText = isHealthy ? '✅ HEALTHY' : (isEpidemic ? '🚨 EPIDEMIC' : '🩺 COMMON');
+      if (!isHealthy) {
+        badgeClass = isEpidemic ? 'atlas-badge-epidemic' : 'atlas-badge-common';
+      }
+
+      return `
+        <div class="vision-atlas-card" onclick="window.VisionManager.loadSampleImage('${item.id}')">
+          <div class="atlas-card-thumbnail-wrap">
+            <img class="atlas-card-thumbnail" src="/static/images/samples/${item.filename}" alt="${title}" loading="lazy">
+            <span class="atlas-card-badge ${badgeClass}">${badgeText}</span>
+          </div>
+          <div class="atlas-card-body">
+            <div class="atlas-card-title">${title}</div>
+            <div class="atlas-card-hallmark">${hallmark}</div>
+            <button type="button" class="atlas-test-btn" onclick="event.stopPropagation(); window.VisionManager.loadSampleImage('${item.id}')">
+              ${btnLabel}
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async loadSampleImage(itemId) {
+    const item = (this.atlasCatalog || []).find(it => it.id === itemId);
+    if (!item) return;
+
+    const lang = (window.I18n && window.I18n.currentLanguage) ? window.I18n.currentLanguage : 'hi';
+    const title = item['title_' + lang] || item.title_en;
+
+    // Update target region pill
+    const targetRegion = item.target_region || 'auto';
+    this.selectedTargetRegion = targetRegion;
+    const pills = document.querySelectorAll('.scan-target-pill');
+    pills.forEach(p => {
+      if (p.dataset.target === targetRegion) {
+        p.classList.add('active');
+      } else {
+        p.classList.remove('active');
+      }
+    });
+
+    try {
+      const res = await fetch(`/static/images/samples/${item.filename}`);
+      const blob = await res.blob();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        this.currentImageDataUrl = dataUrl;
+        this.currentFilename = item.filename;
+        this.renderImagePreview(dataUrl, title);
+        this.analyzeImage(dataUrl, item.filename, targetRegion);
+
+        // Scroll to dropzone preview
+        const dropzone = document.getElementById('visionDropzone');
+        if (dropzone) {
+          dropzone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      };
+      reader.readAsDataURL(blob);
+    } catch (err) {
+      console.error('Error loading sample image:', err);
+    }
+  }
 }
 
 window.VisionManager = new VisionDiagnosticsManager();
+

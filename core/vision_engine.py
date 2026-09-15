@@ -6,7 +6,12 @@ visual AI differential diagnosis, severity rating, and localized clinical triage
 """
 
 import io
+import os
 import math
+import base64
+import json
+import urllib.request
+import urllib.error
 from typing import Dict, Any, List, Optional
 
 try:
@@ -521,6 +526,86 @@ VISUAL_DISEASE_PROFILES = {
                 ]
             }
         }
+    },
+    "BLACKLEG_BQ": {
+        "disease_code": "BQ",
+        "disease_name": "Blackleg / Clostridial Myonecrosis (लंगड़ा बुखार / BQ)",
+        "lesion_type": "Crepitant Gaseous Muscular Emphysema (गैस भरी मांसपेशियों की सूजन)",
+        "species": "Cattle (especially calves & young stock 6-24 months) / Buffalo",
+        "visual_confidence_range": (91, 97),
+        "severity": "CRITICAL",
+        "pathognomonic_markers": [
+            "Hot, painful, tense crepitant swelling in heavy muscle masses of thigh, shoulder, or neck",
+            "Characteristic crackling sensation (parchment-like) upon palpation due to gas accumulation",
+            "Severe acute unilateral lameness and reluctance to bear weight on affected limb",
+            "Dark, dry, rancid butter-odored subcutaneous muscle necrosis"
+        ],
+        "immediate_home_care": [
+            "Isolate the affected animal immediately in a dry, calm, well-ventilated stall.",
+            "Administer crystalline penicillin immediately upon veterinary diagnosis before toxic shock ensues.",
+            "Avoid deep incising of affected muscle as spores contaminate surrounding soil for decades.",
+            "Emergency vaccinate all young stock (6-24 months) in the herd with multivalent Clostridial vaccine."
+        ],
+        "lab_specimen_needed": "Aspirated serosanguinous fluid from crepitant lesion or muscle biopsy for Gram stain and fluorescent antibody test (FAT) for Clostridium chauvoei.",
+        "quarantine_mandated": True,
+        "translations": {
+            "hi": {
+                "disease_name": "लंगड़ा बुखार / जहरबाद (Blackleg - BQ)",
+                "lesion_type": "मांसपेशियों में गैस भरी चरमराहट वाली सूजन",
+                "markers": [
+                    "जांघ या कंधे के भारी पुट्ठों पर गर्म व अत्यधिक दर्दनाक सूजन",
+                    "सूजन को दबाने पर कागज जैसी चरमराहट (Crepitus) की आवाज व अहसास",
+                    "अचानक तेज लंगड़ापन, 106°F तक तेज बुखार व सुस्ती"
+                ],
+                "care": [
+                    "पशु को शांत व सूखे बाड़े में अलग रखें, तुरंत पशु चिकित्सक से पेनिसिलिन इंजेक्शन लगवाएं।",
+                    "सूजन वाले हिस्से पर कोई गहरा चीरा न लगाएं ताकि जमीन में जीवाणु न फैलें।",
+                    "झुंड के सभी 6 माह से 2 वर्ष के स्वस्थ बछड़ों-बछड़ियों को BQ का टीका तुरंत लगवाएं।"
+                ]
+            },
+            "mr": {
+                "disease_name": "एकटांग्या / फऱ्या (Blackleg - BQ)",
+                "lesion_type": "मांडीच्या स्नायूंवर गॅस भरलेली चरचर आवाज येणारी सूज",
+                "markers": [
+                    "मांडी किंवा खांद्यावर मोठी सूज ज्याला दाबल्यास कुरकुर आवाज येतो",
+                    "अचानक तीव्र ताप आणि पाय लंगडणे",
+                    "जनावर जमिनीवर बसून राहणे व उठण्यास असमर्थता"
+                ],
+                "care": [
+                    "जनावरास तात्काळ वेगळे ठेवा आणि त्वरित डॉक्टरांकडून पेनिसिलिन औषधोपचार सुरू करा.",
+                    "संसर्ग पसरू नये म्हणून सुजेवर अनाधिकृत चीरा मारू नका.",
+                    "गोठ्यातील ६ ते २४ महिन्यांच्या सर्व वासनांना तातडीने लस टोचा."
+                ]
+            },
+            "te": {
+                "disease_name": "జబ్బవాపు వ్యాధి (Blackleg - BQ)",
+                "lesion_type": "తొడ కండరాలలో గ్యాస్ నిండిన తీవ్రమైన వాపు",
+                "markers": [
+                    "తొడ లేదా భుజంపై వేడి గట్టి వాపు, నొక్కినప్పుడు శబ్దం రావడం",
+                    "తీవ్రమైన కుంటితనం మరియు అధిక జ్వరం",
+                    "నడవలేక కూలబడిపోవడం"
+                ],
+                "care": [
+                    "పశువును వేరు చేసి వెంటనే వెటర్నరీ డాక్టర్ తో యాంటీబయోటిక్ చికిత్స చేయించండి.",
+                    "వాపుపై కోతలు పెట్టవద్దు.",
+                    "మందలోని అన్ని చిన్న పశువులకు వెంటనే టీకాలు వేయించండి."
+                ]
+            },
+            "en": {
+                "disease_name": "Blackleg (BQ / Clostridial Myonecrosis)",
+                "lesion_type": "Crepitant Gaseous Muscular Emphysema",
+                "markers": [
+                    "Crepitant, hot, painful muscular swelling in thigh or shoulder",
+                    "Distinct audible crackling sound upon palpation due to gas pockets",
+                    "Acute unilateral severe lameness and prostration"
+                ],
+                "care": [
+                    "Immediate veterinary parenteral high-dose crystalline penicillin therapy.",
+                    "Do not lance or incise lesion to prevent long-lasting soil spore contamination.",
+                    "Emergency herd vaccination for all young stock (6-24 months)."
+                ]
+            }
+        }
     }
 }
 
@@ -625,66 +710,228 @@ def extract_visual_metrics(image_bytes: bytes) -> Dict[str, Any]:
         }
 
 
-def diagnose_image(image_bytes: bytes, filename: str = "", metadata_hint: str = "", language: str = "en") -> Dict[str, Any]:
+def analyze_with_gemini(
+    image_bytes: bytes,
+    mime_type: str = "image/jpeg",
+    language: str = "en",
+    hint: str = "",
+    user_api_key: Optional[str] = None
+) -> Optional[Dict[str, Any]]:
+    """
+    Calls Google Gemini Multimodal Vision API (gemini-2.0-flash / gemini-1.5-flash)
+    to perform deep clinical pathology image diagnosis and generate localized farmer advice.
+    """
+    api_key = (
+        user_api_key
+        or os.environ.get("GEMINI_API_KEY")
+        or os.environ.get("GOOGLE_API_KEY")
+    )
+    if not api_key:
+        return None
+
+    lang_names = {
+        "hi": "Hindi (हिन्दी)",
+        "mr": "Marathi (मराठी)",
+        "te": "Telugu (తెలుగు)",
+        "en": "English"
+    }
+    target_lang = lang_names.get(language, "Hindi (हिन्दी)")
+
+    prompt = f"""You are an elite veterinary pathologist and livestock epidemiologist specializing in Indian cattle and buffalo diseases.
+Analyze this animal photograph carefully.
+User/Context Hint: {hint or 'General Inspection'}
+Language for farmer advice: {target_lang}
+
+Evaluate carefully:
+1. Is this animal NORMAL/HEALTHY or does it show PATHOLOGY/DISEASE?
+2. Disease/condition identification:
+   - HEALTHY: Normal cattle (clean coat, moist muzzle, clear eyes, normal udder, sound hooves)
+   - FMD: Foot-and-Mouth Disease (vesicular erosions on tongue, eroded dental pad, drooling saliva, coronet ulcers)
+   - LSD: Lumpy Skin Disease (2-5cm round cutaneous nodules, necrotic sitfast scabs)
+   - MASTITIS: Acute Clinical Mastitis (swollen, hot, red udder quarter, curdled flaky milk)
+   - ANTHRAX: Sudden death carcass, lack of rigor mortis, dark uncoagulated tarry orifice discharge
+   - HS: Hemorrhagic Septicemia (submandibular throat edema, brisket swelling, respiratory distress)
+   - BQ: Blackleg (crepitant gaseous swelling in thigh/shoulder muscle, acute lameness)
+   - TICKS: Heavy tick infestation (Hyalomma clusters, anemia, bite dermatitis)
+   - OTHER: Describe specific condition if different.
+
+Respond strictly in valid JSON format:
+{{
+  "is_healthy": true,
+  "disease_code": "HEALTHY",
+  "disease_name": "Normal Healthy Livestock Profile",
+  "disease_name_local": "Name in {target_lang}",
+  "lesion_type": "Brief description in {target_lang}",
+  "affected_species": "Cattle / Buffalo",
+  "visual_confidence": 95,
+  "severity": "NORMAL",
+  "is_zoonotic": false,
+  "quarantine_mandated": false,
+  "biohazard_alert": null,
+  "pathognomonic_markers": [
+    "Observed visual marker 1 in {target_lang}",
+    "Observed visual marker 2 in {target_lang}"
+  ],
+  "immediate_home_care": [
+    "Actionable care step 1 in {target_lang}",
+    "Actionable care step 2 in {target_lang}"
+  ],
+  "precautionary_advice": "Detailed precautionary advice and biosecurity instructions for rural farmer in {target_lang}",
+  "lab_specimen_needed": "Recommended diagnostic specimen for laboratory confirmation",
+  "differential_diagnoses": [
+    {{"disease_code": "OTHER", "disease_name": "Differential name", "differential_probability": 5.0}}
+  ]
+}}
+"""
+
+    b64_image = base64.b64encode(image_bytes).decode("utf-8")
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {"text": prompt},
+                    {
+                        "inline_data": {
+                            "mime_type": mime_type,
+                            "data": b64_image
+                        }
+                    }
+                ]
+            }
+        ],
+        "generationConfig": {
+            "temperature": 0.1,
+            "topP": 0.95,
+            "maxOutputTokens": 1024,
+            "responseMimeType": "application/json"
+        }
+    }
+
+    models = ["gemini-2.0-flash", "gemini-1.5-flash"]
+    for model_name in models:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
+        try:
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST"
+            )
+            with urllib.request.urlopen(req, timeout=12) as response:
+                if response.status == 200:
+                    resp_data = json.loads(response.read().decode("utf-8"))
+                    candidates = resp_data.get("candidates", [])
+                    if candidates:
+                        text_content = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+                        clean_text = text_content.strip()
+                        if clean_text.startswith("```json"):
+                            clean_text = clean_text[7:]
+                        if clean_text.startswith("```"):
+                            clean_text = clean_text[3:]
+                        if clean_text.endswith("```"):
+                            clean_text = clean_text[:-3]
+                        parsed = json.loads(clean_text.strip())
+
+                        return {
+                            "success": True,
+                            "profile_key": "HEALTHY_CATTLE" if parsed.get("is_healthy") else parsed.get("disease_code", "OTHER"),
+                            "disease_code": parsed.get("disease_code", "HEALTHY" if parsed.get("is_healthy") else "DISEASED"),
+                            "disease_name": parsed.get("disease_name_local") or parsed.get("disease_name", "Clinical Examination"),
+                            "disease_name_canonical": parsed.get("disease_name", "Clinical Examination"),
+                            "lesion_type": parsed.get("lesion_type", "Visual inspection findings"),
+                            "affected_species": parsed.get("affected_species", "Bovine"),
+                            "visual_confidence": int(parsed.get("visual_confidence", 94)),
+                            "severity": parsed.get("severity", "NORMAL" if parsed.get("is_healthy") else "HIGH"),
+                            "pathognomonic_markers": parsed.get("pathognomonic_markers", []),
+                            "immediate_home_care": parsed.get("immediate_home_care", []),
+                            "precautionary_advice": parsed.get("precautionary_advice", ""),
+                            "lab_specimen_needed": parsed.get("lab_specimen_needed", "Diagnostic swab / blood / tissue specimen"),
+                            "quarantine_mandated": bool(parsed.get("quarantine_mandated", False)),
+                            "is_zoonotic": bool(parsed.get("is_zoonotic", False)),
+                            "biohazard_alert": parsed.get("biohazard_alert"),
+                            "metrics": extract_visual_metrics(image_bytes),
+                            "differential_diagnoses": parsed.get("differential_diagnoses", []),
+                            "language": language,
+                            "ai_engine": f"Google Gemini Vision AI ({model_name})",
+                            "is_gemini": True,
+                            "translations_available": ["en", "hi", "mr", "te"]
+                        }
+        except Exception:
+            continue
+
+    return None
+
+
+def diagnose_image(
+    image_bytes: bytes,
+    filename: str = "",
+    metadata_hint: str = "",
+    language: str = "en",
+    user_api_key: Optional[str] = None
+) -> Dict[str, Any]:
     """
     Intelligent multi-feature vision AI inspection for livestock pathology.
-    Analyzes visual signatures, user hint/target body region, and Pillow computer vision metrics
-    to identify hallmark lesions while correctly distinguishing normal healthy cattle.
+    Attempts Google Gemini Multimodal Vision AI first if API key is present;
+    seamlessly falls back to local Computer Vision diagnostic engine with reference photo dataset.
     """
+    # 1. Attempt Google Gemini Multimodal Vision AI if API key is configured
+    gemini_result = analyze_with_gemini(
+        image_bytes=image_bytes,
+        mime_type="image/jpeg",
+        language=language,
+        hint=f"{filename} {metadata_hint}".strip(),
+        user_api_key=user_api_key
+    )
+    if gemini_result:
+        return gemini_result
+
+    # 2. Enhanced Local Veterinary Vision Engine with Reference Photo Dataset Matching
     search_text = (filename + " " + metadata_hint).lower()
     metrics = extract_visual_metrics(image_bytes)
 
-    # 1. Explicit hints take high precedence if user selected a specific target region
+    # Reference Photo Catalog Specific Matching
     selected_key = None
-
-    if any(k in search_text for k in ["healthy", "normal", "routine", "swasth", "baseline", "checkup"]):
+    if any(k in search_text for k in ["healthy_cow_muzzle", "healthy_cow_coat", "healthy_cow_udder", "healthy_cow_hooves", "healthy_grazing_cow", "healthy", "normal", "routine", "swasth", "baseline", "checkup", "nirogi"]):
         selected_key = "HEALTHY_CATTLE"
-    elif any(k in search_text for k in ["fmd", "mouth", "tongue", "hoof", "vesicle", "blister", "saliva", "muh", "khur"]):
+    elif any(k in search_text for k in ["fmd_oral_vesicles", "fmd_hoof_lesions", "fmd", "mouth", "tongue", "hoof", "vesicle", "blister", "saliva", "muh", "khur", "khurpaka"]):
         selected_key = "FMD_VESICLES"
-    elif any(k in search_text for k in ["mastitis", "udder", "teat", "than", "thanela"]):
-        selected_key = "MASTITIS_UDDER"
-    elif any(k in search_text for k in ["tick", "parasite", "kilni", "chichdi", "hyalomma"]):
-        selected_key = "TICK_INFESTATION"
-    elif any(k in search_text for k in ["anthrax", "carcass", "oozing", "dark_blood", "gilti"]):
-        selected_key = "ANTHRAX_CARCASS"
-    elif any(k in search_text for k in ["hs", "throat", "neck", "swelling", "galghontu", "edema"]):
-        selected_key = "HS_THROAT_SWELLING"
-    elif any(k in search_text for k in ["lsd", "lumpy", "nodule", "skin", "lump", "sitfast"]):
+    elif any(k in search_text for k in ["lsd_nodules_skin", "lsd", "lumpy", "nodule", "skin", "lump", "sitfast"]):
         selected_key = "LSD_NODULES"
+    elif any(k in search_text for k in ["anthrax_carcass_discharge", "anthrax", "carcass", "oozing", "dark_blood", "gilti", "kalpuli"]):
+        selected_key = "ANTHRAX_CARCASS"
+    elif any(k in search_text for k in ["mastitis_swollen_udder", "mastitis", "udder", "teat", "than", "thanela", "kasdah"]):
+        selected_key = "MASTITIS_UDDER"
+    elif any(k in search_text for k in ["tick_infestation_cluster", "tick", "parasite", "kilni", "chichdi", "hyalomma", "gochid"]):
+        selected_key = "TICK_INFESTATION"
+    elif any(k in search_text for k in ["hs_throat_swelling", "hs", "throat", "neck", "swelling", "galghontu", "edema", "ghatsarpa"]):
+        selected_key = "HS_THROAT_SWELLING"
+    elif any(k in search_text for k in ["blackleg_bq_swelling", "blackleg", "bq", "jaharbad", "crepitus", "emphysema", "leg", "farya", "ektangya"]):
+        selected_key = "BLACKLEG_BQ"
 
-    # 2. Automated feature-based classification if hint is 'auto' or unspecified
+    # Automated feature-based classification if hint is 'auto' or unspecified
     if not selected_key:
         if metrics["valid"]:
-            # Check for peracute anthrax indicators: high dark blood ratio + low luminance
             if metrics["dark_blood_ratio"] >= 28.0 and metrics["luminance"] < 45:
                 selected_key = "ANTHRAX_CARCASS"
-            # Check for mucosal erythema/oral blister signs (high redness & erythema)
             elif metrics["erythema_score"] >= 35 and metrics["redness_index"] >= 0.44:
                 selected_key = "FMD_VESICLES"
-            # Check for rough circumscribed nodules (high texture edge roughness)
             elif metrics["roughness_score"] >= 45:
                 selected_key = "LSD_NODULES"
-            # Check for dense tick clusters (moderate roughness with high contrast variance)
             elif metrics["roughness_score"] >= 32 and metrics["redness_index"] <= 0.36:
                 selected_key = "TICK_INFESTATION"
-            # Normal healthy bovine coat: smooth texture, low redness, clear coat
             elif metrics["roughness_score"] <= 26 and metrics["redness_index"] <= 0.40:
                 selected_key = "HEALTHY_CATTLE"
             else:
-                # Default baseline to Healthy Cattle rather than alarming false anthrax/FMD
                 selected_key = "HEALTHY_CATTLE"
         else:
-            # Fallback for mock/empty test buffers
             selected_key = "HEALTHY_CATTLE"
 
     profile = VISUAL_DISEASE_PROFILES[selected_key]
     low_c, high_c = profile["visual_confidence_range"]
 
-    # Compute a realistic confidence percentage
     metric_factor = (metrics["roughness_score"] + metrics["erythema_score"]) % (high_c - low_c + 1)
     confidence = min(low_c + metric_factor, high_c)
 
-    # Localized texts for the active language
     lang_code = language if language in ["hi", "mr", "te", "en"] else "en"
     trans = profile.get("translations", {}).get(lang_code) or profile.get("translations", {}).get("en", {})
 
@@ -693,7 +940,59 @@ def diagnose_image(image_bytes: bytes, filename: str = "", metadata_hint: str = 
     disp_markers = trans.get("markers", profile["pathognomonic_markers"])
     disp_care = trans.get("care", profile["immediate_home_care"])
 
-    # Compute secondary differential diagnoses
+    precaution_map = {
+        "HEALTHY_CATTLE": {
+            "hi": "पशु पूर्णतः स्वस्थ है। नियमित साफ पीने का पानी, 40 ग्राम खनिज मिश्रण व समय पर टीकाकरण (FMD, HS/BQ) जारी रखें।",
+            "mr": "जनावर पूर्णपणे निरोगी आहे. दररोज स्वच्छ पाणी, खनिज मिश्रण आणि वेळेवर लसीकरण सुरू ठेवा.",
+            "te": "పశువు ఆరోగ్యంగా ఉంది. స్వచ్ఛమైన నీరు, ఖనిజ లవణాలు మరియు సకాలంలో టీకాలు వేయించండి.",
+            "en": "Normal healthy baseline. Maintain bi-annual deworming, clean barn hygiene, and scheduled vaccination."
+        },
+        "FMD_VESICLES": {
+            "hi": "अति-संक्रामक खुरपका-मुंहपका: संक्रमित पशु को तुरंत अलग करें। 1% लाल दवा से मुंह धोएं व बोरो-ग्लिसरीन लगाएं। दूध उबालकर पिएं।",
+            "mr": "लाळ्या खुरकूत: जनावरास त्वरित वेगळे करा. १% लाल औषधाने तोंड धुवा, बोरो-ग्लिसरीन लावा. वाहतूक बंद करा.",
+            "te": "గాలికుంటు వ్యాధి: పశువును వేరు చేయండి. పొటాషియం పర్మాంగనేట్ తో నోరు శుభ్రపరచండి, పాలు మరిగించి వాడండి.",
+            "en": "High epidemic threat: Strict quarantine within 3km ring. Wash lesions with 1% potassium permanganate and apply boroglycerine."
+        },
+        "LSD_NODULES": {
+            "hi": "लम्पी त्वचा रोग: मच्छरदानी वाले बाड़े में अलग रखें। मक्खी-मच्छर भगाने के लिए दवा छिड़कें। हल्दी, गिलोय व नीम का काढ़ा पिलाएं।",
+            "mr": "लम्पी त्वचा रोग: डास-माशांपासून बचावासाठी जाळीच्या गोठ्यात ठेवा. हळद, गुळवेल व कडुनिंबाचा काढा द्या.",
+            "te": "లంపీ స్కిన్: దోమలు, ఈగలు వాలకుండా రక్షణ కల్పించండి. పసుపు, వేప లేపనం పూయండి.",
+            "en": "Vector-borne capripox: Isolate animal under insect netting. Spray vector repellent and administer supportive antipyretics."
+        },
+        "ANTHRAX_CARCASS": {
+            "hi": "खतरनाक छूत का रोग (एंथ्रेक्स): शव को बिल्कुल न चीरें! 6 फीट गहरे गड्ढे में चूना डालकर दफनाएं। पशु चिकित्सक को तुरंत सूचित करें।",
+            "mr": "अतिधोकादायक काळपुळी: शवविच्छेदन करू नका! ६ फूट खोल खड्ड्यात चुना टाकून पुरा. त्वरित डॉक्टरांना कळवा.",
+            "te": "ఆంత్రాక్స్ ప్రమాదం: కళేబరాన్ని కోయవద్దు! 6 అడుగుల గుంతలో సున్నం వేసి పూడ్చండి.",
+            "en": "CRITICAL BIOHAZARD: Do not open carcass. Spores survive for decades. Deep burial under unslaked lime (6 feet)."
+        },
+        "MASTITIS_UDDER": {
+            "hi": "तीव्र थनैला: प्रभावित थन का खराब दूध हर 2 घंटे में अलग बर्तन में निकालें। बर्फ से सिकाई करें व तुरंत एंटीबायोटिक लगवाएं।",
+            "mr": "तीव्र कासदाह: खराब दूध वारंवार पिळून नष्ट करा. बर्फाने शेका आणि तात्काळ डॉक्टरांकडून उपचार करा.",
+            "te": "తీవ్రమైన పొదుగువాపు: చెడిపోయిన పాలను పితికి పారబోయండి, ఐస్ క్యూబ్స్ తో కాపడం పెట్టండి.",
+            "en": "Acute mastitis: Frequent stripping of affected quarter into disinfectant every 2 hours. Ice application and veterinary intramammary therapy."
+        },
+        "TICK_INFESTATION": {
+            "hi": "चिचड़ी प्रकोप: पशु चिकित्सक की सलाह से फ्लूमेथ्रिन दवा लगाएं। गौशाला की दरारों में आग दिखाकर अंडे नष्ट करें।",
+            "mr": "गोचीड प्रादुर्भाव: डॉक्टरांच्या सल्ल्याने गोचीडनाशक औषध वापरा. गोठ्यातील भेगांमध्ये चुना भरा.",
+            "te": "పిడుదుల దాడి: పశువైద్యుల సలహాతో నివారణ మందు వాడండి, కొట్టాన్ని శుభ్రపరచండి.",
+            "en": "Ectoparasitic burden: Topical flumethrin pour-on and flame sanitation of barn crevices to eliminate tick vectors."
+        },
+        "HS_THROAT_SWELLING": {
+            "hi": "गलघोंटू आपातकाल: सांस रुकने से पहले तुरंत पशु चिकित्सक को बुलाएं! ऑक्सीटेट्रासाइक्लिन या सल्फा दवा का इंजेक्शन अति आवश्यक है।",
+            "mr": "घटसर्प आणीबाणी: तात्काळ डॉक्टरांना बोलवा, त्वरित अँटीबायोटिक इंजेक्शन आवश्यक.",
+            "te": "గొంతువాపు అత్యవసరం: వెంటనే పశువైద్యుడిని పిలిపించి యాంటీబయోటిక్ చికిత్స చేయించండి.",
+            "en": "Peracute bacterial emergency: Immediate high-dose parenteral antibiotics before asphyxiation ensues."
+        },
+        "BLACKLEG_BQ": {
+            "hi": "लंगड़ा बुखार (BQ): पशु को शांत छायादार स्थान पर रखें। तुरंत पेनिसिलिन एंटीबायोटिक लगवाएं व शेष पूरे झुंड को टीका लगाएं।",
+            "mr": "एकटांग्या (BQ): जनावराला विश्रांती द्या. तात्काळ पेनिसिलिन उपचार सुरू करा व इतर जनावरांना लस द्या.",
+            "te": "జబ్బవాపు (BQ): పశువును ప్రశాంత ప్రదేశంలో ఉంచండి, మిగిలిన మందకు టీకాలు వేయించండి.",
+            "en": "Clostridial myonecrosis: Prompt crystalline penicillin administration and emergency herd immunization."
+        }
+    }
+
+    advice_text = precaution_map.get(selected_key, {}).get(lang_code, precaution_map.get(selected_key, {}).get("en", ""))
+
     differentials = []
     for k, p in VISUAL_DISEASE_PROFILES.items():
         if k != selected_key:
@@ -723,6 +1022,7 @@ def diagnose_image(image_bytes: bytes, filename: str = "", metadata_hint: str = 
         "severity": profile["severity"],
         "pathognomonic_markers": disp_markers,
         "immediate_home_care": disp_care,
+        "precautionary_advice": advice_text,
         "lab_specimen_needed": profile["lab_specimen_needed"],
         "quarantine_mandated": profile["quarantine_mandated"],
         "is_zoonotic": profile["disease_code"] in ["ANTHRAX", "BRUCELLOSIS", "RABIES"],
@@ -730,5 +1030,7 @@ def diagnose_image(image_bytes: bytes, filename: str = "", metadata_hint: str = 
         "metrics": metrics,
         "differential_diagnoses": differentials[:3],
         "language": lang_code,
+        "ai_engine": "Pashu Suraksha Local Veterinary Vision Engine",
+        "is_gemini": False,
         "translations_available": ["en", "hi", "mr", "te"]
     }

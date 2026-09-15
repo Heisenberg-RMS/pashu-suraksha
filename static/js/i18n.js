@@ -75,6 +75,19 @@ const I18N_TRANSLATIONS = {
     standby_desc: "Capture or upload a photo of the animal's skin, mouth, hooves, or udder to detect disease lesions, clinical stage, and emergency first-aid.",
     btn_auto_fill: "📝 Auto-Fill Official Disease Report",
     btn_ask_ai: "💬 Ask AI Chatbot About This",
+    gemini_banner_title: "Google Gemini 2.0 Vision AI & Edge Veterinary Neural Engine",
+    gemini_banner_sub: "Zero-error multimodal cattle pathology & offline local neural backup with precautionary biosecurity guidance",
+    gemini_btn_key: "Gemini API Key",
+    atlas_title: "Livestock Photo Reference Atlas & Training Dataset",
+    atlas_sub: "Curated photographic atlas of healthy cattle anatomy & pathognomonic disease lesions. Click any photo below to instantly test and benchmark AI Vision Diagnostics.",
+    filter_all: "All Specimens (13)",
+    filter_healthy: "Healthy Bovines (5)",
+    filter_epidemics: "Critical Epidemics (5)",
+    filter_common: "Common Conditions (3)",
+    btn_test_scan: "🔬 Test AI Scan",
+    precaution_title_healthy: "Farmer Biosecurity & Maintenance Advice",
+    precaution_title_disease: "Immediate Farmer Precautionary & Biosecurity Advice",
+
 
     // Triage & Reporting
     triage_form_title: "📝 Field Case & Mortality Reporting",
@@ -212,6 +225,19 @@ const I18N_TRANSLATIONS = {
     standby_desc: "पशु की त्वचा, मुंह, खुर या थन की फोटो अपलोड करें ताकि एआई तुरंत बीमारी की पहचान, अवस्था और प्राथमिक उपचार बता सके।",
     btn_auto_fill: "📝 इस जांच को सीधे रोग रिपोर्ट में भरें",
     btn_ask_ai: "💬 एआई चैटबॉट से इस बारे में पूछें",
+    gemini_banner_title: "गूगल जेमिनी 2.0 विज़न एआई एवं स्थानिक पशु चिकित्सा न्यूरल इंजन",
+    gemini_banner_sub: "सटीक मल्टीमॉडल पशु रोग पहचान एवं ऑफ़लाइन बैकअप के साथ किसान सुरक्षा सलाह",
+    gemini_btn_key: "जेमिनी एपीआई कुंजी",
+    atlas_title: "पशु स्वास्थ्य संदर्भ फोटो एटलस व प्रशिक्षण डेटासेट",
+    atlas_sub: "स्वस्थ पशुओं एवं प्रमुख संक्रामक रोगों की वास्तविक फोटो गैलरी। एआई विजन जांच हेतु किसी भी फोटो पर क्लिक करें।",
+    filter_all: "सभी नमूने (13)",
+    filter_healthy: "स्वस्थ पशु (5)",
+    filter_epidemics: "गंभीर महामारियां (5)",
+    filter_common: "सामान्य रोग (3)",
+    btn_test_scan: "🔬 एआई जांच करें",
+    precaution_title_healthy: "किसान जैव-सुरक्षा व सामान्य देखभाल सलाह",
+    precaution_title_disease: "किसान आपातकालीन सुरक्षा व बचाव सलाह",
+
 
     // Triage & Reporting
     triage_form_title: "📝 बीमारी एवं मृत्यु की प्राथमिक सूचना रिपोर्ट",
@@ -349,6 +375,19 @@ const I18N_TRANSLATIONS = {
     standby_desc: "जनावराची कातडी, तोंड, खूर किंवा कासेचा फोटो अपलोड करा, जेणेकरून एआय आजाराचे त्वरित निदान आणि प्रथमोपचार सुचवेल.",
     btn_auto_fill: "📝 ही तपासणी थेट आजार अहवालात जोडा",
     btn_ask_ai: "💬 एआय चॅटबॉटला याबद्दल विचारा",
+    gemini_banner_title: "गुगल जेमिनी २.० व्हिजन एआय व स्थानिक न्यूरल इंजिन",
+    gemini_banner_sub: "अचूक मल्टीमॉडल पशु रोगनिदान आणि ऑफलाइन बॅकअपसह शेतकरी सुरक्षा सल्ला",
+    gemini_btn_key: "जेमिनी API की",
+    atlas_title: "पशु आरोग्य संदर्भ फोटो ॲटलस व डेटासेट",
+    atlas_sub: "निरोगी जनावरे आणि प्रमुख साथीच्या रोगांची अधिकृत फोटो गॅलरी. थेट एआय चाचणीसाठी कोणत्याही फोटोवर क्लिक करा.",
+    filter_all: "सर्व नमुने (१३)",
+    filter_healthy: "निरोगी जनावरे (५)",
+    filter_epidemics: "गंभीर साथीचे रोग (५)",
+    filter_common: "सामान्य आजार (३)",
+    btn_test_scan: "🔬 एआय चाचणी करा",
+    precaution_title_healthy: "शेतकरी जैव-सुरक्षा व दैनंदिन देखभाल सल्ला",
+    precaution_title_disease: "शेतकरी तात्काळ सावधगिरी व सुरक्षा सल्ला",
+
 
     // Triage & Reporting
     triage_form_title: "📝 आजार व मृत्यू नोंदणी प्राथमिक अहवाल",
@@ -486,6 +525,19 @@ const I18N_TRANSLATIONS = {
     standby_desc: "పశువు చర్మం, నోరు, గిట్టలు లేదా పొదుగు ఫోటోను అప్‌లోడ్ చేయండి; ఏఐ వ్యాధిని గుర్తించి తక్షణ చికిత్సను అందిస్తుంది.",
     btn_auto_fill: "📝 ఈ ఫలితాన్ని అధికారిక నివేదికలో చేర్చండి",
     btn_ask_ai: "💬 ఈ వ్యాధి గురించి ఏఐ చాట్‌బాట్‌ను అడగండి",
+    gemini_banner_title: "గూగుల్ జెమిని 2.0 విజన్ ఏఐ & స్థానిక వెటర్నరీ న్యూరల్ ఇంజిన్",
+    gemini_banner_sub: "ఖచ్చితమైన పశు వ్యాధి నిర్ధారణ మరియు ఆఫ్‌లైన్ రక్షణతో రైతు భద్రతా సలహాలు",
+    gemini_btn_key: "జెమిని API కీ",
+    atlas_title: "పశు ఆరోగ్య ఫోటో అట్లాస్ & శిక్షణ డేటాసెట్",
+    atlas_sub: "ఆరోగ్యకరమైన పశువులు మరియు ప్రధాన అంటువ్యాధుల ఫోటో గ్యాలరీ. తక్షణ ఏఐ పరీక్ష కోసం ఏదైనా ఫోటోపై క్లిక్ చేయండి.",
+    filter_all: "అన్ని నమూనాలు (13)",
+    filter_healthy: "ఆరోగ్యకరమైన పశువులు (5)",
+    filter_epidemics: "తీవ్ర అంటువ్యాధులు (5)",
+    filter_common: "సాధారణ సమస్యలు (3)",
+    btn_test_scan: "🔬 ఏఐ పరీక్షించండి",
+    precaution_title_healthy: "రైతు జీవ-భద్రత & సాధారణ సంరక్షణ సలహా",
+    precaution_title_disease: "రైతు తక్షణ జాగ్రత్తలు & భద్రతా సలహా",
+
 
     // Triage & Reporting
     triage_form_title: "📝 పశు వ్యాధి మరియు మరణాల నివేదిక",

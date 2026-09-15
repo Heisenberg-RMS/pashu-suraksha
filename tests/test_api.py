@@ -292,7 +292,83 @@ class TestPashuSuraksha(unittest.TestCase):
         self.assertTrue(dir_data["success"])
         self.assertGreater(dir_data["farmers_reached"], 0)
 
+    def test_18_vision_catalog_and_gemini_endpoints(self):
+        # 1. Test catalog retrieval
+        res_cat = self.client.get("/api/vision/catalog")
+        self.assertEqual(res_cat.status_code, 200)
+        catalog = res_cat.get_json()
+        self.assertGreaterEqual(len(catalog), 13)
+        
+        # Verify healthy and diseased categories exist
+        categories = {item["category"] for item in catalog}
+        self.assertIn("HEALTHY", categories)
+        self.assertIn("DISEASED", categories)
+        
+        # Verify multilingual fields in catalog entries
+        first = catalog[0]
+        self.assertIn("title_en", first)
+        self.assertIn("title_hi", first)
+        self.assertIn("title_mr", first)
+        self.assertIn("title_te", first)
+        self.assertIn("precaution_hi", first)
+        
+        # 2. Test Gemini status endpoint
+        res_gemini = self.client.get("/api/vision/gemini-status")
+        self.assertEqual(res_gemini.status_code, 200)
+        gemini_status = res_gemini.get_json()
+        self.assertIn("gemini_active", gemini_status)
+        self.assertIn("default_model", gemini_status)
+
+        # 3. Test setting/clearing Gemini session key
+        res_set = self.client.post("/api/vision/gemini-key", json={"api_key": "test_dummy_key_123"})
+        self.assertEqual(res_set.status_code, 200)
+        res_check = self.client.get("/api/vision/gemini-status")
+        self.assertTrue(res_check.get_json()["gemini_active"])
+        
+        # Clear key
+        res_clear = self.client.post("/api/vision/gemini-key", json={"api_key": ""})
+        self.assertEqual(res_clear.status_code, 200)
+
+    def test_19_sample_photos_diagnosis_and_precautionary_advice(self):
+        # Test diagnosis for a healthy sample filename
+        res_healthy = self.client.post("/api/image-diagnosis", json={
+            "filename": "healthy_cow_muzzle.jpg",
+            "language": "hi"
+        })
+        self.assertEqual(res_healthy.status_code, 200)
+        h_data = res_healthy.get_json()
+        self.assertEqual(h_data["disease_code"], "HEALTHY")
+        self.assertEqual(h_data["severity"], "NORMAL")
+        self.assertIn("precautionary_advice", h_data)
+        self.assertTrue(len(h_data["precautionary_advice"]) > 0)
+        self.assertIn("ai_engine", h_data)
+
+        # Test diagnosis for FMD diseased sample
+        res_fmd = self.client.post("/api/image-diagnosis", json={
+            "filename": "fmd_oral_vesicles.jpg",
+            "language": "mr"
+        })
+        self.assertEqual(res_fmd.status_code, 200)
+        fmd_data = res_fmd.get_json()
+        self.assertEqual(fmd_data["disease_code"], "FMD")
+        self.assertEqual(fmd_data["severity"], "CRITICAL")
+        self.assertIn("लाळ्या खुरकूत", fmd_data["disease_name"])
+        self.assertIn("precautionary_advice", fmd_data)
+        self.assertIn("लाल औषध", fmd_data["precautionary_advice"])
+
+        # Test diagnosis for Anthrax sample
+        res_anthrax = self.client.post("/api/image-diagnosis", json={
+            "filename": "anthrax_carcass_discharge.jpg",
+            "language": "te"
+        })
+        self.assertEqual(res_anthrax.status_code, 200)
+        anthrax_data = res_anthrax.get_json()
+        self.assertEqual(anthrax_data["disease_code"], "ANTHRAX")
+        self.assertTrue(anthrax_data["is_zoonotic"])
+        self.assertIsNotNone(anthrax_data["biohazard_alert"])
+
 if __name__ == "__main__":
     unittest.main()
+
 
 

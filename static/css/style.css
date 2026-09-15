@@ -1096,6 +1096,259 @@ body {
 }
 
 /* ==========================================
+   GEMINI 2.0 MULTIMODAL VISION INTEGRATION
+   ========================================== */
+.gemini-integration-bar {
+  background: linear-gradient(135deg, #f8fafc 0%, #ede9fe 100%);
+  border: 1px solid #c7d2fe;
+  border-radius: var(--radius);
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.08);
+}
+
+.gemini-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.gemini-sparkle-icon {
+  font-size: 1.6rem;
+  background: #ffffff;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd6fe;
+  box-shadow: 0 2px 4px rgba(124, 58, 237, 0.1);
+}
+
+.gemini-bar-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #312e81;
+}
+
+.gemini-bar-sub {
+  font-size: 0.76rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.gemini-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.gemini-status-pill {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.gemini-status-pill.active {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+.gemini-status-pill.local {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.gemini-key-panel {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* ==========================================
+   REFERENCE PHOTO ATLAS & DATASET GALLERY
+   ========================================== */
+.atlas-filter-bar {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.atlas-filter-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: all 0.15s ease;
+}
+
+.atlas-filter-btn:hover {
+  background: #f8fafc;
+  border-color: #0f766e;
+  color: #0f766e;
+}
+
+.atlas-filter-btn.active {
+  background: #0f766e;
+  border-color: #0f766e;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(15, 118, 110, 0.25);
+}
+
+.vision-atlas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.vision-atlas-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.vision-atlas-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  border-color: #0f766e;
+}
+
+.atlas-card-thumbnail-wrap {
+  position: relative;
+  width: 100%;
+  height: 155px;
+  background: #0f172a;
+  overflow: hidden;
+}
+
+.atlas-card-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.vision-atlas-card:hover .atlas-card-thumbnail {
+  transform: scale(1.04);
+}
+
+.atlas-card-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
+}
+
+.atlas-badge-healthy {
+  background: rgba(22, 101, 52, 0.9);
+  color: #ffffff;
+  border: 1px solid #86efac;
+}
+
+.atlas-badge-epidemic {
+  background: rgba(185, 28, 28, 0.9);
+  color: #ffffff;
+  border: 1px solid #fca5a5;
+}
+
+.atlas-badge-common {
+  background: rgba(180, 83, 9, 0.9);
+  color: #ffffff;
+  border: 1px solid #fcd34d;
+}
+
+.atlas-card-body {
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.atlas-card-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+}
+
+.atlas-card-hallmark {
+  font-size: 0.74rem;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+  line-height: 1.35;
+  flex: 1;
+}
+
+.atlas-test-btn {
+  width: 100%;
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+  color: #0f766e;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.atlas-test-btn:hover {
+  background: #0f766e;
+  border-color: #0f766e;
+  color: #ffffff;
+}
+
+.precautionary-advice-card {
+  border-radius: 10px;
+  padding: 0.95rem 1.1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+
+/* ==========================================
    VETERINARY CHATBOT WIDGET & DRAWER
    ========================================== */
 .chat-float-btn {

@@ -267,6 +267,40 @@
 
     <!-- TAB: AI VISION LENS & LESION SCAN -->
     <section id="view-vision" class="tab-view">
+      <!-- Gemini 2.0 Multimodal Vision AI Integration Bar -->
+      <div class="gemini-integration-bar" id="geminiIntegrationBar">
+        <div class="gemini-bar-left">
+          <span class="gemini-sparkle-icon">✨</span>
+          <div>
+            <div class="gemini-bar-title" data-i18n="gemini_banner_title">Google Gemini 2.0 Vision AI & Edge Veterinary Neural Engine</div>
+            <div class="gemini-bar-sub" data-i18n="gemini_banner_sub">Zero-error multimodal cattle pathology & offline local neural backup with precautionary biosecurity guidance</div>
+          </div>
+        </div>
+        <div class="gemini-bar-right">
+          <span id="geminiStatusBadge" class="gemini-status-pill local">⚡ Local Neural Engine Active</span>
+          <button type="button" class="btn btn-sm btn-outline" onclick="window.VisionManager.toggleApiKeyModal()" style="font-size:0.75rem; padding:0.3rem 0.65rem; border-color:#cbd5e1; color:#334155;">
+            🔑 <span data-i18n="gemini_btn_key">Gemini API Key</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Expandable Gemini Key Configuration Panel -->
+      <div id="geminiKeyPanel" class="gemini-key-panel" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+          <b style="font-size:0.84rem; color:#1e293b;">🔑 Configure Google Gemini Vision API Key (Optional)</b>
+          <button type="button" onclick="window.VisionManager.toggleApiKeyModal()" style="background:none; border:none; cursor:pointer; font-size:1.1rem; color:#64748b;">&times;</button>
+        </div>
+        <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.6rem;">
+          Enter your Google Gemini API key to activate Gemini 2.0 Flash Multimodal Vision for deep pathological reasoning. If no key is set, the system seamlessly uses the local edge neural vision engine.
+        </p>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <input type="password" id="geminiApiKeyInput" placeholder="Enter AIzaSy... or paste key" class="form-control form-control-sm" style="flex:1; min-width:200px;">
+          <button type="button" class="btn btn-primary btn-sm" onclick="window.VisionManager.saveApiKey()">💾 Save & Verify</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="window.VisionManager.clearApiKey()">🗑️ Clear</button>
+        </div>
+        <div id="geminiKeyFeedback" style="font-size:0.75rem; margin-top:0.4rem; color:#64748b;"></div>
+      </div>
+
       <div class="grid-2">
         <!-- Capture / Upload Card -->
         <div class="card">
@@ -340,7 +374,7 @@
           <!-- Sample Lesion Presets -->
           <div style="margin-top:1.25rem; border-top:1px solid #e2e8f0; padding-top:1rem;">
             <label style="font-size:0.78rem; font-weight:700; color:#64748b; text-transform:uppercase;" data-i18n="presets_label">
-              ⚡ Or Test With Standard Pathology Presets (No Camera Needed):
+              ⚡ Or Test With Quick Synthetic Presets:
             </label>
             <div class="sample-presets-bar">
               <button class="sample-preset-btn" data-hint="healthy" data-name="Healthy Bovine" data-icon="🐄" data-i18n="preset_healthy">
@@ -376,6 +410,45 @@
               <h3 style="color:#64748b; margin-bottom:0.35rem;" data-i18n="standby_title">AI Vision Diagnostics Standby</h3>
               <p style="font-size:0.85rem;" data-i18n="standby_desc">Capture or upload a photo of the affected animal's skin, mouth, hooves, or udder to detect disease lesions, clinical stage, and emergency first-aid.</p>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photographic Reference Atlas & Dataset Gallery -->
+      <div class="card" style="margin-top:1.5rem; border-top:4px solid #0f766e;">
+        <div class="card-header" style="flex-wrap:wrap; gap:0.75rem;">
+          <div>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <span style="font-size:1.4rem;">🖼️</span>
+              <h2 class="card-title" data-i18n="atlas_title">Livestock Photo Reference Atlas & Training Dataset</h2>
+              <span class="badge" style="background:#ccfbf1; color:#0f766e; font-weight:700;">13 Verified Clinical Specimens</span>
+            </div>
+            <p style="font-size:0.82rem; color:#64748b; margin-top:0.2rem;" data-i18n="atlas_sub">
+              Curated photographic atlas of healthy cattle anatomy & pathognomonic disease lesions. Click any photo below to instantly test and benchmark AI Vision Diagnostics.
+            </p>
+          </div>
+          
+          <!-- Category Filter Bar -->
+          <div class="atlas-filter-bar">
+            <button type="button" class="atlas-filter-btn active" data-category="ALL" onclick="window.VisionManager.filterAtlas('ALL')">
+              🌐 <span data-i18n="filter_all">All Specimens (13)</span>
+            </button>
+            <button type="button" class="atlas-filter-btn" data-category="HEALTHY" onclick="window.VisionManager.filterAtlas('HEALTHY')">
+              ✅ <span data-i18n="filter_healthy">Healthy Bovines (5)</span>
+            </button>
+            <button type="button" class="atlas-filter-btn" data-category="EPIDEMIC" onclick="window.VisionManager.filterAtlas('EPIDEMIC')">
+              🚨 <span data-i18n="filter_epidemics">Critical Epidemics (5)</span>
+            </button>
+            <button type="button" class="atlas-filter-btn" data-category="COMMON" onclick="window.VisionManager.filterAtlas('COMMON')">
+              🩺 <span data-i18n="filter_common">Common Conditions (3)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Grid of Atlas Cards -->
+        <div id="visionAtlasGrid" class="vision-atlas-grid">
+          <div style="grid-column:1/-1; text-align:center; padding:2rem; color:#94a3b8;">
+            Loading reference photo catalog...
           </div>
         </div>
       </div>

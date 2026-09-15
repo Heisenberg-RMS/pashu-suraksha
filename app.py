@@ -159,6 +159,7 @@ def image_diagnosis():
     filename = ""
     hint = request.args.get("hint", "")
     language = request.args.get("language", "hi")
+    gemini_key = request.headers.get("X-Gemini-API-Key") or session.get("gemini_api_key")
     image_bytes = b""
     
     if "image" in request.files:
@@ -166,12 +167,14 @@ def image_diagnosis():
         filename = file.filename or "upload.jpg"
         hint = request.form.get("hint", hint)
         language = request.form.get("language", language)
+        gemini_key = request.form.get("gemini_api_key", gemini_key)
         image_bytes = file.read()
     elif request.is_json:
         data = request.json or {}
         hint = data.get("hint", hint)
         filename = data.get("filename", "")
         language = data.get("language", language)
+        gemini_key = data.get("gemini_api_key", gemini_key)
         data_url = data.get("image_data", "")
         if "," in data_url:
             data_url = data_url.split(",")[1]
@@ -180,8 +183,45 @@ def image_diagnosis():
         except Exception:
             image_bytes = b"simulated_image_bytes"
             
-    result = diagnose_image(image_bytes, filename=filename, metadata_hint=hint, language=language)
+    result = diagnose_image(
+        image_bytes,
+        filename=filename,
+        metadata_hint=hint,
+        language=language,
+        user_api_key=gemini_key
+    )
     return jsonify(result)
+
+@app.route("/api/vision/catalog", methods=["GET"])
+def get_vision_catalog():
+    """Returns the photo catalog of healthy and diseased livestock reference specimens."""
+    catalog_path = os.path.join(app.static_folder, "images", "samples", "catalog.json")
+    if os.path.exists(catalog_path):
+        with open(catalog_path, "r", encoding="utf-8") as f:
+            catalog = json.load(f)
+        return jsonify(catalog)
+    return jsonify([])
+
+@app.route("/api/vision/gemini-status", methods=["GET"])
+def get_gemini_status():
+    """Checks whether Google Gemini Vision AI key is active."""
+    server_key = bool(os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or session.get("gemini_api_key"))
+    return jsonify({
+        "gemini_active": server_key,
+        "default_model": "gemini-2.0-flash",
+        "fallback_engine": "Pashu Suraksha Local Veterinary Vision Engine"
+    })
+
+@app.route("/api/vision/gemini-key", methods=["POST"])
+def set_gemini_key():
+    data = request.json or {}
+    key = data.get("api_key", "").strip()
+    if key:
+        session["gemini_api_key"] = key
+        return jsonify({"success": True, "message": "Gemini API key configured for session."})
+    else:
+        session.pop("gemini_api_key", None)
+        return jsonify({"success": True, "message": "Gemini API key cleared. Using local vision engine."})
 
 @app.route("/api/image-diagnosis/presets", methods=["GET"])
 def list_vision_presets():
