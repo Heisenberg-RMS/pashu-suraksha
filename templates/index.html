@@ -24,8 +24,8 @@
 </head>
 <body>
 
-  <!-- Top Header Bar -->
-  <header class="header-bar">
+  <!-- Top Header Bar with Expanding Scenic Illustration -->
+  <header class="header-bar" id="appHeaderBar">
     <div class="brand-section">
       <div class="brand-logo">🐄</div>
       <div class="brand-text">
@@ -63,6 +63,26 @@
       <button class="btn-login-toggle" onclick="window.AuthManager.openModal()">
         🔑 <span data-i18n="nav_login">Login / Switch</span>
       </button>
+
+      <!-- Expand / Compact Header Background Toggle Button -->
+      <button type="button" class="btn-header-expand" id="btnHeaderExpand" onclick="window.App.toggleHeaderExpand()" title="Expand or compact header scenery illustration">
+        <span id="headerExpandIcon">🖼️</span> <span id="headerExpandLabel" data-i18n="header_expand_btn">Expand View</span>
+      </button>
+    </div>
+
+    <!-- Expandable Hero Banner Details -->
+    <div class="header-expanded-content" id="headerExpandedContent">
+      <div class="header-hero-tagline">
+        <span class="motto-chip">🐄 Healthy Animals</span>
+        <span class="motto-divider">•</span>
+        <span class="motto-chip">🌾 Better Crops</span>
+        <span class="motto-divider">•</span>
+        <span class="motto-chip">👨‍🌾 Prosperous Farmers</span>
+        <span class="motto-lang">| स्वस्थ पशु • उन्नत कृषि • समृद्ध किसान</span>
+      </div>
+      <div class="header-hero-sub">
+        National Integrated Veterinary Epidemic Intelligence, Tele-Diagnostics & Rural Animal Health Care Ecosystem
+      </div>
     </div>
   </header>
 
