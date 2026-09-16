@@ -401,11 +401,52 @@ function initMobileMode() {
   });
 }
 
+function initSplashScreen() {
+  const splashEl = document.getElementById('appSplashScreen');
+  const splashLine = document.getElementById('splashProgressLine');
+  if (!splashEl) return;
+
+  // In native Android APK, MainActivity already displays native splash overlay
+  if (navigator.userAgent.includes('PashuSurakshaApp')) {
+    splashEl.style.display = 'none';
+    return;
+  }
+
+  // Smooth loading line progress animation
+  if (splashLine) {
+    setTimeout(() => { splashLine.style.width = '45%'; }, 60);
+    setTimeout(() => { splashLine.style.width = '80%'; }, 350);
+  }
+
+  const dismissSplash = () => {
+    if (splashLine) splashLine.style.width = '100%';
+    setTimeout(() => {
+      splashEl.classList.add('fade-out');
+      setTimeout(() => {
+        splashEl.style.display = 'none';
+      }, 480);
+    }, 350);
+  };
+
+  if (document.readyState === 'complete') {
+    setTimeout(dismissSplash, 600);
+  } else {
+    window.addEventListener('load', () => {
+      setTimeout(dismissSplash, 600);
+    });
+  }
+
+  // Safety fallback after 4 seconds
+  setTimeout(dismissSplash, 4000);
+}
+
 // Immediate evaluation
 initMobileMode();
+initSplashScreen();
 
 document.addEventListener('DOMContentLoaded', () => {
   initMobileMode();
+  initSplashScreen();
   // Initialize subsystems
   if (window.I18n) window.I18n.init();
   window.OfflineManager.initDB();

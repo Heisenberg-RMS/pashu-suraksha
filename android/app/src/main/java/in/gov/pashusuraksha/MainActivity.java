@@ -1,6 +1,9 @@
-package in.gov.pashusuraksha;
+﻿package in.gov.pashusuraksha;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -10,8 +13,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.webkit.GeolocationPermissions;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
@@ -22,6 +28,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,7 +49,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int FILE_CHOOSER_REQUEST_CODE = 1002;
 
     private WebView webView;
-    private ProgressBar progressBar;
+    private View splashContainer;
+    private ProgressBar splashProgressBar;
+    private TextView splashStatusText;
+    private boolean splashDismissed = false;
+    private long splashStartTime = 0;
 
     private ValueCallback<Uri[]> filePathCallback;
     private String cameraPhotoPath;
@@ -54,7 +65,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         webView = findViewById(R.id.webView);
-        progressBar = findViewById(R.id.progressBar);
+        splashContainer = findViewById(R.id.splashContainer);
+        splashProgressBar = findViewById(R.id.splashProgressBar);
+        splashStatusText = findViewById(R.id.splashStatusText);
+        splashStartTime = System.currentTimeMillis();
+
+        // Initial smooth loading line progression in the lower section
+        if (splashProgressBar != null) {
+            ObjectAnimator initialAnim = ObjectAnimator.ofInt(splashProgressBar, "progress", 10, 80);
+            initialAnim.setDuration(2200);
+            initialAnim.setInterpolator(new DecelerateInterpolator());
+            initialAnim.start();
+        }
+
+        // Safety fallback: dismiss splash after 5.5s even if network is slow
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dismissSplash(true);
+            }
+        }, 5500);
 
         requestAppPermissions();
         setupWebView();
@@ -119,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                progressBar.setVisibility(View.VISIBLE);
                 // Immediately apply mobile mode class before rendering
                 view.evaluateJavascript(
                     "document.documentElement.classList.add('mobile-app-mode');" +
@@ -133,21 +162,34 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                progressBar.setVisibility(View.GONE);
                 view.evaluateJavascript("document.documentElement.classList.add('mobile-app-mode');", null);
+                dismissSplash(false);
             }
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
                 if (request.isForMainFrame()) {
-                    progressBar.setVisibility(View.GONE);
+                    dismissSplash(true);
                     Toast.makeText(MainActivity.this, "Connecting to Pashu Suraksha network...", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if (!splashDismissed && splashProgressBar != null) {
+                    if (newProgress > splashProgressBar.getProgress()) {
+                        splashProgressBar.setProgress(newProgress);
+                    }
+                    if (newProgress >= 100) {
+                        dismissSplash(false);
+                    }
+                }
+            }
+
             // Geolocation permissions for outbreak containment rings & GPS locating
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
@@ -199,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
                 chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Select Livestock Lesion Photo");
+                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Select Livestock Photo");
                 chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
 
                 startActivityForResult(chooserIntent, FILE_CHOOSER_REQUEST_CODE);
@@ -208,25 +250,94 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private synchronized void dismissSplash(boolean immediate) {
+        if (splashDismissed || splashContainer == null) return;
+
+        long elapsed = System.currentTimeMillis() - splashStartTime;
+        long minDisplayDuration = 2200; // 2.2s pleasant display time
+        long delay = (immediate || elapsed >= minDisplayDuration) ? 0 : (minDisplayDuration - elapsed);
+
+        if (delay == 0) {
+            executeSplashFadeOut();
+        } else {
+            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    executeSplashFadeOut();
+                }
+            }, delay);
+        }
+    }
+
+    private void executeSplashFadeOut() {
+        if (splashDismissed || splashContainer == null) return;
+        splashDismissed = true;
+
+        if (splashProgressBar != null) {
+            ObjectAnimator finishAnim = ObjectAnimator.ofInt(splashProgressBar, "progress", splashProgressBar.getProgress(), 100);
+            finishAnim.setDuration(250);
+            finishAnim.start();
+        }
+
+        if (splashStatusText != null) {
+            splashStatusText.setText("स्वागतम् / Welcome");
+        }
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (splashContainer != null) {
+                    splashContainer.animate()
+                        .alpha(0f)
+                        .setDuration(450)
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                splashContainer.setVisibility(View.GONE);
+                            }
+                        })
+                        .start();
+                }
+            }
+        }, 200);
+    }
+
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "PASHU_SCAN_" + timeStamp + "_";
+        String imageFileName = "LIVESTOCK_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-        cameraPhotoPath = "file:" + image.getAbsolutePath();
+        cameraPhotoPath = image.getAbsolutePath();
         return image;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            boolean allGranted = true;
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    allGranted = false;
+                    break;
+                }
+            }
+            if (!allGranted) {
+                Toast.makeText(this, "Camera and Location enhance diagnosis & hotspot mapping", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FILE_CHOOSER_REQUEST_CODE) {
             if (filePathCallback == null) return;
-            Uri[] results = null;
 
+            Uri[] results = null;
             if (resultCode == Activity.RESULT_OK) {
                 if (data == null || data.getData() == null) {
                     if (cameraPhotoPath != null) {
-                        results = new Uri[]{Uri.parse(cameraPhotoPath)};
+                        results = new Uri[]{Uri.fromFile(new File(cameraPhotoPath))};
                     }
                 } else {
                     String dataString = data.getDataString();
@@ -244,6 +355,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (splashContainer != null && splashContainer.getVisibility() == View.VISIBLE && !splashDismissed) {
+            return;
+        }
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {

@@ -2910,3 +2910,84 @@ html.mobile-app-mode .custom-table {
     font-size: 1.25rem;
   }
 }
+
+
+/* ==========================================================================
+   App Splash / Loading Screen (with animated lower loading line)
+   ========================================================================== */
+.app-splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #0f766e;
+  overflow: hidden;
+  transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.45s;
+}
+
+.app-splash-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.splash-poster {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  will-change: transform;
+}
+
+.splash-bottom-section {
+  position: relative;
+  z-index: 5;
+  width: calc(100% - 64px);
+  max-width: 420px;
+  margin-bottom: 42px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.splash-progress-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.splash-progress-line {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #10b981, #059669);
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.8);
+  transition: width 0.35s ease-out;
+  animation: splashPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes splashPulse {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.25); box-shadow: 0 0 16px rgba(34, 197, 94, 1); }
+  100% { filter: brightness(1); }
+}
+
+.splash-subtitle {
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}

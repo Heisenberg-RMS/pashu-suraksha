@@ -6,6 +6,7 @@
 const I18N_TRANSLATIONS = {
   en: {
     // Brand & Header
+    app_loading_title: "Starting Pashu Suraksha...",
     brand_title: "Pashu Suraksha",
     brand_sub: "Unified Real-Time Animal Health Surveillance & Early Warning Decision Support",
     sync_online: "Online (Auto-Sync Ready)",
