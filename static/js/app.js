@@ -232,11 +232,17 @@ class AuthenticationManager {
   openModal() {
     const modal = document.getElementById('loginModal');
     if (modal) modal.classList.add('open');
+    document.body.classList.add('modal-open');
+    const floatBtn = document.getElementById('chatFloatBtn');
+    if (floatBtn) floatBtn.style.display = 'none';
   }
 
   closeModal() {
     const modal = document.getElementById('loginModal');
     if (modal) modal.classList.remove('open');
+    document.body.classList.remove('modal-open');
+    const floatBtn = document.getElementById('chatFloatBtn');
+    if (floatBtn) floatBtn.style.display = '';
     const err = document.getElementById('loginErrorMsg');
     if (err) err.style.display = 'none';
   }
@@ -390,11 +396,15 @@ function initMobileMode() {
 
   if (isMobileUA || isNarrowScreen || isStandalone) {
     document.documentElement.classList.add('mobile-app-mode');
+    document.documentElement.style.overflowX = 'hidden';
+    document.body.style.overflowX = 'hidden';
   }
 
   window.addEventListener('resize', () => {
     if (window.innerWidth <= 860 || isMobileUA) {
       document.documentElement.classList.add('mobile-app-mode');
+      document.documentElement.style.overflowX = 'hidden';
+      document.body.style.overflowX = 'hidden';
     } else {
       document.documentElement.classList.remove('mobile-app-mode');
     }

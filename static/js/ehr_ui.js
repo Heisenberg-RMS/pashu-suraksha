@@ -40,14 +40,14 @@ function renderAnimalsTable(animals) {
 
     return `
       <tr style="cursor:pointer;" onclick="window.EHRManager.loadAnimalDetails('${a.tag_number}')">
-        <td><b>${a.tag_number}</b><br><small style="color:#64748b;">${a.rfid_uid || 'RFID-N/A'}</small></td>
-        <td>${a.species} (${a.breed || 'Indigenous'})</td>
-        <td>${a.sex} • ${Math.round(a.age_months / 12)} yrs</td>
-        <td>${a.owner_name}<br><small style="color:#64748b;">${a.village}, ${a.district}</small></td>
-        <td><span class="badge ${statusBadge}">${a.health_status}</span></td>
+        <td data-label="Tag ID / RFID"><b>${a.tag_number}</b><br><small style="color:#64748b;">${a.rfid_uid || 'RFID-TAGGED'}</small></td>
+        <td data-label="Species / Breed">${a.species} (${a.breed || 'Indigenous'})</td>
+        <td data-label="Age / Sex">${a.sex} • ${Math.round(a.age_months / 12)} yrs</td>
+        <td data-label="Owner / Village">${a.owner_name}<br><small style="color:#64748b;">${a.village}, ${a.district}</small></td>
+        <td data-label="Health Status"><span class="badge ${statusBadge}">${a.health_status}</span></td>
         <td>
           <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); window.EHRManager.loadAnimalDetails('${a.tag_number}')">
-            View EHR
+            📋 View Health Passport
           </button>
         </td>
       </tr>
@@ -116,7 +116,7 @@ function renderAnimalPassport(animal) {
         <span class="badge ${statusBadge}" style="font-size:0.85rem; padding:0.35rem 0.75rem; background:#fff; color:#0f766e;">${animal.health_status}</span>
       </div>
 
-      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:0.75rem; margin-top:1rem; padding-top:0.75rem; border-top:1px solid rgba(255,255,255,0.2); font-size:0.85rem;">
+      <div class="passport-meta-grid" style="margin-top:1rem; padding-top:0.75rem; border-top:1px solid rgba(255,255,255,0.2);">
         <div><small style="color:#a7f3d0;">Species/Breed</small><br><b>${animal.species}</b> (${animal.breed})</div>
         <div><small style="color:#a7f3d0;">Sex / Age</small><br><b>${animal.sex}</b> (${Math.round(animal.age_months/12)} Yrs)</div>
         <div><small style="color:#a7f3d0;">Livestock Owner</small><br><b>${animal.owner_name}</b></div>
@@ -160,12 +160,12 @@ function renderAnimalPassport(animal) {
             const isOverdue = v.status === 'OVERDUE' || new Date(v.next_due_date) < new Date();
             return `
               <tr>
-                <td><b>${v.vaccine_name}</b></td>
-                <td>${v.disease_targeted}</td>
-                <td><code>${v.batch_number || 'N/A'}</code></td>
-                <td>${v.administered_date}</td>
-                <td>${v.next_due_date}</td>
-                <td>
+                <td data-label="Vaccine"><b>${v.vaccine_name}</b></td>
+                <td data-label="Target Disease">${v.disease_targeted}</td>
+                <td data-label="Batch No"><code>${v.batch_number || 'N/A'}</code></td>
+                <td data-label="Administered">${v.administered_date}</td>
+                <td data-label="Next Due Date">${v.next_due_date}</td>
+                <td data-label="Status">
                   <span class="badge ${isOverdue ? 'badge-critical' : 'badge-low'}">
                     ${isOverdue ? 'OVERDUE' : 'UP-TO-DATE'}
                   </span>
@@ -196,12 +196,12 @@ function renderAnimalPassport(animal) {
         <tbody>
           ${treatments.length === 0 ? '<tr><td colspan="6" style="text-align:center; color:#94a3b8;">No recent treatment records.</td></tr>' : treatments.map(t => `
             <tr>
-              <td>${t.treatment_date}</td>
-              <td><b>${t.diagnosis}</b></td>
-              <td>${t.drug_administered}</td>
-              <td>${t.dosage || 'Standard'}</td>
-              <td>${t.withdrawal_period_days > 0 ? `${t.withdrawal_period_days} Days` : 'Nil'}</td>
-              <td>${t.vet_name || 'Field Vet'}</td>
+              <td data-label="Date">${t.treatment_date}</td>
+              <td data-label="Diagnosis"><b>${t.diagnosis}</b></td>
+              <td data-label="Prescription">${t.drug_administered}</td>
+              <td data-label="Dosage">${t.dosage || 'Standard'}</td>
+              <td data-label="Withdrawal">${t.withdrawal_period_days > 0 ? `${t.withdrawal_period_days} Days` : 'Nil'}</td>
+              <td data-label="Attending Vet">${t.vet_name || 'Field Vet'}</td>
             </tr>
           `).join('')}
         </tbody>

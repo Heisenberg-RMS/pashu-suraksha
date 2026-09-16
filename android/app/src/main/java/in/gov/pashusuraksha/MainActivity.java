@@ -152,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
                 // Immediately apply mobile mode class before rendering
                 view.evaluateJavascript(
                     "document.documentElement.classList.add('mobile-app-mode');" +
+                    "document.documentElement.style.overflowX = 'hidden';" +
+                    "if (document.body) document.body.style.overflowX = 'hidden';" +
                     "if (!document.querySelector('meta[name=\"viewport\"]')) {" +
                     "  var meta = document.createElement('meta');" +
                     "  meta.name = 'viewport';" +
@@ -162,7 +164,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                view.evaluateJavascript("document.documentElement.classList.add('mobile-app-mode');", null);
+                view.evaluateJavascript(
+                    "document.documentElement.classList.add('mobile-app-mode');" +
+                    "document.documentElement.style.overflowX = 'hidden';" +
+                    "if (document.body) document.body.style.overflowX = 'hidden';", null);
                 dismissSplash(false);
             }
 
