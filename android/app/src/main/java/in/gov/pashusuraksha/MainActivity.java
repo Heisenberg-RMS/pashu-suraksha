@@ -94,11 +94,23 @@ public class MainActivity extends AppCompatActivity {
         settings.setGeolocationEnabled(true);
         settings.setAllowFileAccess(true);
         settings.setAllowContentAccess(true);
-        settings.setLoadWithOverviewMode(true);
-        settings.setUseWideViewPort(true);
-        settings.setBuiltInZoomControls(true);
+        // Force Mobile Native Viewport - Disables wide desktop overview simulation
+        settings.setUseWideViewPort(false);
+        settings.setLoadWithOverviewMode(false);
+        settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
+        settings.setSupportZoom(false);
+        settings.setDefaultTextEncodingName("utf-8");
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+
+        // Force mobile user agent so web app immediately knows it is running on mobile Android APK
+        String defaultUA = settings.getUserAgentString();
+        String mobileUA = defaultUA;
+        if (!mobileUA.contains("Mobile")) {
+            mobileUA += " Mobile";
+        }
+        mobileUA += " PashuSurakshaApp/1.0 (Android; MobileApp)";
+        settings.setUserAgentString(mobileUA);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -108,11 +120,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 progressBar.setVisibility(View.VISIBLE);
+                // Immediately apply mobile mode class before rendering
+                view.evaluateJavascript(
+                    "document.documentElement.classList.add('mobile-app-mode');" +
+                    "if (!document.querySelector('meta[name=\"viewport\"]')) {" +
+                    "  var meta = document.createElement('meta');" +
+                    "  meta.name = 'viewport';" +
+                    "  meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';" +
+                    "  document.head.appendChild(meta);" +
+                    "}", null);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 progressBar.setVisibility(View.GONE);
+                view.evaluateJavascript("document.documentElement.classList.add('mobile-app-mode');", null);
             }
 
             @Override

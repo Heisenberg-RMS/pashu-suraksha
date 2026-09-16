@@ -383,7 +383,29 @@ class AuthenticationManager {
 
 window.AuthManager = new AuthenticationManager();
 
+function initMobileMode() {
+  const isMobileUA = /Android|iPhone|iPad|iPod|Mobile|PashuSurakshaApp/i.test(navigator.userAgent);
+  const isNarrowScreen = window.innerWidth <= 860;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+  if (isMobileUA || isNarrowScreen || isStandalone) {
+    document.documentElement.classList.add('mobile-app-mode');
+  }
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth <= 860 || isMobileUA) {
+      document.documentElement.classList.add('mobile-app-mode');
+    } else {
+      document.documentElement.classList.remove('mobile-app-mode');
+    }
+  });
+}
+
+// Immediate evaluation
+initMobileMode();
+
 document.addEventListener('DOMContentLoaded', () => {
+  initMobileMode();
   // Initialize subsystems
   if (window.I18n) window.I18n.init();
   window.OfflineManager.initDB();

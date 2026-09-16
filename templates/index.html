@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Pashu Suraksha | Unified Animal Health Surveillance & Decision Support</title>
+  
+  <script>
+    // Immediate mobile detection for Android APK, PWA, and touch screens
+    if (/Android|iPhone|iPad|iPod|Mobile|PashuSurakshaApp/i.test(navigator.userAgent) || window.innerWidth <= 840) {
+      document.documentElement.classList.add('mobile-app-mode');
+    }
+  </script>
   
   <!-- Google Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1286,7 +1293,7 @@
       <span class="mobile-nav-icon">⚡</span>
       <span>Report</span>
     </button>
-    <button class="mobile-nav-item" data-tab="chat" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.ChatbotManager.openChat()">
+    <button class="mobile-nav-item" data-tab="chat" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.App.switchTab('chat')">
       <span class="mobile-nav-icon">💬</span>
       <span>AI Chat</span>
     </button>
@@ -1297,6 +1304,10 @@
     <button class="mobile-nav-item" data-tab="ehr" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.App.switchTab('ehr')">
       <span class="mobile-nav-icon">📋</span>
       <span>EHR</span>
+    </button>
+    <button class="mobile-nav-item" data-tab="dashboard" data-roles="DVO,DIRECTOR" onclick="window.App.switchTab('dashboard')">
+      <span class="mobile-nav-icon">📈</span>
+      <span>Stats</span>
     </button>
   </nav>
 

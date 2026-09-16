@@ -2712,7 +2712,7 @@ body {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px), (pointer: coarse) {
   body {
     padding-bottom: 74px; /* Space for touch bottom nav */
   }
@@ -2757,16 +2757,20 @@ body {
 
   /* Hide horizontal desktop nav bar, activate mobile dock */
   .nav-tabs-bar {
-    display: none;
+    display: none !important;
   }
   .mobile-bottom-nav {
-    display: flex;
+    display: flex !important;
   }
 
   /* Grids collapse to single column */
-  .grid-2, .grid-3 {
-    grid-template-columns: 1fr;
+  .grid-2, .grid-3, .grid-map-sidebar {
+    grid-template-columns: 1fr !important;
     gap: 1rem;
+  }
+
+  #surveillanceMap {
+    height: 420px;
   }
 
   /* Tables get horizontal touch scroll */
@@ -2777,6 +2781,61 @@ body {
     display: table;
     min-width: 540px;
   }
+
+/* Explicit class-based override for Android APK & PWA */
+html.mobile-app-mode body {
+  padding-bottom: 74px !important;
+}
+html.mobile-app-mode .nav-tabs-bar {
+  display: none !important;
+}
+html.mobile-app-mode .mobile-bottom-nav {
+  display: flex !important;
+}
+html.mobile-app-mode .header-bar {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  padding: 0.65rem 0.85rem !important;
+  gap: 0.5rem !important;
+}
+html.mobile-app-mode .brand-section {
+  justify-content: flex-start !important;
+}
+html.mobile-app-mode .brand-text h1 {
+  font-size: 1.1rem !important;
+}
+html.mobile-app-mode .header-controls {
+  justify-content: space-between !important;
+  width: 100% !important;
+  flex-wrap: wrap !important;
+  gap: 0.4rem !important;
+}
+html.mobile-app-mode .role-portal-banner {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  padding: 0.85rem 1rem !important;
+}
+html.mobile-app-mode .role-banner-actions {
+  width: 100% !important;
+  justify-content: flex-start !important;
+  gap: 0.4rem !important;
+}
+html.mobile-app-mode .grid-2,
+html.mobile-app-mode .grid-3,
+html.mobile-app-mode .grid-map-sidebar {
+  grid-template-columns: 1fr !important;
+  gap: 1rem !important;
+}
+html.mobile-app-mode #surveillanceMap {
+  height: 420px !important;
+}
+html.mobile-app-mode .card {
+  overflow-x: auto !important;
+}
+html.mobile-app-mode .custom-table {
+  display: table !important;
+  min-width: 520px !important;
+}
 
   /* Touch inputs */
   .form-control {
