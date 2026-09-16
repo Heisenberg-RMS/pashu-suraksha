@@ -4,4 +4,6 @@
     <!-- Default server URL: Replace with your hosted domain or local IP -->
     <string name="server_url">https://pashu-suraksha.onrender.com</string>
     <string name="local_fallback_url">http://10.0.2.2:5000</string>
+    <string name="splash_loading">पशु सुरक्षा प्रणाली प्रारंभ हो रही है...</string>
+    <string name="splash_welcome">स्वागतम् / Welcome</string>
 </resources>

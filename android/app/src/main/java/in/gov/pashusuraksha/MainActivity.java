@@ -1,4 +1,4 @@
-﻿package in.gov.pashusuraksha;
+package in.gov.pashusuraksha;
 
 import android.Manifest;
 import android.animation.Animator;
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (splashStatusText != null) {
-            splashStatusText.setText("स्वागतम् / Welcome");
+            splashStatusText.setText(R.string.splash_welcome);
         }
 
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {

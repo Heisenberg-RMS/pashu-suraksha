@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Background Track -->
     <item android:id="@android:id/background">
@@ -9,7 +9,9 @@
     </item>
     <!-- Secondary Progress -->
     <item android:id="@android:id/secondaryProgress">
-        <clip>
+        <clip
+            android:clipOrientation="horizontal"
+            android:gravity="left">
             <shape>
                 <corners android:radius="3dp" />
                 <solid android:color="#7022c55e" />
@@ -18,7 +20,9 @@
     </item>
     <!-- Active Progress Bar -->
     <item android:id="@android:id/progress">
-        <clip>
+        <clip
+            android:clipOrientation="horizontal"
+            android:gravity="left">
             <shape>
                 <corners android:radius="3dp" />
                 <gradient
