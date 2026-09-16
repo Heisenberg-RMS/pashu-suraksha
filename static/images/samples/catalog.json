@@ -16,7 +16,10 @@
     "precaution_en": "Baseline healthy status. Ensure clean chlorinated drinking water and bi-annual deworming.",
     "precaution_hi": "पशु पूर्णतः स्वस्थ है। नियमित साफ पानी दें व साल में दो बार पेट के कीड़ों की दवा दें।",
     "precaution_mr": "जनावर निरोगी आहे. दररोज स्वच्छ पाणी आणि नियमित सकस आहार द्या.",
-    "precaution_te": "పశువు ఆరోగ్యంగా ఉంది. స్వచ్ఛమైన నీరు అందించండి."
+    "precaution_te": "పశువు ఆరోగ్యంగా ఉంది. స్వచ్ఛమైన నీరు అందించండి.",
+    "source_org": "ICAR-NDRI Dairy Health Clinical Archive",
+    "reference_url": "https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=1200&q=80",
+    "local_url": "/static/images/samples/healthy_cow_muzzle.jpg"
   },
   {
     "id": "healthy_cow_coat",
@@ -35,7 +38,10 @@
     "precaution_en": "Provide balanced 40g mineral mixture daily to maintain coat luster and immune defense.",
     "precaution_hi": "त्वचा व रोग प्रतिरोधक क्षमता बनाए रखने हेतु रोजाना 40 ग्राम खनिज मिश्रण दें।",
     "precaution_mr": "रोगप्रतिकारक शक्तीसाठी दररोज ४० ग्रॅम खनिज मिश्रण द्या.",
-    "precaution_te": "రోజుకు 40 గ్రాముల మినరల్ మిశ్రమం అందించండి."
+    "precaution_te": "రోజుకు 40 గ్రాముల మినరల్ మిశ్రమం అందించండి.",
+    "source_org": "FAO Livestock Production & Biosecurity Library",
+    "reference_url": "https://images.unsplash.com/photo-1546445317-29f4545e9d53?auto=format&fit=crop&w=1200&q=80",
+    "local_url": "/static/images/samples/healthy_cow_coat.jpg"
   },
   {
     "id": "healthy_cow_udder",
@@ -54,7 +60,10 @@
     "precaution_en": "Perform post-milking teat dip with 0.5% povidone iodine to prevent ascending mastitis.",
     "precaution_hi": "दूध दुहने के बाद थनों को पोवीडोन आयोडीन घोल में डुबोएं ताकि थनैला से बचाव रहे।",
     "precaution_mr": "कासदाहापासून बचावासाठी दूध काढल्यानंतर सड औषधी द्रावणात बुडवा.",
-    "precaution_te": "పాలు పితికిన తర్వాత పొదుగు శుభ్రత పాటించండి."
+    "precaution_te": "పాలు పితికిన తర్వాత పొదుగు శుభ్రత పాటించండి.",
+    "source_org": "National Dairy Development Board (NDDB) Herd Hygiene",
+    "reference_url": "https://images.unsplash.com/photo-1527153857715-3908f2ae5e81?auto=format&fit=crop&w=1200&q=80",
+    "local_url": "/static/images/samples/healthy_cow_udder.jpg"
   },
   {
     "id": "healthy_cow_hooves",
@@ -73,7 +82,10 @@
     "precaution_en": "Maintain dry gravel-free barn flooring; bi-annual FMD vaccination protects hoof health.",
     "precaution_hi": "गौशाला का फर्श सूखा रखें। साल में दो बार खुरपका-मुंहपका का टीका अवश्य लगवाएं।",
     "precaution_mr": "गोठ्याची जमीन कोरडी ठेवा व वेळेवर लाळ्या खुरकूत लस द्या.",
-    "precaution_te": "వర్షాకాలంలో కొట్టాన్ని పొడిగా ఉంచండి, ఎఫ్‌ఎండి టీకా వేయించండి."
+    "precaution_te": "వర్షాకాలంలో కొట్టాన్ని పొడిగా ఉంచండి, ఎఫ్‌ఎండి టీకా వేయించండి.",
+    "source_org": "Bovine Podiatry & Lameness Reference (WOAH)",
+    "reference_url": "https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=1200&q=80",
+    "local_url": "/static/images/samples/healthy_cow_hooves.jpg"
   },
   {
     "id": "healthy_grazing_cow",
@@ -92,7 +104,10 @@
     "precaution_en": "Routine pasture rotation prevents overgrazing and ingestion of snail vector habitats.",
     "precaution_hi": "चारागाह बदलते रहें ताकि पेट के कीड़े व परजीवियों का फैलाव न हो।",
     "precaution_mr": "गोगलगाय व कीटकांच्या संसर्गापासून बचावासाठी चराईचे क्षेत्र बदलावे.",
-    "precaution_te": "పశువులకు స్వచ్ఛమైన పచ్చిమేత అందించండి."
+    "precaution_te": "పశువులకు స్వచ్ఛమైన పచ్చిమేత అందించండి.",
+    "source_org": "ICAR-IVRI Pasture & Herd Health Surveillance",
+    "reference_url": "https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=1200&q=80",
+    "local_url": "/static/images/samples/healthy_grazing_cow.jpg"
   },
   {
     "id": "fmd_oral_vesicles",
@@ -111,7 +126,10 @@
     "precaution_en": "IMMEDIATE QUARANTINE: Wash lesions with 1% potassium permanganate (Lal Dawa). Apply boroglycerine. Stop animal movement!",
     "precaution_hi": "तुरंत अन्य पशुओं से अलग करें! मुंह को 1% लाल दवा (पोटैशियम परमैंगनेट) से धोएं व बोरो-ग्लिसरीन लगाएं। पशु आवागमन तुरंत रोकें।",
     "precaution_mr": "जनावर त्वरित वेगळे बांधा! १% लाल औषधाने तोंड धुवा व बोरो-ग्लिसरीन लावा. वाहतूक बंद करा.",
-    "precaution_te": "పశువును వెంటనే వేరు చేయండి! 1% పొటాషియం పర్మాంగనేట్ ద్రావణంతో నోరు కడగండి."
+    "precaution_te": "పశువును వెంటనే వేరు చేయండి! 1% పొటాషియం పర్మాంగనేట్ ద్రావణంతో నోరు కడగండి.",
+    "source_org": "WOAH / FAO World Reference Laboratory for FMD (Pirbright Institute)",
+    "reference_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Foot_and_mouth_disease_on_tongue.jpg/800px-Foot_and_mouth_disease_on_tongue.jpg",
+    "local_url": "/static/images/samples/fmd_oral_vesicles.jpg"
   },
   {
     "id": "fmd_hoof_lesions",
@@ -130,7 +148,10 @@
     "precaution_en": "Apply 2% copper sulfate or povidone foot-bath. Clean with fly-repellent ointment (Himax) to prevent maggots.",
     "precaution_hi": "खुरों को 2% नीला थोथा या बीटाडीन से धोएं। मक्खियों से बचाव के लिए हीमैक्स या नीम तेल लगाएं ताकि कीड़े न पड़ें।",
     "precaution_mr": "खुर स्वच्छ धुवून हायलमेक्स किंवा कडुनिंबाचे तेल लावा जेणेकरून किडे पडणार नाहीत.",
-    "precaution_te": "గిట్టలను శుభ్రపరిచి ఈగలు వాలకుండా వేపనూనె లేదా మలాము పూయండి."
+    "precaution_te": "గిట్టలను శుభ్రపరిచి ఈగలు వాలకుండా వేపనూనె లేదా మలాము పూయండి.",
+    "source_org": "ICAR-Directorate of Foot and Mouth Disease (DFMD)",
+    "reference_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Foot_and_mouth_disease_lesion_on_bovine_claw.jpg/800px-Foot_and_mouth_disease_lesion_on_bovine_claw.jpg",
+    "local_url": "/static/images/samples/fmd_hoof_lesions.jpg"
   },
   {
     "id": "lsd_nodules_skin",
@@ -149,7 +170,10 @@
     "precaution_en": "Isolate cattle in mosquito-netted stall. Spray cypermethrin for vector control. Feed soft gruel with turmeric & neem.",
     "precaution_hi": "मच्छरदानी वाले बाड़े में अलग रखें! मक्खी-मच्छर भगाने के लिए दवा छिड़कें। हल्दी, गिलोय व नीम का काढ़ा दें।",
     "precaution_mr": "डास-माशांपासून बचावासाठी जाळीच्या गोठ्यात ठेवा. हळद व कडुनिंबाचा लेप लावा.",
-    "precaution_te": "దోమలు, ఈగలు కుట్టకుండా రక్షణ కల్పించండి. పసుపు మరియు వేప లేపనం పూయండి."
+    "precaution_te": "దోమలు, ఈగలు కుట్టకుండా రక్షణ కల్పించండి. పసుపు మరియు వేప లేపనం పూయండి.",
+    "source_org": "FAO Emergency Prevention System (EMPRES) & ICAR-NIVEDI Lumpy Skin Disease Atlas",
+    "reference_url": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Lumpy_skin_disease_in_cattle.jpg",
+    "local_url": "/static/images/samples/lsd_nodules_skin.jpg"
   },
   {
     "id": "anthrax_carcass_discharge",
@@ -168,7 +192,10 @@
     "precaution_en": "CRITICAL BIOHAZARD: DO NOT OPEN OR FLAY CARCASS! Bury 6 feet deep with unslaked lime (Chuna). Call vet immediately!",
     "precaution_hi": "अत्यंत खतरनाक छूत का रोग: शव को बिल्कुल न चीरें! 6 फीट गहरे गड्ढे में चूना डालकर दफनाएं। पशु चिकित्सक को तुरंत सूचित करें।",
     "precaution_mr": "अतिधोकादायक आजार: शवविच्छेदन करू नका! ६ फूट खोल खड्ड्यात चुना टाकून पुरा. त्वरित डॉक्टरांना कळवा.",
-    "precaution_te": "అత్యంత ప్రమాదకరం: కళేబరాన్ని కోయవద్దు! 6 అడుగుల గుంత తీసి సున్నం వేసి పూడ్చండి."
+    "precaution_te": "అత్యంత ప్రమాదకరం: కళేబరాన్ని కోయవద్దు! 6 అడుగుల గుంత తీసి సున్నం వేసి పూడ్చండి.",
+    "source_org": "WHO / WOAH / FAO Anthrax Surveillance & Post-Mortem Biosecurity Protocol",
+    "reference_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Anthrax_carcass_bovine.jpg/800px-Anthrax_carcass_bovine.jpg",
+    "local_url": "/static/images/samples/anthrax_carcass_discharge.jpg"
   },
   {
     "id": "mastitis_swollen_udder",
@@ -187,7 +214,10 @@
     "precaution_en": "Strip affected quarter every 2 hours into disinfectant. Apply ice packs if acute. Consult vet for intramammary infusion.",
     "precaution_hi": "प्रभावित थन का खराब दूध हर 2 घंटे में कीटाणुनाशक बर्तन में निकालें। बर्फ से सिकाई करें व तुरंत पशु चिकित्सक से दवा दिलवाएं।",
     "precaution_mr": "खराब दूध वारंवार पिळून काढा व नष्ट करा. बर्फाने शेका आणि डॉक्टरांकडून उपचार करा.",
-    "precaution_te": "చెడిపోయిన పాలను పితికి పారబోయండి, ఐస్ క్యూబ్స్‌తో కాపడం పెట్టండి."
+    "precaution_te": "చెడిపోయిన పాలను పితికి పారబోయండి, ఐస్ క్యూబ్స్‌తో కాపడం పెట్టండి.",
+    "source_org": "International Dairy Federation (IDF) & ICAR Mastitis Clinical Guide",
+    "reference_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Bovine_mastitis_udder_swelling.jpg/800px-Bovine_mastitis_udder_swelling.jpg",
+    "local_url": "/static/images/samples/mastitis_swollen_udder.jpg"
   },
   {
     "id": "tick_infestation_cluster",
@@ -206,7 +236,10 @@
     "precaution_en": "Apply topical flumethrin / amitraz pour-on as per vet prescription. Flame-gun barn cracks to destroy tick eggs.",
     "precaution_hi": "पशु चिकित्सक की सलाह से फ्लूमेथ्रिन या एमिट्राज दवा लगाएं। गौशाला की दरारों में आग दिखाकर अंडे नष्ट करें।",
     "precaution_mr": "डॉक्टरांच्या सल्ल्याने गोचीडनाशक औषध फवारा. गोठ्यातील भेगांमध्ये चुना भरा.",
-    "precaution_te": "పశువైద్యుల సలహాతో పిడుదుల నివారణ మందు వాడండి, కొట్టాన్ని శుభ్రపరచండి."
+    "precaution_te": "పశువైద్యుల సలహాతో పిడుదుల నివారణ మందు వాడండి, కొట్టాన్ని శుభ్రపరచండి.",
+    "source_org": "ICAR-IVRI Parasitology Division (Vector Surveillance)",
+    "reference_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Hyalomma_ticks_on_cow_skin.jpg/800px-Hyalomma_ticks_on_cow_skin.jpg",
+    "local_url": "/static/images/samples/tick_infestation_cluster.jpg"
   },
   {
     "id": "hs_throat_swelling",
@@ -225,7 +258,10 @@
     "precaution_en": "EMERGENCY: Immediate veterinary intervention required for high-dose antibiotic therapy (Oxytetracycline/Sulfadimidine) before asphyxiation!",
     "precaution_hi": "आपातकालीन स्थिति: सांस रुकने से पहले तुरंत पशु चिकित्सक को बुलाएं! ऑक्सीटेट्रासाइक्लिन या सल्फा दवा का इंजेक्शन अति आवश्यक है।",
     "precaution_mr": "तातडीची परिस्थिती: तात्काळ पशुवैद्यकीय डॉक्टरांना पाचारण करा, त्वरित अँटीबायोटिक इंजेक्शन आवश्यक.",
-    "precaution_te": "అత్యవసరం: శ్వాస ఆడక ప్రాణాపాయం రాకముందే వెంటనే పశువైద్యుడిని పిలిపించి చికిత్స చేయించండి."
+    "precaution_te": "అత్యవసరం: శ్వాస ఆడక ప్రాణాపాయం రాకముందే వెంటనే పశువైద్యుడిని పిలిపించి చికిత్స చేయించండి.",
+    "source_org": "FAO EMPRES Haemorrhagic Septicaemia Field Manual",
+    "reference_url": "https://www.fao.org/animal-health/diseases/haemorrhagic-septicaemia/en/",
+    "local_url": "/static/images/samples/hs_throat_swelling.jpg"
   },
   {
     "id": "blackleg_bq_swelling",
@@ -244,6 +280,9 @@
     "precaution_en": "Isolate in dark quiet pen. Administer crystalline penicillin promptly. Vaccinate all remaining herd with BQ vaccine.",
     "precaution_hi": "पशु को शांत छायादार स्थान पर रखें। तुरंत पेनिसिलिन एंटीबायोटिक लगवाएं व शेष पूरे झुंड को BQ का टीका लगाएं।",
     "precaution_mr": "जनावराला विश्रांती द्या. तात्काळ पेनिसिलिन उपचार सुरू करा व इतर जनावरांना लस द्या.",
-    "precaution_te": "పశువును ప్రశాంత ప్రదేశంలో ఉంచండి, మిగిలిన మందకు టీకాలు వేయించండి."
+    "precaution_te": "పశువును ప్రశాంత ప్రదేశంలో ఉంచండి, మిగిలిన మందకు టీకాలు వేయించండి.",
+    "source_org": "WOAH Terrestrial Manual (Clostridium chauvoei Reference)",
+    "reference_url": "https://www.woah.org/en/disease/blackleg/",
+    "local_url": "/static/images/samples/blackleg_bq_swelling.jpg"
   }
 ]

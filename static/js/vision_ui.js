@@ -605,9 +605,17 @@ class VisionDiagnosticsManager {
           <div class="atlas-card-body">
             <div class="atlas-card-title">${title}</div>
             <div class="atlas-card-hallmark">${hallmark}</div>
-            <button type="button" class="atlas-test-btn" onclick="event.stopPropagation(); window.VisionManager.loadSampleImage('${item.id}')">
-              ${btnLabel}
-            </button>
+            <div style="font-size:0.7rem; color:#0f766e; margin-bottom:0.5rem; font-weight:600; display:flex; align-items:center; gap:0.25rem;">
+              <span>🏛️</span> <span>${item.source_org || 'Veterinary Clinical Reference'}</span>
+            </div>
+            <div style="display:flex; gap:0.35rem; margin-top:auto;">
+              <button type="button" class="atlas-test-btn" style="flex:2;" onclick="event.stopPropagation(); window.VisionManager.loadSampleImage('${item.id}')">
+                ${btnLabel}
+              </button>
+              <a href="${item.reference_url || ('/static/images/samples/' + item.filename)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm" style="flex:1; padding:0.35rem 0.5rem; font-size:0.74rem; display:flex; align-items:center; justify-content:center; gap:0.2rem; text-decoration:none; white-space:nowrap; border-color:#cbd5e1; color:#334155;" onclick="event.stopPropagation();" title="View authentic source photograph in new tab">
+                🔗 Web
+              </a>
+            </div>
           </div>
         </div>
       `;

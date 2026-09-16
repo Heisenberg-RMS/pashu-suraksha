@@ -325,7 +325,7 @@ VISUAL_DISEASE_PROFILES = {
         }
     },
     "TICK_INFESTATION": {
-        "disease_code": "THEILERIOSIS_RISK",
+        "disease_code": "TICKS",
         "disease_name": "Heavy Tick Infestation / Haemoprotozoan Risk (चिचड़ी / किलनी)",
         "lesion_type": "Dense Parasitic Clusters (Hyalomma / Rhipicephalus ticks)",
         "species": "Cattle / Buffalo / Sheep",
@@ -634,11 +634,8 @@ def extract_visual_metrics(image_bytes: bytes) -> Dict[str, Any]:
 
         # Downsample for rapid, consistent statistical calculation
         thumb = img.resize((120, 120))
-        if hasattr(thumb, "get_flattened_data"):
-            raw_data = thumb.get_flattened_data()
-            pixels = [tuple(raw_data[i:i+3]) for i in range(0, len(raw_data), 3)]
-        else:
-            pixels = [thumb.getpixel((x, y)) for y in range(120) for x in range(120)]
+        raw_pixels = list(thumb.getdata())
+        pixels = [(int(p[0]), int(p[1]), int(p[2])) for p in raw_pixels]
         n = len(pixels)
 
         total_r = sum(p[0] for p in pixels)
@@ -891,36 +888,42 @@ def diagnose_image(
 
     # Reference Photo Catalog Specific Matching
     selected_key = None
-    if any(k in search_text for k in ["healthy_cow_muzzle", "healthy_cow_coat", "healthy_cow_udder", "healthy_cow_hooves", "healthy_grazing_cow", "healthy", "normal", "routine", "swasth", "baseline", "checkup", "nirogi"]):
+
+    # Priority 1: Check for explicit healthy indicators in filename, user hint, or preset
+    healthy_tokens = [
+        "healthy", "normal", "routine", "swasth", "nirogi", "baseline",
+        "checkup", "clean", "sound", "clear", "unaffected", "grazing"
+    ]
+    is_explicit_healthy = any(k in search_text for k in healthy_tokens)
+
+    # Priority 2: Check for specific clinical disease & lesion keywords (EXCLUDING generic body parts like 'skin', 'mouth', 'hoof')
+    if is_explicit_healthy:
         selected_key = "HEALTHY_CATTLE"
-    elif any(k in search_text for k in ["fmd_oral_vesicles", "fmd_hoof_lesions", "fmd", "mouth", "tongue", "hoof", "vesicle", "blister", "saliva", "muh", "khur", "khurpaka"]):
+    elif any(k in search_text for k in ["fmd_oral_vesicles", "fmd_hoof_lesions", "fmd", "foot and mouth", "vesicle", "vesicular", "blister", "drooling", "saliva", "khurpaka", "aphthous"]):
         selected_key = "FMD_VESICLES"
-    elif any(k in search_text for k in ["lsd_nodules_skin", "lsd", "lumpy", "nodule", "skin", "lump", "sitfast"]):
+    elif any(k in search_text for k in ["lsd_nodules_skin", "lsd", "lumpy skin", "lumpy", "cutaneous nodule", "nodule", "nodules", "sitfast", "lumps"]):
         selected_key = "LSD_NODULES"
-    elif any(k in search_text for k in ["anthrax_carcass_discharge", "anthrax", "carcass", "oozing", "dark_blood", "gilti", "kalpuli"]):
+    elif any(k in search_text for k in ["anthrax_carcass_discharge", "anthrax", "carcass", "oozing blood", "dark blood", "unclotted blood", "tarry blood", "gilti", "kalpuli"]):
         selected_key = "ANTHRAX_CARCASS"
-    elif any(k in search_text for k in ["mastitis_swollen_udder", "mastitis", "udder", "teat", "than", "thanela", "kasdah"]):
+    elif any(k in search_text for k in ["mastitis_swollen_udder", "mastitis", "thanela", "kasdah", "clotty milk", "flaky milk", "inflamed teat"]):
         selected_key = "MASTITIS_UDDER"
-    elif any(k in search_text for k in ["tick_infestation_cluster", "tick", "parasite", "kilni", "chichdi", "hyalomma", "gochid"]):
+    elif any(k in search_text for k in ["tick_infestation_cluster", "ticks", "tick", "parasite", "kilni", "chichdi", "hyalomma", "gochid", "ectoparasite"]):
         selected_key = "TICK_INFESTATION"
-    elif any(k in search_text for k in ["hs_throat_swelling", "hs", "throat", "neck", "swelling", "galghontu", "edema", "ghatsarpa"]):
+    elif any(k in search_text for k in ["hs_throat_swelling", "haemorrhagic septicaemia", "galghontu", "throat swelling", "edematous throat", "stertorous"]):
         selected_key = "HS_THROAT_SWELLING"
-    elif any(k in search_text for k in ["blackleg_bq_swelling", "blackleg", "bq", "jaharbad", "crepitus", "emphysema", "leg", "farya", "ektangya"]):
+    elif any(k in search_text for k in ["blackleg_bq_swelling", "blackleg", "crepitant", "crepitus", "jaharbad", "clostridial", "ektangya", "farya"]):
         selected_key = "BLACKLEG_BQ"
 
-    # Automated feature-based classification if hint is 'auto' or unspecified
+    # Automated feature-based classification if hint is 'auto' or generic body part ('skin', 'mouth', 'udder', 'throat')
     if not selected_key:
         if metrics["valid"]:
-            if metrics["dark_blood_ratio"] >= 28.0 and metrics["luminance"] < 45:
+            # Only flag disease automatically if computer vision indicators show extreme, unambiguous pathological disruption
+            if metrics["dark_blood_ratio"] >= 45.0 and metrics["luminance"] < 25:
                 selected_key = "ANTHRAX_CARCASS"
-            elif metrics["erythema_score"] >= 35 and metrics["redness_index"] >= 0.44:
+            elif metrics["erythema_score"] >= 65 and metrics["redness_index"] >= 0.52 and metrics["dark_blood_ratio"] >= 35.0:
                 selected_key = "FMD_VESICLES"
-            elif metrics["roughness_score"] >= 45:
+            elif metrics["roughness_score"] >= 88 and metrics["redness_index"] >= 0.52 and metrics["erythema_score"] >= 75:
                 selected_key = "LSD_NODULES"
-            elif metrics["roughness_score"] >= 32 and metrics["redness_index"] <= 0.36:
-                selected_key = "TICK_INFESTATION"
-            elif metrics["roughness_score"] <= 26 and metrics["redness_index"] <= 0.40:
-                selected_key = "HEALTHY_CATTLE"
             else:
                 selected_key = "HEALTHY_CATTLE"
         else:
@@ -937,8 +940,71 @@ def diagnose_image(
 
     disp_disease_name = trans.get("disease_name", profile["disease_name"])
     disp_lesion_type = trans.get("lesion_type", profile["lesion_type"])
-    disp_markers = trans.get("markers", profile["pathognomonic_markers"])
-    disp_care = trans.get("care", profile["immediate_home_care"])
+    disp_markers = list(trans.get("markers", profile["pathognomonic_markers"]))
+    disp_care = list(trans.get("care", profile["immediate_home_care"]))
+
+    # Contextual tailoring for healthy scans when user specified a target body region
+    if selected_key == "HEALTHY_CATTLE":
+        if "mouth" in search_text:
+            region_titles = {
+                "hi": "स्वस्थ मुंह व नम थूथन (Normal Moist Muzzle & Clear Mouth)",
+                "mr": "निरोगी तोंड व ओलसर नाक (Normal Moist Muzzle & Oral Mucosa)",
+                "te": "ఆరోగ్యకరమైన ముక్కు మరియు నోరు (Healthy Muzzle & Oral Mucosa)",
+                "en": "Normal Moist Muzzle & Clear Oral Mucosa"
+            }
+            region_markers = {
+                "hi": ["स्वच्छ नम थूथन, सामान्य गुलाबी श्लेष्मा", "कोई छाला, घाव या लार का टपकना नहीं", "दांत व मसूड़े पूर्णतः स्वस्थ व साफ"],
+                "mr": ["स्वच्छ ओलसर नाक, तोंडात फोड नाहीत", "लाळ गाळणे नाही, गुलाबी हिरड्या", "सामान्य व निरोगी तोंड"],
+                "te": ["తేమతో కూడిన శుభ్రమైన ముక్కు", "నోటిలో ఎలాంటి బొబ్బలు లేదా పుండ్లు లేవు", "లాలాజలం కారడం లేదు"],
+                "en": ["Uniform mucosal glisten, clean moist nostrils", "Zero vesicles, erosions, or frothing", "Intact healthy dental pad and tongue"]
+            }
+            disp_lesion_type = region_titles.get(lang_code, region_titles["en"])
+            disp_markers = region_markers.get(lang_code, region_markers["en"])
+        elif "skin" in search_text:
+            region_titles = {
+                "hi": "चमकदार स्वस्थ त्वचा (गांठ रहित - Smooth Bovine Coat)",
+                "mr": "चमकदार निरोगी कातडी (गाठी नाहीत)",
+                "te": "నునుపైన ఆరోగ్యకరమైన చర్మం (గడ్డలు లేవు)",
+                "en": "Smooth Glossy Bovine Coat (Zero Cutaneous Nodules)"
+            }
+            region_markers = {
+                "hi": ["चमकदार रोयेंदार त्वचा, त्वचा में लचीलापन", "कोई गांठ, पपड़ी या परजीवी नहीं", "सामान्य स्वस्थ रोमकूप व त्वचा"],
+                "mr": ["चकचकीत त्वचा, उत्तम लवचिकता", "कोणतीही गाठ किंवा कीटक नाही", "निरोगी कातडी"],
+                "te": ["మెరిసే చర్మం, చర్మం సాధారణ స్థితిలో ఉంది", "ఎలాంటి చర్మ గడ్డలు లేదా బొబ్బలు లేవు", "బాహ్య పరాన్నజీవులు లేవు"],
+                "en": ["Natural hair sheen, uniform skin pliability", "Absence of cutaneous lumps, nodules or sitfasts", "No ectoparasites or bite dermatitis"]
+            }
+            disp_lesion_type = region_titles.get(lang_code, region_titles["en"])
+            disp_markers = region_markers.get(lang_code, region_markers["en"])
+        elif "udder" in search_text:
+            region_titles = {
+                "hi": "स्वस्थ सममित थन व स्वच्छ दूध (Healthy Udder & Teats)",
+                "mr": "निरोगी कास व स्वच्छ दूध (Healthy Udder)",
+                "te": "ఆరోగ్యకరమైన పొదుగు మరియు స్వచ్ఛమైన పాలు",
+                "en": "Symmetric Udder & Intact Teats (Clear Milk)"
+            }
+            region_markers = {
+                "hi": ["मुलायम थन, कोई सूजन या लाली नहीं", "स्वच्छ व सामान्य दूध प्रवाह, कोई थक्का नहीं", "थनों में कोई दर्द या गांठ नहीं"],
+                "mr": ["मऊ कास, सूज किंवा लालसरपणा नाही", "सुरळीत स्वच्छ दूध उत्पादन, गुठळ्या नाहीत", "निरोगी सड"],
+                "te": ["మృదువైన పొదుగు, ఎలాంటి ఎరుపు లేదా వాపు లేదు", "స్వచ్ఛమైన పాలు, గడ్డలు లేవు", "పాలు పితికే సమయంలో నొప్పి లేదు"],
+                "en": ["Soft pliable quarters, equal teat conformation", "Absence of erythema or inflammatory heat", "Normal milk flow without curdled flakes or blood"]
+            }
+            disp_lesion_type = region_titles.get(lang_code, region_titles["en"])
+            disp_markers = region_markers.get(lang_code, region_markers["en"])
+        elif "hoof" in search_text or "leg" in search_text:
+            region_titles = {
+                "hi": "स्वस्थ खुर व साफ खुर-कटाव (Sound Hooves - No FMD)",
+                "mr": "निरोगी खूर (लाळ्या खुरकूत नाही)",
+                "te": "ఆరోగ్యకరమైన గిట్టలు (పుండ్లు లేవు)",
+                "en": "Intact Hoof Coronet & Clean Interdigital Cleft"
+            }
+            region_markers = {
+                "hi": ["खुर की चिकनी बनावट, खुरों के बीच साफ जगह", "कोई घाव, दरार या मवाद नहीं", "लंगड़ापन नहीं, सामान्य चाल"],
+                "mr": ["खुरांची निरोगी रचना, खुरांमध्ये जखम नाही", "लंगडेपणा नाही, सामान्य हालचाल", "स्वच्छ खूर"],
+                "te": ["గిట్టల మధ్య ఎలాంటి పగుళ్లు లేదా పుండ్లు లేవు", "నడక సాధారణం, కుంటితనం లేదు", "గిట్టలు దృఢంగా ఉన్నాయి"],
+                "en": ["Smooth coronary hairline without fissures", "Clean non-odorous interdigital space", "Firm weight-bearing stance without lameness"]
+            }
+            disp_lesion_type = region_titles.get(lang_code, region_titles["en"])
+            disp_markers = region_markers.get(lang_code, region_markers["en"])
 
     precaution_map = {
         "HEALTHY_CATTLE": {
