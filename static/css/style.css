@@ -2176,6 +2176,205 @@ body {
 }
 
 /* ==========================================
+   FARMER-FIRST SIMPLE VISION UI STYLES
+   ========================================== */
+.farmer-vision-hero {
+  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 1.15rem 1.35rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.15);
+}
+
+.farmer-quick-samples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+}
+
+.farmer-sample-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.85rem;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.farmer-sample-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.farmer-sample-btn.sample-healthy {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+.farmer-sample-btn.sample-healthy:hover {
+  border-color: #16a34a;
+}
+
+.farmer-sample-btn.sample-lsd {
+  border-color: #fed7aa;
+  background: #fff7ed;
+}
+.farmer-sample-btn.sample-lsd:hover {
+  border-color: #ea580c;
+}
+
+.farmer-sample-btn.sample-fmd {
+  border-color: #fef08a;
+  background: #fefce8;
+}
+.farmer-sample-btn.sample-fmd:hover {
+  border-color: #ca8a04;
+}
+
+.farmer-sample-btn.sample-anthrax {
+  border-color: #fecaca;
+  background: #fff1f2;
+}
+.farmer-sample-btn.sample-anthrax:hover {
+  border-color: #e11d48;
+}
+
+.sample-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.sample-btn-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.sample-btn-text b {
+  display: block;
+  font-size: 0.86rem;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sample-btn-text small {
+  display: block;
+  font-size: 0.72rem;
+  color: #64748b;
+  line-height: 1.2;
+}
+
+.sample-tag-green {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: #16a34a;
+  color: white;
+}
+
+.sample-tag-red {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: #ea580c;
+  color: white;
+}
+
+.sample-tag-orange {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: #eab308;
+  color: #713f12;
+}
+
+.sample-tag-dark {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: #be123c;
+  color: white;
+}
+
+.farmer-symptom-chips {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.farmer-voice-btn {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.45rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+
+.farmer-voice-btn:hover {
+  background: #0369a1;
+  transform: scale(1.02);
+}
+
+.farmer-voice-btn.speaking {
+  background: #e11d48;
+  animation: pulse 1s infinite;
+}
+
+.farmer-step-item {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f5f9;
+}
+
+.farmer-step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #0f766e;
+  color: white;
+  font-weight: 800;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+
+/* ==========================================
    ROLE-SPECIFIC PORTAL BANNERS & THEMES
    ========================================== */
 .role-portal-banner {

@@ -899,13 +899,13 @@ def diagnose_image(
     # Priority 2: Check for specific clinical disease & lesion keywords (EXCLUDING generic body parts like 'skin', 'mouth', 'hoof')
     if is_explicit_healthy:
         selected_key = "HEALTHY_CATTLE"
-    elif any(k in search_text for k in ["fmd_oral_vesicles", "fmd_hoof_lesions", "fmd", "foot and mouth", "vesicle", "vesicular", "blister", "drooling", "saliva", "khurpaka", "aphthous"]):
+    elif any(k in search_text for k in ["fmd_oral_vesicles", "fmd_hoof_lesions", "fmd", "foot and mouth", "vesicle", "vesicular", "blister", "blisters", "drooling", "saliva", "khurpaka", "aphthous", "sores", "chhale", "mouth_sores"]):
         selected_key = "FMD_VESICLES"
-    elif any(k in search_text for k in ["lsd_nodules_skin", "lsd", "lumpy skin", "lumpy", "cutaneous nodule", "nodule", "nodules", "sitfast", "lumps"]):
+    elif any(k in search_text for k in ["lsd_nodules_skin", "lsd", "lumpy skin", "lumpy", "cutaneous nodule", "nodule", "nodules", "sitfast", "lumps", "lump", "skin_lumps", "ganthe", "gaanthen"]):
         selected_key = "LSD_NODULES"
-    elif any(k in search_text for k in ["anthrax_carcass_discharge", "anthrax", "carcass", "oozing blood", "dark blood", "unclotted blood", "tarry blood", "gilti", "kalpuli"]):
+    elif any(k in search_text for k in ["anthrax_carcass_discharge", "anthrax", "carcass", "oozing blood", "dark blood", "unclotted blood", "tarry blood", "gilti", "kalpuli", "sudden_death"]):
         selected_key = "ANTHRAX_CARCASS"
-    elif any(k in search_text for k in ["mastitis_swollen_udder", "mastitis", "thanela", "kasdah", "clotty milk", "flaky milk", "inflamed teat"]):
+    elif any(k in search_text for k in ["mastitis_swollen_udder", "mastitis", "thanela", "kasdah", "clotty milk", "flaky milk", "inflamed teat", "swollen_udder", "udder_swelling"]):
         selected_key = "MASTITIS_UDDER"
     elif any(k in search_text for k in ["tick_infestation_cluster", "ticks", "tick", "parasite", "kilni", "chichdi", "hyalomma", "gochid", "ectoparasite"]):
         selected_key = "TICK_INFESTATION"

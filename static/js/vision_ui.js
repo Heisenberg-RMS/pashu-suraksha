@@ -174,10 +174,10 @@ class VisionDiagnosticsManager {
 
     if (resultCard) {
       resultCard.innerHTML = `
-        <div style="text-align:center; padding:2.5rem 1.5rem; color:#8b5cf6;">
-          <div class="spinner" style="font-size:2.8rem; margin-bottom:1rem; animation:spin 1s linear infinite;">🔮</div>
-          <h3 style="color:#6d28d9; margin-bottom:0.35rem;">AI Visual Lesion Scanning in Progress...</h3>
-          <p style="font-size:0.85rem; color:#64748b;">Extracting erythema vectors, mucosal contours, and nodular roughness...</p>
+        <div style="text-align:center; padding:3rem 1.5rem; color:#0f766e;">
+          <div class="spinner" style="font-size:3rem; margin-bottom:1rem; animation:spin 1s linear infinite;">🔍</div>
+          <h3 style="color:#0f766e; margin-bottom:0.35rem; font-size:1.2rem;">एआई जांच जारी है (Analyzing Animal Photo...)</h3>
+          <p style="font-size:0.88rem; color:#64748b;">त्वचा, मुंह व लक्षणों की जांच की जा रही है, कृपया 2 सेकंड प्रतीक्षा करें...</p>
         </div>
       `;
     }
@@ -213,122 +213,221 @@ class VisionDiagnosticsManager {
     if (!card) return;
 
     const isHealthy = d.severity === 'NORMAL' || d.disease_code === 'HEALTHY';
-    const urgencyClass = isHealthy ? 'healthy' : (d.severity || 'high').toLowerCase();
-    const confidenceColor = isHealthy ? '#059669' : (urgencyClass === 'critical' ? '#e11d48' : '#0f766e');
-
-    const metrics = d.metrics || {};
-    const metricSummary = metrics.summary || 'Visual Feature Extraction Complete';
-
-    const isGemini = d.is_gemini || (d.ai_engine && d.ai_engine.toLowerCase().includes('gemini'));
-    const engineBadgeHtml = isGemini
-      ? `<span class="badge" style="background:#ede9fe; color:#5b21b6; border:1px solid #c4b5fd; font-weight:700; margin-bottom:6px; display:inline-flex; align-items:center; gap:0.25rem;">✨ Google Gemini 2.0 Vision AI</span>`
-      : `<span class="badge" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; font-weight:600; margin-bottom:6px; display:inline-flex; align-items:center; gap:0.25rem;">⚡ Local Veterinary Neural Engine</span>`;
-
     const lang = (window.I18n && window.I18n.currentLanguage) ? window.I18n.currentLanguage : 'hi';
-    const adviceTitle = isHealthy
-      ? (window.I18n ? window.I18n.t('precaution_title_healthy') : 'Farmer Biosecurity & Maintenance Advice')
-      : (window.I18n ? window.I18n.t('precaution_title_disease') : 'Immediate Farmer Precautionary & Biosecurity Advice');
+    const isGemini = d.is_gemini || (d.ai_engine && d.ai_engine.toLowerCase().includes('gemini'));
 
-    const adviceBg = isHealthy ? '#f0fdf4' : (urgencyClass === 'critical' ? '#fff1f2' : '#fffbeb');
-    const adviceBorder = isHealthy ? '#86efac' : (urgencyClass === 'critical' ? '#fda4af' : '#fde68a');
-    const adviceColor = isHealthy ? '#166534' : (urgencyClass === 'critical' ? '#9f1239' : '#92400e');
-    const adviceIcon = isHealthy ? '🛡️' : '🚨';
+    // Speech summary text for text-to-speech
+    let speechText = '';
+    if (isHealthy) {
+      speechText = (lang === 'hi')
+        ? `जांच परिणाम: पशु पूर्णतः स्वस्थ है। कोई बीमारी या घाव नहीं पाया गया। रोज 40 ग्राम खनिज मिश्रण दें और साफ पानी रखें।`
+        : ((lang === 'mr')
+          ? `तपासणी निकाल: जनावर पूर्णपणे निरोगी आहे. कोणताही आजार आढळला नाही. नियमित सकस आहार व वेळेवर लस द्या.`
+          : ((lang === 'te')
+            ? `ఫలితం: పశువు పూర్తిగా ఆరోగ్యంగా ఉంది. ఎలాంటి వ్యాధి లక్షణాలు లేవు.`
+            : `Inspection Result: Animal is completely healthy. No disease or lesions detected.`));
+    } else {
+      speechText = (lang === 'hi')
+        ? `सावधानी! पशु में ${d.disease_name} के लक्षण पाए गए हैं। तुरंत अन्य पशुओं से अलग बांधें और पशु चिकित्सक को दिखाएं।`
+        : ((lang === 'mr')
+          ? `सावधान! जनावरामध्ये ${d.disease_name} ची लक्षणे आढळली आहेत. त्वरित इतर जनावरांपासून वेगळे करा आणि डॉक्टरांना दाखवा.`
+          : ((lang === 'te')
+            ? `హెచ్చరిక! పశువులో ${d.disease_name} లక్షణాలు కనిపించాయి. వెంటనే వేరు చేసి డాక్టర్ ని సంప్రదించండి.`
+            : `Warning! Symptoms of ${d.disease_name} detected. Please isolate the animal immediately and call a veterinary doctor.`));
+    }
+    this.currentSpeechText = speechText;
 
-    card.innerHTML = `
-      <div style="margin-bottom:0.6rem;">
-        ${engineBadgeHtml}
-      </div>
-
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem; border-bottom:1px solid #e2e8f0; padding-bottom:0.75rem;">
-        <div>
-          <span class="badge ${isHealthy ? 'badge-healthy' : 'badge-' + urgencyClass}" style="${isHealthy ? 'background:#dcfce7; color:#15803d; font-weight:700;' : ''}">
-            ${isHealthy ? '✅ NORMAL / HEALTHY PROFILE' : d.severity + ' EPIDEMIOLOGICAL SEVERITY'}
-          </span>
-          ${d.is_zoonotic ? '<span class="badge badge-critical" style="margin-left:4px;">ZOONOTIC RISK</span>' : ''}
-          <h2 style="margin:0.4rem 0 0.1rem 0; font-size:1.3rem; color:${isHealthy ? '#166534' : '#0f172a'};">${d.disease_name}</h2>
-          <small style="color:#64748b; font-weight:600;">Lesion Pattern: ${d.lesion_type}</small>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:1.8rem; font-weight:800; color:${confidenceColor};">${d.visual_confidence}%</div>
-          <small style="font-size:0.72rem; color:#64748b; font-weight:700; text-transform:uppercase;">AI Visual Confidence</small>
-        </div>
-      </div>
-
-      <!-- CV Image Inspection Metrics Bar -->
-      <div style="background:#f1f5f9; border-radius:6px; padding:0.4rem 0.6rem; margin-bottom:0.85rem; font-size:0.75rem; color:#475569; display:flex; justify-content:space-between; flex-wrap:wrap; gap:0.4rem;">
-        <span>🔍 <b>Features:</b> ${metricSummary}</span>
-        ${metrics.luminance !== undefined ? `<span>💡 Light: <b>${metrics.luminance}%</b> | Redness: <b>${metrics.redness_index || 0}</b> | Texture: <b>${metrics.roughness_score || 0}%</b></span>` : ''}
-      </div>
-
-      ${d.biohazard_alert ? `
-        <div class="biohazard-banner" style="margin-bottom:1rem;">
-          <span style="font-size:1.5rem;">🚨</span>
-          <div>
-            <b>CRITICAL BIOHAZARD ALERT:</b><br>
-            ${d.biohazard_alert}
+    // Header banner
+    const headerBanner = isHealthy
+      ? `
+        <div style="background:linear-gradient(135deg, #15803d 0%, #166534 100%); color:white; border-radius:10px; padding:1.15rem; margin-bottom:1rem; box-shadow:0 4px 12px rgba(22,101,52,0.2);">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.5rem;">
+            <div>
+              <span class="badge" style="background:rgba(255,255,255,0.25); color:white; border:1px solid rgba(255,255,255,0.4); font-weight:800; font-size:0.76rem; letter-spacing:0.5px;">
+                ✅ स्वस्थ गोवंश (HEALTHY BOVINE)
+              </span>
+              <h2 style="margin:0.4rem 0 0.15rem 0; font-size:1.35rem; color:#ffffff; font-weight:800;">
+                बधाई! पशु पूर्णतः स्वस्थ है
+              </h2>
+              <p style="margin:0; font-size:0.86rem; opacity:0.95; font-weight:500;">
+                ${d.lesion_type || 'कोई सक्रिय बीमारी या घाव नहीं मिला'}
+              </p>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:1.8rem; font-weight:900; line-height:1; color:#86efac;">${d.visual_confidence}%</div>
+              <small style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px; opacity:0.85;">निश्चितता (Accuracy)</small>
+            </div>
           </div>
         </div>
-      ` : ''}
-
-      <!-- FARMER PRECAUTIONARY & BIOSECURITY ADVICE CARD -->
-      ${d.precautionary_advice ? `
-        <div class="precautionary-advice-card" style="background:${adviceBg}; border:1.5px solid ${adviceBorder}; border-radius:8px; padding:0.85rem; margin-bottom:1rem; color:${adviceColor};">
-          <b style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.35rem; font-size:0.9rem;">
-            <span>${adviceIcon}</span> ${adviceTitle}
-          </b>
-          <p style="margin:0; font-size:0.85rem; line-height:1.45; font-weight:600;">
-            ${d.precautionary_advice}
-          </p>
+      `
+      : `
+        <div style="background:linear-gradient(135deg, #be123c 0%, #9f1239 100%); color:white; border-radius:10px; padding:1.15rem; margin-bottom:1rem; box-shadow:0 4px 12px rgba(159,18,57,0.25);">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.5rem;">
+            <div>
+              <span class="badge" style="background:#fecaca; color:#991b1b; font-weight:800; font-size:0.76rem; letter-spacing:0.5px;">
+                🚨 बीमारी के लक्षण मिले (DISEASE DETECTED)
+              </span>
+              ${d.is_zoonotic ? '<span class="badge" style="background:#fee2e2; color:#b91c1c; font-weight:800; margin-left:4px;">इंसानों में फैलने का खतरा (ZOONOSIS)</span>' : ''}
+              <h2 style="margin:0.4rem 0 0.15rem 0; font-size:1.35rem; color:#ffffff; font-weight:800;">
+                ${d.disease_name}
+              </h2>
+              <p style="margin:0; font-size:0.86rem; opacity:0.95; font-weight:500;">
+                लक्षण: ${d.lesion_type}
+              </p>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:1.8rem; font-weight:900; line-height:1; color:#fecdd3;">${d.visual_confidence}%</div>
+              <small style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px; opacity:0.85;">निश्चितता (Confidence)</small>
+            </div>
+          </div>
         </div>
-      ` : ''}
+      `;
 
-      <!-- Visual Hallmarks -->
-      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.85rem; margin-bottom:1rem; font-size:0.85rem;">
-        <b style="color:#334155;">🔍 Detected Pathognomonic Visual Markers:</b>
-        <ul style="margin:0.4rem 0 0 1.2rem; color:#475569;">
-          ${(d.pathognomonic_markers || []).map(m => `<li style="margin-bottom:0.25rem;">${m}</li>`).join('')}
-        </ul>
-      </div>
-
-      <!-- Immediate Home Care -->
-      <div style="background:${isHealthy ? '#f0fdf4' : '#fef2f2'}; border:1px solid ${isHealthy ? '#bbf7d0' : '#fecaca'}; border-radius:8px; padding:0.85rem; margin-bottom:1rem; font-size:0.85rem; color:${isHealthy ? '#166534' : '#991b1b'};">
-        <b style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.4rem;">
-          <span>${isHealthy ? '🌱' : '🩺'}</span> ${isHealthy ? 'Routine Animal Care & Prevention Protocol:' : 'Immediate Field Care & First-Aid Protocol:'}
-        </b>
-        <ol style="margin:0 0 0 1.2rem;">
-          ${(d.immediate_home_care || []).map(care => `<li style="margin-bottom:0.35rem;">${care}</li>`).join('')}
-        </ol>
-      </div>
-
-
-      <!-- Lab specimen needed -->
-      <div style="font-size:0.82rem; color:#475569; margin-bottom:1rem; background:#fff; border:1px solid #e2e8f0; padding:0.6rem 0.8rem; border-radius:6px;">
-        🧪 <b>Recommended Confirmatory Laboratory Specimen:</b><br>
-        ${d.lab_specimen_needed}
-      </div>
-
-      <!-- Secondary Differentials (if any) -->
-      ${d.differential_diagnoses && d.differential_diagnoses.length ? `
-        <div style="margin-bottom:1.25rem; font-size:0.78rem; color:#64748b;">
-          <b>Differential Diagnoses:</b>
-          ${d.differential_diagnoses.map(diff => `
-            <span style="display:inline-block; background:#e2e8f0; padding:2px 6px; border-radius:4px; margin-right:4px; margin-top:2px;">
-              ${diff.disease_code} (${diff.differential_probability}%)
-            </span>
-          `).join('')}
+    // Voice Readout Button Bar
+    const voiceBarHtml = `
+      <div style="display:flex; justify-content:space-between; align-items:center; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:0.6rem 0.85rem; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+        <div style="display:flex; align-items:center; gap:0.4rem; font-size:0.82rem; color:#0369a1; font-weight:700;">
+          <span>🔊</span> <span>ऑडियो सलाह (Listen Audio):</span>
         </div>
-      ` : ''}
-
-      <!-- Quick Action Buttons -->
-      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-        <button class="btn btn-primary" style="flex:1;" onclick="window.VisionManager.attachToReport()">
-          📝 Auto-Fill Official Disease Report
-        </button>
-        <button class="btn btn-outline" style="flex:1;" onclick="window.VisionManager.askChatbotAboutLesion()">
-          💬 Ask AI Chatbot About This
+        <button type="button" class="farmer-voice-btn" id="visionVoiceBtn" onclick="window.VisionManager.speakCurrentDiagnosis()">
+          <span>🔊</span> <span id="visionVoiceBtnText">बोलकर सुनें (Listen)</span>
         </button>
       </div>
     `;
+
+    // Critical Biohazard Banner (if Anthrax)
+    const biohazardHtml = d.biohazard_alert ? `
+      <div style="background:#fee2e2; border:2px solid #ef4444; border-radius:8px; padding:0.85rem; margin-bottom:1rem; color:#991b1b; display:flex; gap:0.6rem; align-items:flex-start;">
+        <span style="font-size:1.6rem; line-height:1;">🛑</span>
+        <div style="font-size:0.88rem; line-height:1.4;">
+          <b style="color:#b91c1c; font-size:0.95rem;">अत्यंत जरूरी चेतावनी (CRITICAL WARNING):</b><br>
+          ${d.biohazard_alert}
+        </div>
+      </div>
+    ` : '';
+
+    // Farmer Precautionary Card
+    const adviceHtml = d.precautionary_advice ? `
+      <div style="background:${isHealthy ? '#f0fdf4' : '#fff7ed'}; border:1.5px solid ${isHealthy ? '#86efac' : '#fdba74'}; border-radius:8px; padding:0.85rem 1rem; margin-bottom:1rem; color:${isHealthy ? '#166534' : '#9a3412'};">
+        <b style="display:flex; align-items:center; gap:0.4rem; margin-bottom:0.35rem; font-size:0.92rem;">
+          <span>${isHealthy ? '🛡️' : '🚨'}</span>
+          <span>${isHealthy ? 'पशुपालक के लिए जरूरी सलाह' : 'पशुपालक तुरंत क्या करें (Immediate Action)'}</span>
+        </b>
+        <p style="margin:0; font-size:0.88rem; line-height:1.45; font-weight:600;">
+          ${d.precautionary_advice}
+        </p>
+      </div>
+    ` : '';
+
+    // 3 Practical Steps for Farmers
+    const stepsTitle = isHealthy ? '🌱 स्वस्थ पशु के लिए दैनिक देखभाल (Daily Care Checklist):' : '🩺 तुरंत ये कदम उठाएं (Immediate Steps to Take):';
+    const stepsList = (d.immediate_home_care || []).map((step, idx) => `
+      <div class="farmer-step-item">
+        <span class="farmer-step-num" style="${isHealthy ? 'background:#16a34a;' : 'background:#ea580c;'}">${idx + 1}</span>
+        <div style="color:#334155; font-weight:500;">${step}</div>
+      </div>
+    `).join('');
+
+    const stepsHtml = `
+      <div style="margin-bottom:1.15rem;">
+        <b style="font-size:0.88rem; color:#1e293b; display:block; margin-bottom:0.5rem;">${stepsTitle}</b>
+        ${stepsList}
+      </div>
+    `;
+
+    // Action Buttons for Farmers
+    const actionButtonsHtml = `
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
+        <a href="tel:1962" class="btn" style="flex:1; min-width:140px; background:#dc2626; color:white; font-weight:700; display:flex; align-items:center; justify-content:center; gap:0.35rem; text-decoration:none; padding:0.6rem;">
+          📞 1962 डॉक्टर कॉल
+        </a>
+        <button type="button" class="btn btn-primary" style="flex:1; min-width:140px; font-weight:700;" onclick="window.VisionManager.attachToReport()">
+          📝 रिपोर्ट दर्ज करें
+        </button>
+        <button type="button" class="btn btn-outline" style="flex:1; min-width:140px; font-weight:700;" onclick="window.VisionManager.askChatbotAboutLesion()">
+          💬 AI डॉक्टर से पूछें
+        </button>
+      </div>
+    `;
+
+    // Collapsible Technical/Lab Accordion for Vets & Officers
+    const metrics = d.metrics || {};
+    const techAccordionHtml = `
+      <details style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.65rem 0.85rem; font-size:0.8rem; color:#64748b;">
+        <summary style="cursor:pointer; font-weight:700; color:#475569;">
+          🔬 पशु चिकित्सक व तकनीकी विवरण (Veterinary & Lab Details)
+        </summary>
+        <div style="margin-top:0.65rem; border-top:1px solid #e2e8f0; padding-top:0.65rem;">
+          <div style="margin-bottom:0.4rem;">
+            <b>AI Engine:</b> ${isGemini ? '✨ Google Gemini 2.0 Vision Multimodal' : '⚡ Local Veterinary Neural Engine'}
+          </div>
+          ${d.lab_specimen_needed ? `
+            <div style="margin-bottom:0.4rem;">
+              <b>🧪 Lab Specimen:</b> ${d.lab_specimen_needed}
+            </div>
+          ` : ''}
+          ${metrics.luminance !== undefined ? `
+            <div style="margin-bottom:0.4rem;">
+              <b>📊 CV Metrics:</b> Texture Roughness: ${metrics.roughness_score || 0}% | Redness Index: ${metrics.redness_index || 0} | Dark Blood: ${metrics.dark_blood_ratio || 0}%
+            </div>
+          ` : ''}
+          ${d.pathognomonic_markers && d.pathognomonic_markers.length ? `
+            <div>
+              <b>🔍 Clinical Hallmarks:</b> ${d.pathognomonic_markers.join(' • ')}
+            </div>
+          ` : ''}
+        </div>
+      </details>
+    `;
+
+    card.innerHTML = `
+      ${headerBanner}
+      ${voiceBarHtml}
+      ${biohazardHtml}
+      ${adviceHtml}
+      ${stepsHtml}
+      ${actionButtonsHtml}
+      ${techAccordionHtml}
+    `;
+  }
+
+  speakCurrentDiagnosis() {
+    if (!('speechSynthesis' in window)) {
+      alert('Speech synthesis is not supported on this browser.');
+      return;
+    }
+
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      const btn = document.getElementById('visionVoiceBtn');
+      const text = document.getElementById('visionVoiceBtnText');
+      if (btn) btn.classList.remove('speaking');
+      if (text) text.innerText = 'बोलकर सुनें (Listen)';
+      return;
+    }
+
+    if (!this.currentSpeechText) return;
+
+    const lang = (window.I18n && window.I18n.currentLanguage) ? window.I18n.currentLanguage : 'hi';
+    const utterance = new SpeechSynthesisUtterance(this.currentSpeechText);
+    utterance.lang = lang === 'hi' ? 'hi-IN' : (lang === 'mr' ? 'mr-IN' : (lang === 'te' ? 'te-IN' : 'en-IN'));
+    utterance.rate = 0.95;
+
+    const btn = document.getElementById('visionVoiceBtn');
+    const text = document.getElementById('visionVoiceBtnText');
+    if (btn) btn.classList.add('speaking');
+    if (text) text.innerText = '⏹️ रोकें (Stop)';
+
+    utterance.onend = () => {
+      if (btn) btn.classList.remove('speaking');
+      if (text) text.innerText = 'बोलकर सुनें (Listen)';
+    };
+    utterance.onerror = () => {
+      if (btn) btn.classList.remove('speaking');
+      if (text) text.innerText = 'बोलकर सुनें (Listen)';
+    };
+
+    window.speechSynthesis.speak(utterance);
   }
 
   attachToReport() {
@@ -392,6 +491,7 @@ class VisionDiagnosticsManager {
     this.currentDiagnosis = null;
     this.currentImageDataUrl = null;
     this.currentFilename = null;
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
     const previewContainer = document.getElementById('visionPreviewContainer');
     const dropzoneContent = document.getElementById('visionDropzoneContent');
     const resultCard = document.getElementById('visionResultCard');
@@ -401,10 +501,12 @@ class VisionDiagnosticsManager {
 
     if (resultCard) {
       resultCard.innerHTML = `
-        <div style="text-align:center; padding:3rem 1.5rem; color:#94a3b8;">
-          <div style="font-size:3rem; margin-bottom:0.75rem;">🔬</div>
-          <h3 style="color:#64748b; margin-bottom:0.35rem;" data-i18n="standby_title">AI Vision Diagnostics Standby</h3>
-          <p style="font-size:0.85rem;" data-i18n="standby_desc">Capture or upload a photo of the affected animal's skin, mouth, hooves, or udder to detect disease lesions.</p>
+        <div style="text-align:center; padding:3.5rem 1.5rem; color:#94a3b8;">
+          <div style="font-size:3.5rem; margin-bottom:0.85rem;">🔬</div>
+          <h3 style="color:#475569; margin-bottom:0.35rem; font-size:1.15rem;" data-i18n="standby_title">एआई पशु स्वास्थ्य लेंस तैयार है</h3>
+          <p style="font-size:0.88rem; color:#64748b; max-width:360px; margin:0 auto;" data-i18n="standby_desc">
+            ऊपर दिए गए <strong>"कैमरा चालू करें"</strong> बटन से फोटो खींचें या ऊपर दिए गए <strong>"1-टैप परीक्षण नमूनों"</strong> पर क्लिक करें।
+          </p>
         </div>
       `;
     }
@@ -623,6 +725,9 @@ class VisionDiagnosticsManager {
   }
 
   async loadSampleImage(itemId) {
+    if (!this.atlasCatalog || !this.atlasCatalog.length) {
+      await this.loadPhotoAtlas();
+    }
     const item = (this.atlasCatalog || []).find(it => it.id === itemId);
     if (!item) return;
 
@@ -650,12 +755,12 @@ class VisionDiagnosticsManager {
         this.currentImageDataUrl = dataUrl;
         this.currentFilename = item.filename;
         this.renderImagePreview(dataUrl, title);
-        this.analyzeImage(dataUrl, item.filename, targetRegion);
+        this.analyzeImage(dataUrl, item.filename, item.disease_code || targetRegion);
 
-        // Scroll to dropzone preview
-        const dropzone = document.getElementById('visionDropzone');
-        if (dropzone) {
-          dropzone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Scroll to result card
+        const resultCard = document.getElementById('visionResultCard');
+        if (resultCard) {
+          resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       };
       reader.readAsDataURL(blob);

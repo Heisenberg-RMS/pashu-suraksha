@@ -51,6 +51,9 @@ const I18N_TRANSLATIONS = {
     btn_check_samples: "🧪 Check Diagnostic Samples in Transit",
 
     // Vision Lens
+    vision_farmer_title: "📸 AI Smart Animal Health Lens",
+    vision_farmer_sub: "Snap a photo of the animal — instantly know if it is healthy or sick, and get immediate first-aid steps.",
+    quick_test_label: "⚡ Instant 1-Tap Demo Samples (Click to Test Instantly):",
     vision_title: "📸 AI Visual Lesion Scanner & Camera Lens",
     vision_badge: "Computer Vision AI",
     vision_target_label: "🎯 Select Target Body Region / Scan Mode:",
@@ -202,6 +205,9 @@ const I18N_TRANSLATIONS = {
     btn_check_samples: "🧪 मार्ग में जांच नमूनों की स्थिति देखें",
 
     // Vision Lens
+    vision_farmer_title: "📸 पशु स्वास्थ्य एआई लेंस",
+    vision_farmer_sub: "बस एक फोटो लें — तुरंत जानें पशु स्वस्थ है या बीमार, और क्या प्राथमिक उपचार करें।",
+    quick_test_label: "⚡ त्वरित 1-टैप परीक्षण नमूने (जांचने के लिए किसी भी कार्ड पर टैप करें):",
     vision_title: "📸 एआई विजन लेंस एवं घाव स्कैनर",
     vision_badge: "कंप्यूटर विज़न एआई",
     vision_target_label: "🎯 शरीर का अंग या जांच का प्रकार चुनें:",
@@ -353,6 +359,9 @@ const I18N_TRANSLATIONS = {
     btn_check_samples: "🧪 तपासणी नमुन्यांची स्थिती पहा",
 
     // Vision Lens
+    vision_farmer_title: "📸 पशु आरोग्य एआय लेन्स",
+    vision_farmer_sub: "फक्त एक फोटो काढा — त्वरित ओळखा जनावर निरोगी आहे की आजारी, आणि करा प्राथमिक उपचार.",
+    quick_test_label: "⚡ त्वरित १-टॅप चाचणी नमुने (तपासण्यासाठी कोणत्याही कार्डवर टॅप करा):",
     vision_title: "📸 एआय व्हिजन लेन्स आणि जखम तपासणी",
     vision_badge: "कॉम्प्युटर व्हिजन एआय",
     vision_target_label: "🎯 शरीराचा भाग किंवा तपासणी प्रकार निवडा:",
@@ -504,6 +513,9 @@ const I18N_TRANSLATIONS = {
     btn_check_samples: "🧪 ల్యాబ్ పరీక్ష నమూనాల స్థితిని చూడండి",
 
     // Vision Lens
+    vision_farmer_title: "📸 పశు ఆరోగ్య ఏఐ లెన్స్",
+    vision_farmer_sub: "ఒక్క ఫోటో తీయండి — పశువు ఆరోగ్యంగా ఉందో లేదో వెంటనే తెలుసుకోండి మరియు తక్షణ ప్రథమ చికిత్స పొందండి.",
+    quick_test_label: "⚡ తక్షణ 1-ట్యాప్ నమూనాలు (పరీక్షించడానికి ఏదైనా కార్డుపై నొక్కండి):",
     vision_title: "📸 ఏఐ విజన్ లెన్స్ & వ్యాధి గుర్తింపు",
     vision_badge: "కంప్యూటర్ విజన్ ఏఐ",
     vision_target_label: "🎯 శరీర భాగం లేదా పరీక్ష రకాన్ని ఎంచుకోండి:",

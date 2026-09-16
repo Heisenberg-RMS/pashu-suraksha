@@ -378,83 +378,152 @@
         <div id="geminiKeyFeedback" style="font-size:0.75rem; margin-top:0.4rem; color:#64748b;"></div>
       </div>
 
-      <div class="grid-2">
-        <!-- Capture / Upload Card -->
-        <div class="card">
-          <div class="card-header">
-            <h2 class="card-title" data-i18n="vision_title">📸 AI Visual Lesion Scanner & Camera Lens</h2>
-            <span style="font-size:0.75rem; background:#ccfbf1; color:#0f766e; padding:2px 8px; border-radius:12px; font-weight:700;" data-i18n="vision_badge">Computer Vision AI</span>
-          </div>
-
-          <!-- Target Body Region / Scan Mode Selector -->
-          <div style="margin-bottom:0.75rem;">
-            <label style="font-size:0.78rem; font-weight:700; color:#475569; text-transform:uppercase;" data-i18n="vision_target_label">
-              🎯 Select Target Body Region / Scan Mode:
-            </label>
-            <div class="scan-target-pills-bar">
-              <button type="button" class="scan-target-pill active" data-target="auto" data-i18n="target_auto">
-                🔍 Auto-Detect (Visual AI)
-              </button>
-              <button type="button" class="scan-target-pill" data-target="healthy" data-i18n="target_healthy">
-                🐄 Routine Healthy Check
-              </button>
-              <button type="button" class="scan-target-pill" data-target="skin" data-i18n="target_skin">
-                ⚪ Skin Coat (LSD Nodules)
-              </button>
-              <button type="button" class="scan-target-pill" data-target="mouth" data-i18n="target_mouth">
-                👅 Mouth & Hoof (FMD Ulcers)
-              </button>
-              <button type="button" class="scan-target-pill" data-target="udder" data-i18n="target_udder">
-                🥛 Udder & Teats (Mastitis)
-              </button>
-              <button type="button" class="scan-target-pill" data-target="throat" data-i18n="target_throat">
-                🧣 Throat & Brisket (HS)
-              </button>
-              <button type="button" class="scan-target-pill" data-target="ticks" data-i18n="target_ticks">
-                🪰 Parasites (Ticks / Chichdi)
-              </button>
-            </div>
-          </div>
-
-          <!-- Dropzone -->
-          <div class="vision-dropzone" id="visionDropzone" onclick="document.getElementById('visionImageFileInput').click()">
-            <div id="visionDropzoneContent">
-              <div style="font-size:3rem; margin-bottom:0.5rem;">📷</div>
-              <h3 style="color:#0f766e; margin-bottom:0.25rem;" data-i18n="vision_drop_title">Snap or Upload Lesion Photo</h3>
-              <p style="font-size:0.85rem; color:#64748b; margin-bottom:1rem;" data-i18n="vision_drop_sub">Tap to open camera, browse gallery, or drag-and-drop animal photo</p>
-              
-              <div style="display:flex; justify-content:center; gap:0.5rem; flex-wrap:wrap;">
-                <button type="button" class="btn btn-primary btn-sm" onclick="event.stopPropagation(); document.getElementById('visionCameraInput').click()" data-i18n="btn_launch_camera">
-                  📸 Launch Mobile Camera
-                </button>
-                <button type="button" class="btn btn-outline btn-sm" onclick="event.stopPropagation(); document.getElementById('visionImageFileInput').click()" data-i18n="btn_browse_files">
-                  📁 Browse Device Photos
-                </button>
-              </div>
-            </div>
-
-            <!-- Preview box -->
-            <div class="vision-preview-box" id="visionPreviewContainer">
-              <img id="visionPreviewImage" class="vision-preview-img" src="" alt="Lesion Scan">
-              <div style="margin-top:0.75rem; display:flex; justify-content:center; gap:0.5rem; align-items:center;">
-                <span id="visionFileLabel" style="font-size:0.8rem; font-weight:600; color:#475569;"></span>
-                <button type="button" class="btn btn-outline btn-sm" onclick="event.stopPropagation(); window.VisionManager.resetScan()" data-i18n="btn_scan_another">
-                  🔄 Scan Another Photo
-                </button>
-              </div>
-            </div>
-
-            <input type="file" id="visionImageFileInput" accept="image/*" style="display:none;">
-            <input type="file" id="visionCameraInput" accept="image/*" capture="environment" style="display:none;">
-          </div>
-
-          <!-- Vision AI Diagnostic Output Card -->
+      <!-- FARMER-FRIENDLY VISION HERO BANNER -->
+      <div class="farmer-vision-hero">
         <div>
-          <div class="card" id="visionResultCard">
-            <div style="text-align:center; padding:3rem 1.5rem; color:#94a3b8;">
-              <div style="font-size:3rem; margin-bottom:0.75rem;">🔬</div>
-              <h3 style="color:#64748b; margin-bottom:0.35rem;" data-i18n="standby_title">AI Vision Diagnostics Standby</h3>
-              <p style="font-size:0.85rem;" data-i18n="standby_desc">Capture or upload a photo of the affected animal's skin, mouth, hooves, or udder to detect disease lesions, clinical stage, and emergency first-aid.</p>
+          <h2 style="margin:0; font-size:1.35rem; font-weight:800; display:flex; align-items:center; gap:0.5rem;">
+            <span>📸</span> <span data-i18n="vision_farmer_title">पशु स्वास्थ्य एआई लेंस (Smart Animal Health Lens)</span>
+          </h2>
+          <p style="margin:0.35rem 0 0 0; font-size:0.88rem; opacity:0.95;" data-i18n="vision_farmer_sub">
+            बस एक फोटो लें — तुरंत जानें पशु स्वस्थ है या बीमार, और क्या प्राथमिक उपचार करें।
+          </p>
+        </div>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+          <button type="button" class="btn btn-sm" style="background:rgba(255,255,255,0.2); color:white; border:1px solid rgba(255,255,255,0.35); font-weight:700;" onclick="window.VisionManager.toggleApiKeyModal()">
+            ⚙️ Gemini AI Key
+          </button>
+          <a href="tel:1962" class="btn btn-sm" style="background:#ef4444; color:white; font-weight:700; border:none; text-decoration:none; display:inline-flex; align-items:center; gap:0.3rem;">
+            📞 1962 पशु हेल्पलाइन
+          </a>
+        </div>
+      </div>
+
+      <!-- 1-TAP QUICK SAMPLES FOR FARMERS & JUDGES -->
+      <div class="card" style="margin-bottom:1.25rem; padding:1rem 1.25rem; background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.65rem; flex-wrap:wrap; gap:0.5rem;">
+          <b style="font-size:0.92rem; color:#0f766e; display:flex; align-items:center; gap:0.4rem;">
+            <span>⚡</span> <span data-i18n="quick_test_label">त्वरित 1-टैप परीक्षण नमूने (Instant 1-Tap Demo Samples):</span>
+          </b>
+          <span style="font-size:0.75rem; color:#64748b; font-weight:600;">जांचने के लिए किसी भी कार्ड पर टैप करें</span>
+        </div>
+        <div class="farmer-quick-samples-grid">
+          <!-- 1: Healthy Cow -->
+          <button type="button" class="farmer-sample-btn sample-healthy" onclick="window.VisionManager.loadSampleImage('healthy_cow_coat')">
+            <span class="sample-icon">🐄</span>
+            <div class="sample-btn-text">
+              <b>स्वस्थ गाय (Healthy Cow)</b>
+              <small>चमकदार त्वचा • कोई रोग नहीं</small>
+            </div>
+            <span class="sample-tag-green">✅ स्वस्थ</span>
+          </button>
+          <!-- 2: LSD Lumpy Skin -->
+          <button type="button" class="farmer-sample-btn sample-lsd" onclick="window.VisionManager.loadSampleImage('lsd_nodules_skin')">
+            <span class="sample-icon">⚪</span>
+            <div class="sample-btn-text">
+              <b>लम्पी रोग (LSD Lumps)</b>
+              <small>त्वचा पर 2-5 सेमी गोल गांठें</small>
+            </div>
+            <span class="sample-tag-red">🚨 लम्पी</span>
+          </button>
+          <!-- 3: FMD Blisters -->
+          <button type="button" class="farmer-sample-btn sample-fmd" onclick="window.VisionManager.loadSampleImage('fmd_oral_vesicles')">
+            <span class="sample-icon">👅</span>
+            <div class="sample-btn-text">
+              <b>खुरपका-मुंहपका (FMD)</b>
+              <small>जीभ/खुर में छाले व लार</small>
+            </div>
+            <span class="sample-tag-orange">⚠️ छाले</span>
+          </button>
+          <!-- 4: Anthrax Bloat -->
+          <button type="button" class="farmer-sample-btn sample-anthrax" onclick="window.VisionManager.loadSampleImage('anthrax_carcass_discharge')">
+            <span class="sample-icon">⚠️</span>
+            <div class="sample-btn-text">
+              <b>एंथ्रेक्स चेतावनी (Anthrax)</b>
+              <small>अचानक मृत्यु व काला खून</small>
+            </div>
+            <span class="sample-tag-dark">🛑 बायोहेज़र्ड</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- 1. Capture & Select Card -->
+        <div class="card" style="border-radius:12px;">
+          <div class="card-header" style="padding-bottom:0.65rem; border-bottom:1px solid #f1f5f9;">
+            <h3 class="card-title" style="font-size:1.05rem; color:#0f766e; margin:0; display:flex; align-items:center; gap:0.4rem;">
+              <span>📷</span> <span>1. पशु की फोटो लें (Upload Animal Photo)</span>
+            </h3>
+          </div>
+
+          <!-- Big Mobile Action Buttons -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin:1rem 0;">
+            <button type="button" class="btn btn-primary" style="padding:1rem 0.5rem; font-size:0.95rem; font-weight:700; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.35rem; border-radius:10px; box-shadow:0 4px 10px rgba(15,118,110,0.25);" onclick="document.getElementById('visionCameraInput').click()">
+              <span style="font-size:2rem;">📸</span>
+              <span>कैमरा चालू करें<br><small style="font-size:0.72rem; font-weight:normal; opacity:0.9;">Take Photo</small></span>
+            </button>
+            <button type="button" class="btn btn-outline" style="padding:1rem 0.5rem; font-size:0.95rem; font-weight:700; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.35rem; border-radius:10px; border:2px dashed #0f766e; color:#0f766e;" onclick="document.getElementById('visionImageFileInput').click()">
+              <span style="font-size:2rem;">📁</span>
+              <span>गैलरी से चुनें<br><small style="font-size:0.72rem; font-weight:normal; opacity:0.85;">Choose from Gallery</small></span>
+            </button>
+          </div>
+
+          <!-- Image Preview Area -->
+          <div class="vision-preview-box" id="visionPreviewContainer" style="display:none; margin-bottom:1rem; border-radius:10px; overflow:hidden; border:2px solid #0f766e;">
+            <img id="visionPreviewImage" class="vision-preview-img" src="" alt="Captured Animal Photo" style="max-height:280px; width:100%; object-fit:contain; background:#0f172a;">
+            <div style="padding:0.6rem 0.8rem; background:#f8fafc; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e8f0;">
+              <span id="visionFileLabel" style="font-size:0.82rem; font-weight:700; color:#334155;"></span>
+              <button type="button" class="btn btn-outline btn-sm" onclick="window.VisionManager.resetScan()" style="font-size:0.75rem; padding:0.25rem 0.6rem;">
+                🔄 दूसरी फोटो (New Photo)
+              </button>
+            </div>
+          </div>
+
+          <!-- Dropzone Fallback for Desktop Drag-and-Drop -->
+          <div class="vision-dropzone" id="visionDropzone" onclick="document.getElementById('visionImageFileInput').click()" style="padding:1.5rem 1rem; margin-bottom:1rem; border-radius:10px;">
+            <div id="visionDropzoneContent">
+              <div style="font-size:2.5rem; margin-bottom:0.25rem;">🖼️</div>
+              <b style="color:#0f766e; font-size:0.92rem; display:block; margin-bottom:0.2rem;">या कंप्यूटर से फोटो खींचकर यहां छोड़ें</b>
+              <small style="color:#64748b; font-size:0.78rem;">Drag & drop photo here</small>
+            </div>
+          </div>
+
+          <!-- Farmer Guided Symptom Helper (Intuitive & Simple) -->
+          <div style="background:#f1f5f9; padding:0.85rem; border-radius:10px; border:1px solid #e2e8f0;">
+            <label style="font-size:0.8rem; font-weight:700; color:#334155; display:block; margin-bottom:0.45rem;">
+              🔍 पशु में क्या दिख रहा है? (What sign do you notice?):
+            </label>
+            <div class="farmer-symptom-chips">
+              <button type="button" class="scan-target-pill active" data-target="auto">
+                ✨ ऑटो पहचान (Auto AI)
+              </button>
+              <button type="button" class="scan-target-pill" data-target="healthy">
+                🟢 सामान्य स्वस्थ (Healthy)
+              </button>
+              <button type="button" class="scan-target-pill" data-target="skin">
+                ⚪ चमड़ी पर गांठें (Skin Lumps / LSD)
+              </button>
+              <button type="button" class="scan-target-pill" data-target="mouth">
+                👅 मुंह/खुर में छाले (Mouth/Hoof Blisters)
+              </button>
+              <button type="button" class="scan-target-pill" data-target="udder">
+                🥛 थन में सूजन (Udder / Mastitis)
+              </button>
+            </div>
+          </div>
+
+          <input type="file" id="visionImageFileInput" accept="image/*" style="display:none;">
+          <input type="file" id="visionCameraInput" accept="image/*" capture="environment" style="display:none;">
+        </div>
+
+        <!-- 2. Farmer AI Diagnostic Result Card -->
+        <div>
+          <div class="card" id="visionResultCard" style="border-radius:12px; min-height:380px;">
+            <div style="text-align:center; padding:3.5rem 1.5rem; color:#94a3b8;">
+              <div style="font-size:3.5rem; margin-bottom:0.85rem;">🔬</div>
+              <h3 style="color:#475569; margin-bottom:0.35rem; font-size:1.15rem;" data-i18n="standby_title">एआई पशु स्वास्थ्य लेंस तैयार है</h3>
+              <p style="font-size:0.88rem; color:#64748b; max-width:360px; margin:0 auto;" data-i18n="standby_desc">
+                ऊपर दिए गए <strong>"कैमरा चालू करें"</strong> बटन से फोटो खींचें या ऊपर दिए गए <strong>"1-टैप परीक्षण नमूनों"</strong> पर क्लिक करें।
+              </p>
             </div>
           </div>
         </div>
