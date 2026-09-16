@@ -17,17 +17,22 @@
   <!-- Chart.js for Epidemiological Curves -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- PWA Manifest & App Style -->
+  <!-- PWA Manifest, Icons & App Style -->
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0f766e">
+  <link rel="icon" type="image/png" sizes="64x64" href="/static/images/favicon.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/static/images/icon-192.png">
+  <link rel="shortcut icon" href="/static/favicon.ico">
   <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
-  <!-- Top Header Bar with Expanding Scenic Illustration -->
-  <header class="header-bar" id="appHeaderBar">
+  <!-- Top Header Bar -->
+  <header class="header-bar">
     <div class="brand-section">
-      <div class="brand-logo">🐄</div>
+      <div class="brand-logo" title="पशु सुरक्षा (Pashu Suraksha) - Healthy Animals, Better Crops, Prosperous Farmers">
+        <img src="/static/images/logo_badge.png" alt="Pashu Suraksha Official Logo" class="brand-logo-img">
+      </div>
       <div class="brand-text">
         <h1 data-i18n="brand_title">पशु सुरक्षा (Pashu Suraksha)</h1>
         <p data-i18n="brand_sub">Unified Real-Time Animal Health Surveillance & Early Warning Decision Support</p>
@@ -63,26 +68,6 @@
       <button class="btn-login-toggle" onclick="window.AuthManager.openModal()">
         🔑 <span data-i18n="nav_login">Login / Switch</span>
       </button>
-
-      <!-- Expand / Compact Header Background Toggle Button -->
-      <button type="button" class="btn-header-expand" id="btnHeaderExpand" onclick="window.App.toggleHeaderExpand()" title="Expand or compact header scenery illustration">
-        <span id="headerExpandIcon">🖼️</span> <span id="headerExpandLabel" data-i18n="header_expand_btn">Expand View</span>
-      </button>
-    </div>
-
-    <!-- Expandable Hero Banner Details -->
-    <div class="header-expanded-content" id="headerExpandedContent">
-      <div class="header-hero-tagline">
-        <span class="motto-chip">🐄 Healthy Animals</span>
-        <span class="motto-divider">•</span>
-        <span class="motto-chip">🌾 Better Crops</span>
-        <span class="motto-divider">•</span>
-        <span class="motto-chip">👨‍🌾 Prosperous Farmers</span>
-        <span class="motto-lang">| स्वस्थ पशु • उन्नत कृषि • समृद्ध किसान</span>
-      </div>
-      <div class="header-hero-sub">
-        National Integrated Veterinary Epidemic Intelligence, Tele-Diagnostics & Rural Animal Health Care Ecosystem
-      </div>
     </div>
   </header>
 
@@ -1067,7 +1052,9 @@
         <!-- Dedicated Chat Header -->
         <div style="background:linear-gradient(135deg, #0f766e 0%, #115e59 100%); color:#ffffff; padding:1.2rem 1.5rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
           <div style="display:flex; align-items:center; gap:0.85rem;">
-            <div style="font-size:2.2rem; background:rgba(255,255,255,0.18); width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,0.2);">🤖</div>
+            <div style="width:54px; height:54px; border-radius:50%; overflow:hidden; border:2.5px solid #ffffff; box-shadow:0 4px 12px rgba(0,0,0,0.25); flex-shrink:0;">
+              <img src="/static/images/logo_badge.png" alt="Pashu AI Logo" style="width:100%; height:100%; object-fit:cover; display:block;">
+            </div>
             <div>
               <h2 style="margin:0; font-size:1.35rem; font-weight:800; color:#ffffff;" data-i18n="chat_header">पशु एआई सहायक (Pashu AI Sahayak)</h2>
               <div style="font-size:0.84rem; color:#ccfbf1; margin-top:2px;">
@@ -1116,6 +1103,15 @@
       </div>
 
       <div class="modal-body">
+        <!-- Brand Header in Auth Modal -->
+        <div class="auth-brand-banner">
+          <img src="/static/images/logo_badge.png" alt="Pashu Suraksha Logo" class="auth-brand-logo">
+          <div class="auth-brand-info">
+            <h3 class="auth-brand-title">पशु सुरक्षा (Pashu Suraksha)</h3>
+            <p class="auth-brand-sub">Healthy Animals • Better Crops • Prosperous Farmers</p>
+          </div>
+        </div>
+
         <!-- Auth Mode Tabs -->
         <div class="auth-tabs">
           <button class="auth-tab-btn active" data-auth-tab="demo" onclick="window.AuthManager.switchAuthTab('demo')">
@@ -1243,7 +1239,9 @@
   <div id="chatDrawer" class="chat-drawer">
     <div class="chat-drawer-header">
       <div class="chat-title-group">
-        <div style="font-size:1.4rem;">🤖</div>
+        <div style="width:34px; height:34px; border-radius:50%; overflow:hidden; border:1.5px solid #ffffff; flex-shrink:0;">
+          <img src="/static/images/logo_badge.png" alt="Logo" style="width:100%; height:100%; object-fit:cover; display:block;">
+        </div>
         <div>
           <div class="chat-header-title">Pashu AI Sahayak (पशु एआई सहायक)</div>
           <div class="chat-header-sub">Veterinary First-Aid & Disease Assistant</div>

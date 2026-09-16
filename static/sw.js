@@ -1,7 +1,14 @@
-const CACHE_NAME = 'pashu-suraksha-v2';
+const CACHE_NAME = 'pashu-suraksha-v3';
 const STATIC_ASSETS = [
   '/',
   '/static/css/style.css',
+  '/static/images/logo_badge.png',
+  '/static/images/logo.png',
+  '/static/images/logo_icon.png',
+  '/static/images/icon-192.png',
+  '/static/images/icon-512.png',
+  '/static/images/favicon.png',
+  '/static/icon.png',
   '/static/js/app.js',
   '/static/js/map_ui.js',
   '/static/js/triage_ui.js',

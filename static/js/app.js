@@ -407,21 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load dashboard stats asynchronously in background without blocking UI
   refreshDashboardData().catch(err => console.error('Dashboard stats background error:', err));
 
-  // Restore header expand state if previously saved
-  if (localStorage.getItem('pashu_header_expanded') === 'true') {
-    const header = document.getElementById('appHeaderBar');
-    if (header) {
-      header.classList.add('expanded');
-      const label = document.getElementById('headerExpandLabel');
-      const icon = document.getElementById('headerExpandIcon');
-      if (label) {
-        label.setAttribute('data-i18n', 'header_compact_btn');
-        if (window.I18n) label.innerText = window.I18n.t('header_compact_btn');
-      }
-      if (icon) icon.innerText = '📐';
-    }
-  }
-
   window.addEventListener('languageChanged', () => {
     if (window.AuthManager) window.AuthManager.updateRoleBanner();
   });
@@ -964,34 +949,10 @@ function triggerQuickDirectorBroadcast(alertType, radius = 10) {
   openAdvisoryForDisease(alertType, radius);
 }
 
-function toggleHeaderExpand() {
-  const header = document.getElementById('appHeaderBar');
-  const label = document.getElementById('headerExpandLabel');
-  const icon = document.getElementById('headerExpandIcon');
-  if (!header) return;
-
-  const isExpanded = header.classList.toggle('expanded');
-  localStorage.setItem('pashu_header_expanded', isExpanded ? 'true' : 'false');
-
-  const key = isExpanded ? 'header_compact_btn' : 'header_expand_btn';
-  if (label) {
-    label.setAttribute('data-i18n', key);
-    if (window.I18n) {
-      label.innerText = window.I18n.t(key);
-    } else {
-      label.innerText = isExpanded ? 'Compact View' : 'Expand View';
-    }
-  }
-  if (icon) {
-    icon.innerText = isExpanded ? '📐' : '🖼️';
-  }
-}
-
 window.App = {
   switchTab: switchTab,
   refreshData: refreshDashboardData,
   triggerEmergencyAction: triggerEmergencyAction,
   openAdvisoryForDisease: openAdvisoryForDisease,
-  triggerQuickDirectorBroadcast: triggerQuickDirectorBroadcast,
-  toggleHeaderExpand: toggleHeaderExpand
+  triggerQuickDirectorBroadcast: triggerQuickDirectorBroadcast
 };

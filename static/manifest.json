@@ -1,12 +1,24 @@
 {
-  "name": "Pashu Suraksha - Unified Animal Health Surveillance",
+  "name": "पशु सुरक्षा (Pashu Suraksha) - Animal Health Surveillance",
   "short_name": "PashuSuraksha",
-  "description": "Scalable Animal Health Surveillance, Syndromic Triage & Early Warning Decision Support System",
+  "description": "Unified Real-Time Animal Health Surveillance & Early Warning Decision Support System - Healthy Animals, Better Crops, Prosperous Farmers",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f766e",
   "theme_color": "#0f766e",
   "icons": [
+    {
+      "src": "/static/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "/static/icon.png",
       "sizes": "192x192",

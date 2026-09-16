@@ -87,66 +87,93 @@ body {
   min-height: 100vh;
 }
 
-/* Header & Nav with Expandable Scenic Illustration */
+/* Header & Nav */
 .header-bar {
-  position: relative;
   background-color: #064e3b;
-  background-image: 
-    linear-gradient(135deg, rgba(6, 78, 59, 0.84) 0%, rgba(15, 118, 110, 0.74) 42%, rgba(15, 23, 42, 0.88) 100%),
-    url('/static/images/header_bg.jpg');
-  background-size: cover;
-  background-position: center 28%;
-  background-repeat: no-repeat;
+  background-image: linear-gradient(135deg, rgba(15, 118, 110, 0.95) 0%, rgba(6, 78, 59, 0.98) 100%), radial-gradient(rgba(255, 255, 255, 0.18) 1.5px, transparent 1.5px);
+  background-size: 100% 100%, 18px 18px;
   color: var(--white);
-  padding: 0.85rem 1.75rem;
+  padding: 0.75rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.85rem;
-  min-height: 84px;
-  height: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow);
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: min-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-position 0.4s ease;
-  overflow: hidden;
-}
-
-.header-bar.expanded {
-  min-height: 240px;
-  padding: 1.4rem 1.75rem 1.25rem 1.75rem;
-  background-position: center 38%;
-  background-image: 
-    linear-gradient(180deg, rgba(6, 78, 59, 0.86) 0%, rgba(6, 78, 59, 0.24) 45%, rgba(15, 23, 42, 0.92) 100%),
-    url('/static/images/header_bg.jpg');
 }
 
 .brand-section {
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  background: rgba(6, 78, 59, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 0.4rem 0.85rem 0.4rem 0.55rem;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .brand-logo {
-  width: 44px;
-  height: 44px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+
+.brand-logo:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Auth Modal Brand Banner */
+.auth-brand-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.08);
+}
+
+.auth-brand-logo {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid #0f766e;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.auth-brand-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f766e;
+  margin: 0 0 2px 0;
+  line-height: 1.2;
+}
+
+.auth-brand-sub {
+  font-size: 0.78rem;
+  color: #065f46;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.01em;
 }
 
 .brand-text h1 {
@@ -154,114 +181,18 @@ body {
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .brand-text p {
   font-size: 0.75rem;
   color: #a7f3d0;
   font-weight: 500;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .header-controls {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  background: rgba(6, 78, 59, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 0.4rem 0.75rem;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-}
-
-.btn-header-expand {
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  border-radius: 20px;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  backdrop-filter: blur(4px);
-}
-
-.btn-header-expand:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-1px);
-}
-
-.header-expanded-content {
-  width: 100%;
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
-  margin-top: 0;
-  pointer-events: none;
-}
-
-.header-bar.expanded .header-expanded-content {
-  max-height: 140px;
-  opacity: 1;
-  margin-top: 1.25rem;
-  pointer-events: auto;
-}
-
-.header-hero-tagline {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: #f8fafc;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65);
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 0.45rem 1rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  margin-bottom: 0.35rem;
-}
-
-.motto-chip {
-  color: #fef08a;
-  font-weight: 700;
-}
-
-.motto-divider {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.motto-lang {
-  color: #a7f3d0;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.header-hero-sub {
-  font-size: 0.8rem;
-  color: #f1f5f9;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-  margin-top: 0.25rem;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  display: inline-block;
-  padding: 0.2rem 0.75rem;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  gap: 1rem;
 }
 
 .sync-badge {

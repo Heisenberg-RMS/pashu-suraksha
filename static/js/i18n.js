@@ -11,8 +11,6 @@ const I18N_TRANSLATIONS = {
     sync_online: "Online (Auto-Sync Ready)",
     sync_offline: "Offline Mode (Local Storage)",
     nav_login: "Login / Switch",
-    header_expand_btn: "Expand View",
-    header_compact_btn: "Compact View",
     user_dvo: "District Veterinary Officer (DVO)",
 
     // Navigation Tabs
@@ -165,8 +163,6 @@ const I18N_TRANSLATIONS = {
     sync_online: "ऑनलाइन (स्वतः सिंक तैयार)",
     sync_offline: "ऑफ़लाइन मोड (स्थानीय डेटा)",
     nav_login: "लॉगिन / बदलें",
-    header_expand_btn: "विस्तृत दृश्य",
-    header_compact_btn: "संपीड़ित दृश्य",
     user_dvo: "जिला पशु चिकित्सा अधिकारी (DVO)",
 
     // Navigation Tabs
@@ -318,8 +314,6 @@ const I18N_TRANSLATIONS = {
     sync_online: "ऑनलाइन (ऑटो-सिंक सज्ज)",
     sync_offline: "ऑफलाइन मोड (स्थानिक डेटा)",
     nav_login: "लॉगिन / बदला",
-    header_expand_btn: "विस्तारित दृश्य",
-    header_compact_btn: "संक्षिप्त दृश्य",
     user_dvo: "जिल्हा पशुवैद्यकीय अधिकारी (DVO)",
 
     // Navigation Tabs
@@ -471,8 +465,6 @@ const I18N_TRANSLATIONS = {
     sync_online: "ఆన్‌లైన్ (ఆటో-సింక్ సిద్ధం)",
     sync_offline: "ఆఫ్‌లైన్ మోడ్ (స్థానిక డేటా)",
     nav_login: "లాగిన్ / మార్చండి",
-    header_expand_btn: "విస్తృత వీక్షణ",
-    header_compact_btn: "సంక్షిప్త వీక్షణ",
     user_dvo: "జిల్లా పశువైద్య అధికారి (DVO)",
 
     // Navigation Tabs
