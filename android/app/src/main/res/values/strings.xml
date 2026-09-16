@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Pashu Suraksha</string>
+    <string name="app_tagline">पशु सुरक्षा - Healthy Animals, Better Crops, Prosperous Farmers</string>
+    <!-- Default server URL: Replace with your hosted domain or local IP -->
+    <string name="server_url">https://pashu-suraksha.onrender.com</string>
+    <string name="local_fallback_url">http://10.0.2.2:5000</string>
+</resources>
