@@ -15,6 +15,7 @@ const I18N_TRANSLATIONS = {
     user_dvo: "District Veterinary Officer (DVO)",
 
     // Navigation Tabs
+    tab_home: "🏠 Home (मुख्य पृष्ठ)",
     tab_map: "🗺️ Outbreak Map & GIS Surveillance",
     tab_vision: "📸 AI Vision Lens & Lesion Scan",
     tab_triage: "⚡ Rapid Syndromic Report & AI Triage",
@@ -24,6 +25,12 @@ const I18N_TRANSLATIONS = {
     tab_advisories: "🔊 Multilingual Voice Advisories & SMS",
     tab_ivr: "📞 Simulated IVR Hotline (1962)",
     tab_dashboard: "📈 Epidemiological Dashboard",
+    bottom_home: "Home",
+    bottom_vision: "Lens",
+    bottom_triage: "Report",
+    bottom_map: "Map",
+    bottom_chat: "AI Chat",
+    bottom_more: "More",
 
     // Map & GIS
     map_title: "📍 Live Geospatial Surveillance & Containment Rings",
@@ -170,14 +177,22 @@ const I18N_TRANSLATIONS = {
     user_dvo: "जिला पशु चिकित्सा अधिकारी (DVO)",
 
     // Navigation Tabs
+    tab_home: "🏠 मुख्य पृष्ठ (Home)",
     tab_map: "🗺️ प्रकोप मानचित्र एवं जीआईएस",
     tab_vision: "📸 एआई विजन लेंस एवं घाव जांच",
     tab_triage: "⚡ त्वरित लक्षण रिपोर्ट एवं ट्राइएज",
+    tab_chat: "💬 पशु एआई सहायक (Chatbot)",
     tab_ehr: "📋 पशु ईएचआर एवं स्वास्थ्य पासपोर्ट",
     tab_labs: "🧪 प्रयोगशाला रेफरल व नमूने",
     tab_advisories: "🔊 बहुभाषी वॉइस परामर्श एवं एसएमएस",
     tab_ivr: "📞 आईवीआर हेल्पलाइन (1962)",
     tab_dashboard: "📈 महामारी विज्ञान डैशबोर्ड",
+    bottom_home: "होम",
+    bottom_vision: "लेंस",
+    bottom_triage: "रिपोर्ट",
+    bottom_map: "नक्शा",
+    bottom_chat: "चैट",
+    bottom_more: "मेन्यू",
 
     // Map & GIS
     map_title: "📍 लाइव भौगोलिक निगरानी एवं नियंत्रण चक्र",
@@ -324,14 +339,22 @@ const I18N_TRANSLATIONS = {
     user_dvo: "जिल्हा पशुवैद्यकीय अधिकारी (DVO)",
 
     // Navigation Tabs
+    tab_home: "🏠 मुख्य पृष्ठ (Home)",
     tab_map: "🗺️ प्रकोप नकाशा आणि जीआयएस",
     tab_vision: "📸 एआय व्हिजन लेन्स आणि तपासणी",
     tab_triage: "⚡ तातडीचा लक्षण अहवाल व ट्रायज",
+    tab_chat: "💬 पशु एआय सहाय्यक (Chatbot)",
     tab_ehr: "📋 पशु आरोग्य पत्रिका (EHR)",
     tab_labs: "🧪 प्रयोगशाळा तपासणी व नमुने",
     tab_advisories: "🔊 बहुभाषिक ध्वनी सूचना व एसएमएस",
     tab_ivr: "📞 आयव्हीआर हेल्पलाईन (१९६२)",
     tab_dashboard: "📈 रोग अन्वेषण डॅशबोर्ड",
+    bottom_home: "मुख्य",
+    bottom_vision: "लेन्स",
+    bottom_triage: "नोंदणी",
+    bottom_map: "नकाशा",
+    bottom_chat: "चॅट",
+    bottom_more: "अधिक",
 
     // Map & GIS
     map_title: "📍 थेट भौगोलिक देखरेख आणि नियंत्रण रिंग्ज",
@@ -478,14 +501,22 @@ const I18N_TRANSLATIONS = {
     user_dvo: "జిల్లా పశువైద్య అధికారి (DVO)",
 
     // Navigation Tabs
+    tab_home: "🏠 హోమ్ పేజీ (Home)",
     tab_map: "🗺️ వ్యాధి వ్యాప్తి పటము & జీఐఎస్",
     tab_vision: "📸 ఏఐ విజన్ లెన్స్ & పుండ్ల పరీక్ష",
     tab_triage: "⚡ వేగవంతమైన వ్యాధి నివేదిక & ట్రయేజ్",
+    tab_chat: "💬 పశు ఏఐ సహాయకుడు (Chatbot)",
     tab_ehr: "📋 పశువుల ఈహెచ్ఆర్ & హెల్త్ పాస్ పోర్ట్",
     tab_labs: "🧪 ల్యాబ్ పరీక్షలు & నమూనాలు",
     tab_advisories: "🔊 బహుభాషా వాయిస్ హెచ్చరికలు",
     tab_ivr: "📞 ఐవీఆర్ హెల్ప్‌లైన్ (1962)",
     tab_dashboard: "📈 ఎపిడెమియోలాజికల్ డాష్ బోర్డ్",
+    bottom_home: "హోమ్",
+    bottom_vision: "లెన్స్",
+    bottom_triage: "రిపోర్ట్",
+    bottom_map: "మ్యాప్",
+    bottom_chat: "చాట్",
+    bottom_more: "మరిన్ని",
 
     // Map & GIS
     map_title: "📍 ప్రత్యక్ష భౌగోళిక పర్యవేక్షణ & కట్టడి వలయాలు",

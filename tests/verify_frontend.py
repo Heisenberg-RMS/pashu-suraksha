@@ -5,6 +5,7 @@ url = "http://127.0.0.1:5000/"
 html = urllib.request.urlopen(url).read().decode("utf-8")
 
 views = [
+    "view-home",
     "view-map",
     "view-vision",
     "view-triage",
@@ -28,7 +29,7 @@ for v in views:
 print("\nTag Counts:")
 print("Open sections:", html.count("<section"))
 print("Close sections:", html.count("</section>"))
-assert html.count("<section") == html.count("</section>") == 9
+assert html.count("<section") == html.count("</section>") == 10
 
 scripts = [
     "offline_sync.js",

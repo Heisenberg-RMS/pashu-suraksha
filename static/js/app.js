@@ -112,20 +112,22 @@ class AuthenticationManager {
 
     // 5. Landing Tab logic
     const roleLandingMap = {
-      'FARMER': 'ehr',
-      'PARA_VET': 'triage',
-      'DVO': 'map',
-      'DIRECTOR': 'dashboard'
+      'FARMER': 'home',
+      'PARA_VET': 'home',
+      'DVO': 'home',
+      'DIRECTOR': 'home'
     };
 
+    updateHomeGreeting();
+
     if (autoSwitchTab) {
-      const defaultLanding = roleLandingMap[role] || 'map';
+      const defaultLanding = roleLandingMap[role] || 'home';
       switchTab(defaultLanding);
     } else {
       // If current active tab is hidden for this role, auto-switch to default landing
       const activeBtn = document.querySelector('.tab-btn.active');
       if (activeBtn && activeBtn.classList.contains('tab-hidden')) {
-        const defaultLanding = roleLandingMap[role] || 'map';
+        const defaultLanding = roleLandingMap[role] || 'home';
         switchTab(defaultLanding);
       }
     }
@@ -512,12 +514,74 @@ function setupNavigation() {
   });
 }
 
+function openMoreSheet() {
+  const sheet = document.getElementById('moreServicesSheet');
+  const backdrop = document.getElementById('moreServicesSheetBackdrop');
+  if (sheet) sheet.classList.add('open');
+  if (backdrop) backdrop.classList.add('open');
+}
+
+function closeMoreSheet() {
+  const sheet = document.getElementById('moreServicesSheet');
+  const backdrop = document.getElementById('moreServicesSheetBackdrop');
+  if (sheet) sheet.classList.remove('open');
+  if (backdrop) backdrop.classList.remove('open');
+}
+
+function toggleMoreSheet() {
+  const sheet = document.getElementById('moreServicesSheet');
+  if (sheet && sheet.classList.contains('open')) {
+    closeMoreSheet();
+  } else {
+    openMoreSheet();
+  }
+}
+
+function updateHomeGreeting() {
+  const user = (window.AuthManager && window.AuthManager.currentUser) ? window.AuthManager.currentUser : null;
+  const greetingEl = document.getElementById('homeGreetingText');
+  const nameEl = document.getElementById('homeUserGreetingName');
+  const roleAvatarEl = document.getElementById('homeUserRoleAvatar');
+  const roleTextEl = document.getElementById('homeUserRoleText');
+
+  const hour = new Date().getHours();
+  let greetingWord = 'नमस्ते!';
+  if (hour < 12) greetingWord = 'शुभ प्रभात (Good Morning)!';
+  else if (hour < 17) greetingWord = 'शुभ दोपहर (Good Afternoon)!';
+  else greetingWord = 'शुभ संध्या (Good Evening)!';
+
+  if (greetingEl) greetingEl.innerText = greetingWord;
+
+  if (user) {
+    if (nameEl) nameEl.innerText = user.full_name || 'पशुपालक';
+    const avatarMap = {
+      'FARMER': '👨‍🌾',
+      'PARA_VET': '🩺',
+      'DVO': '👨‍⚕️',
+      'DIRECTOR': '📊'
+    };
+    const roleLabels = {
+      'FARMER': 'किसान / पशुपालक पोर्टल (Farmer Portal)',
+      'PARA_VET': 'पैरा-वेट फील्ड असिस्टेंट (Para-Vet Assistant)',
+      'DVO': 'पशु चिकित्सा अधिकारी (District Vet Officer)',
+      'DIRECTOR': 'राज्य निदेशालय कमान (Directorate HQ)'
+    };
+    if (roleAvatarEl) roleAvatarEl.innerText = avatarMap[user.role] || '👤';
+    if (roleTextEl) roleTextEl.innerText = roleLabels[user.role] || user.role;
+  }
+}
+
 function switchTab(viewId) {
+  closeMoreSheet();
+
   const currentRole = (window.AuthManager && window.AuthManager.currentUser) ? window.AuthManager.currentUser.role : 'DVO';
   if (viewId === 'advisories' && currentRole !== 'DVO' && currentRole !== 'DIRECTOR') {
     alert('⚠️ Access Restricted: Multilingual Voice Advisory & Emergency SMS Broadcast is authorized for Veterinary Officers and State Directorate only. Farmers cannot dispatch public broadcasts.');
     return;
   }
+
+  // Smooth scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.tab === viewId);
@@ -531,7 +595,14 @@ function switchTab(viewId) {
     view.classList.toggle('active', view.id === `view-${viewId}`);
   });
 
-  if (viewId === 'map') {
+  // Mobile subtle haptic feedback
+  if (window.navigator && window.navigator.vibrate) {
+    try { window.navigator.vibrate(12); } catch (e) {}
+  }
+
+  if (viewId === 'home') {
+    updateHomeGreeting();
+  } else if (viewId === 'map') {
     setTimeout(() => {
       window.MapManager.init();
       window.MapManager.refresh();
@@ -1027,5 +1098,8 @@ window.App = {
   refreshData: refreshDashboardData,
   triggerEmergencyAction: triggerEmergencyAction,
   openAdvisoryForDisease: openAdvisoryForDisease,
-  triggerQuickDirectorBroadcast: triggerQuickDirectorBroadcast
+  triggerQuickDirectorBroadcast: triggerQuickDirectorBroadcast,
+  toggleMoreSheet: toggleMoreSheet,
+  openMoreSheet: openMoreSheet,
+  closeMoreSheet: closeMoreSheet
 };

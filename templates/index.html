@@ -108,7 +108,10 @@
 
   <!-- Navigation Tabs -->
   <nav class="nav-tabs-bar">
-    <button class="tab-btn active" data-tab="map" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" data-i18n="tab_map">
+    <button class="tab-btn active" data-tab="home" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" data-i18n="tab_home">
+      🏠 Home (मुख्य पृष्ठ)
+    </button>
+    <button class="tab-btn" data-tab="map" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" data-i18n="tab_map">
       🗺️ Outbreak Map & GIS Surveillance
     </button>
     <button class="tab-btn" data-tab="vision" data-roles="FARMER,PARA_VET,DVO" data-i18n="tab_vision">
@@ -142,8 +145,195 @@
 
 
 
+    <!-- TAB 0: HOME PORTAL & COMMAND HUB -->
+    <section id="view-home" class="tab-view active">
+      <!-- 1. Hero Greeting Banner -->
+      <div class="home-hero-card">
+        <div class="home-hero-content">
+          <div class="home-hero-badge">
+            <span class="pulse-dot-green"></span>
+            <span>🇮🇳 राष्ट्रीय पशु रोग निगरानी मिशन • National Animal Health Mission</span>
+          </div>
+          <h2 class="home-hero-title">
+            <span id="homeGreetingText">नमस्ते!</span> <span id="homeUserGreetingName">पशुपालक भाई</span>
+          </h2>
+          <p class="home-hero-sub">
+            पशु सुरक्षा प्रणाली में आपका स्वागत है — एआई द्वारा त्वरित रोग पहचान, 24x7 पशु चिकित्सा परामर्श एवं आपातकालीन अलर्ट।
+          </p>
+          <div class="home-hero-meta">
+            <div class="home-role-chip" onclick="window.AuthManager.openModal()" title="भूमिका बदलें">
+              <span id="homeUserRoleAvatar">👨‍🌾</span>
+              <span id="homeUserRoleText">किसान / पशुपालक पोर्टल</span>
+              <span class="home-chip-switch">🔄 बदलें</span>
+            </div>
+            <div class="home-status-chip">
+              <span>🟢</span> <span>सर्वर व एआई सक्रिय (Online)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 24x7 Emergency Alert & 1962 Hotline Banner -->
+      <div class="home-emergency-banner">
+        <div class="emergency-banner-left">
+          <div class="emergency-icon-pulse">🚨</div>
+          <div>
+            <div class="emergency-title">24x7 आपातकालीन पशु हेल्पलाइन (Emergency Hotline)</div>
+            <div class="emergency-desc">गंभीर लक्षण या अचानक बीमारी पर तुरंत पशु एम्बुलेंस व डॉक्टर सहायता पाएं।</div>
+          </div>
+        </div>
+        <div class="emergency-banner-actions">
+          <a href="tel:1962" class="btn-emergency-call">
+            📞 1962 डायल करें
+          </a>
+          <button type="button" class="btn-emergency-report" onclick="window.App.switchTab('triage')">
+            ⚡ आपातकालीन रिपोर्ट
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Primary Interactive Service Grid (Touch-First Cards) -->
+      <div class="home-section-header">
+        <h3 class="home-section-title">
+          <span>⚡</span> <span>मुख्य सेवाएं एवं सुविधाएं (Core Services)</span>
+        </h3>
+        <span class="home-section-sub">किसी भी कार्ड पर टैप करके तुरंत सेवा शुरू करें</span>
+      </div>
+
+      <div class="home-services-grid">
+        <!-- Service 1: AI Vision Lens -->
+        <div class="home-service-card card-vision" onclick="window.App.switchTab('vision')">
+          <div class="service-card-top">
+            <span class="service-card-icon">📸</span>
+            <span class="service-card-badge badge-emerald">✨ 1-टैप एआई जांच</span>
+          </div>
+          <h4 class="service-card-title">एआई विजन लेंस (Vision Lens)</h4>
+          <p class="service-card-desc">पशु के घाव, त्वचा या मुंह की फोटो लें — लम्पी, खुरपका, एंथ्रेक्स तुरंत पहचानें और प्राथमिक उपचार सुनें।</p>
+          <div class="service-card-action">
+            <span>कैमरा व 1-टैप डेमो खोलें</span>
+            <span class="action-arrow">➔</span>
+          </div>
+        </div>
+
+        <!-- Service 2: Rapid Triage & Sickness Report -->
+        <div class="home-service-card card-triage" onclick="window.App.switchTab('triage')">
+          <div class="service-card-top">
+            <span class="service-card-icon">⚡</span>
+            <span class="service-card-badge badge-rose">🚨 स्वतः डॉक्टर अलर्ट</span>
+          </div>
+          <h4 class="service-card-title">त्वरित बीमारी रिपोर्टिंग (Rapid Report)</h4>
+          <p class="service-card-desc">लक्षण चुनें, जीपीएस लोकेशन के साथ रिपोर्ट दर्ज करें — एआई तुरंत गंभीरता व क्वारंटाइन निर्देश देगा।</p>
+          <div class="service-card-action">
+            <span>नई रिपोर्ट दर्ज करें</span>
+            <span class="action-arrow">➔</span>
+          </div>
+        </div>
+
+        <!-- Service 3: Live Surveillance Map -->
+        <div class="home-service-card card-map" onclick="window.App.switchTab('map')">
+          <div class="service-card-top">
+            <span class="service-card-icon">🗺️</span>
+            <span class="service-card-badge badge-blue">📍 3km/10km रिंग</span>
+          </div>
+          <h4 class="service-card-title">लाइव प्रकोप नक्शा (GIS Outbreak Map)</h4>
+          <p class="service-card-desc">अपने क्षेत्र के कंटेनमेंट जोन, प्रभावित पशुधन मार्किंग व निकटतम पशु चिकित्सालय लाइव देखें।</p>
+          <div class="service-card-action">
+            <span>नक्शा देखें</span>
+            <span class="action-arrow">➔</span>
+          </div>
+        </div>
+
+        <!-- Service 4: Animal EHR Passport -->
+        <div class="home-service-card card-ehr" onclick="window.App.switchTab('ehr')">
+          <div class="service-card-top">
+            <span class="service-card-icon">🐄</span>
+            <span class="service-card-badge badge-purple">📋 डिजिटल टैग</span>
+          </div>
+          <h4 class="service-card-title">पशु स्वास्थ्य पासपोर्ट (Animal EHR)</h4>
+          <p class="service-card-desc">12-अंक कान टैग से पशु पंजीकरण, टीकाकरण स्थिति, दुग्ध उत्पादन व चिकित्सा इतिहास ट्रैक करें।</p>
+          <div class="service-card-action">
+            <span>मेरे पशु व स्वास्थ्य कार्ड</span>
+            <span class="action-arrow">➔</span>
+          </div>
+        </div>
+
+        <!-- Service 5: AI Sahayak Chatbot -->
+        <div class="home-service-card card-chat" onclick="window.App.switchTab('chat')">
+          <div class="service-card-top">
+            <span class="service-card-icon">💬</span>
+            <span class="service-card-badge badge-teal">🤖 24x7 डॉक्टर</span>
+          </div>
+          <h4 class="service-card-title">पशु एआई सहायक (AI Doctor Chat)</h4>
+          <p class="service-card-desc">अपनी भाषा में बोलकर या लिखकर पूछें — लक्षण, घरेलू उपचार, आहार व टीकाकरण की सटीक सलाह।</p>
+          <div class="service-card-action">
+            <span>डॉक्टर से चैट करें</span>
+            <span class="action-arrow">➔</span>
+          </div>
+        </div>
+
+        <!-- Service 6: State Voice Advisories & SMS -->
+        <div class="home-service-card card-advisories" onclick="window.App.switchTab('advisories')">
+          <div class="service-card-top">
+            <span class="service-card-icon">📢</span>
+            <span class="service-card-badge badge-amber">🔊 4 भाषाएं</span>
+          </div>
+          <h4 class="service-card-title">सरकारी एडवाइजरी (Advisories & Alerts)</h4>
+          <p class="service-card-desc">राज्य पशुपालन विभाग द्वारा जारी बहुभाषी वॉइस संदेश, मौसम व बीमारी प्रसार चेतावनी सुनें।</p>
+          <div class="service-card-action">
+            <span>अलर्ट व वॉइस सुनें</span>
+            <span class="action-arrow">➔</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Real-time Climate & Vector Radar Snippet -->
+      <div class="home-radar-card">
+        <div class="home-radar-header">
+          <div>
+            <h4 class="home-radar-title">🌤️ स्थानीय मौसम व बीमारी प्रसार जोखिम (Environmental Vector Risk)</h4>
+            <span class="home-radar-sub">मच्छर, किलनी (गोमार) व मौसमी रोग संक्रमण उपयुक्तता सूचकांक</span>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="window.App.switchTab('map')">
+            विस्तार से देखें ➔
+          </button>
+        </div>
+        <div class="home-radar-grid">
+          <div class="radar-metric-item">
+            <span class="radar-metric-icon">🌡️</span>
+            <div class="radar-metric-val">31.5°C</div>
+            <div class="radar-metric-lbl">तापमान (Temp)</div>
+          </div>
+          <div class="radar-metric-item">
+            <span class="radar-metric-icon">💧</span>
+            <div class="radar-metric-val">68%</div>
+            <div class="radar-metric-lbl">नमी (Humidity)</div>
+          </div>
+          <div class="radar-metric-item">
+            <span class="radar-metric-icon">🪰</span>
+            <div class="radar-metric-val text-warning">मध्यम (Medium)</div>
+            <div class="radar-metric-lbl">मक्खी/किलनी जोखिम</div>
+          </div>
+          <div class="radar-metric-item">
+            <span class="radar-metric-icon">💨</span>
+            <div class="radar-metric-val text-success">निम्न (Low)</div>
+            <div class="radar-metric-lbl">हवा से फैलाव (FMD)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Farmer Quick Tips of the Day -->
+      <div class="home-tips-card">
+        <div class="tips-header">
+          <span>💡</span> <b>आज की पशु स्वास्थ्य सलाह (Veterinary Care Tip of the Day):</b>
+        </div>
+        <p class="tips-content">
+          बरसात व उमस के मौसम में बाड़े को सूखा रखें। फर्श पर चूना व नीम की पत्तियों का धुआं करें जिससे मक्खी और किलनी दूर रहें तथा लम्पी (LSD) व खुरपका (FMD) का संक्रमण न फैले।
+        </p>
+      </div>
+    </section>
+
     <!-- TAB 1: OUTBREAK MAP & GIS SURVEILLANCE -->
-    <section id="view-map" class="tab-view active">
+    <section id="view-map" class="tab-view">
       <div class="grid-map-sidebar">
         <!-- GIS Map Area -->
         <div class="card" style="margin-bottom:0; display:flex; flex-direction:column;">
@@ -1359,39 +1549,102 @@
 
 
 
-  <!-- Mobile Bottom Navigation Bar (Docked for touch devices) -->
-  <nav class="mobile-bottom-nav">
-    <button class="mobile-nav-item active" data-tab="map" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.App.switchTab('map')">
-      <span class="mobile-nav-icon">🗺️</span>
-      <span>Map</span>
+  <!-- More Services Bottom Sheet Drawer -->
+  <div id="moreServicesSheetBackdrop" class="bottom-sheet-backdrop" onclick="window.App.closeMoreSheet()"></div>
+  <div id="moreServicesSheet" class="bottom-sheet-drawer">
+    <div class="bottom-sheet-handle-wrap" onclick="window.App.closeMoreSheet()">
+      <div class="bottom-sheet-handle"></div>
+    </div>
+    <div class="bottom-sheet-header">
+      <div class="bottom-sheet-title">
+        <span>✨</span> <b>सभी सेवाएं एवं सेटिंग्स (All Services)</b>
+      </div>
+      <button type="button" class="bottom-sheet-close-btn" onclick="window.App.closeMoreSheet()" aria-label="Close">✕</button>
+    </div>
+    
+    <!-- Services Quick Grid in Sheet -->
+    <div class="bottom-sheet-grid">
+      <button type="button" class="sheet-service-item" onclick="window.App.switchTab('ehr'); window.App.closeMoreSheet();">
+        <span class="sheet-service-icon">📋</span>
+        <span class="sheet-service-name">पशु स्वास्थ्य कार्ड<br><small>Animal EHR</small></span>
+      </button>
+      <button type="button" class="sheet-service-item" onclick="window.App.switchTab('labs'); window.App.closeMoreSheet();">
+        <span class="sheet-service-icon">🧪</span>
+        <span class="sheet-service-name">लॅब जांच व नमूने<br><small>Lab Diagnostic</small></span>
+      </button>
+      <button type="button" class="sheet-service-item" onclick="window.App.switchTab('advisories'); window.App.closeMoreSheet();">
+        <span class="sheet-service-icon">📢</span>
+        <span class="sheet-service-name">सरकारी एडवाइजरी<br><small>Voice Alerts</small></span>
+      </button>
+      <button type="button" class="sheet-service-item" onclick="window.App.switchTab('ivr'); window.App.closeMoreSheet();">
+        <span class="sheet-service-icon">📞</span>
+        <span class="sheet-service-name">1962 हेल्पलाइन<br><small>IVR Hotline</small></span>
+      </button>
+      <button type="button" class="sheet-service-item" onclick="window.App.switchTab('dashboard'); window.App.closeMoreSheet();">
+        <span class="sheet-service-icon">📈</span>
+        <span class="sheet-service-name">सांख्यिकी व आंकड़े<br><small>Epi Dashboard</small></span>
+      </button>
+      <button type="button" class="sheet-service-item" onclick="window.AuthManager.openModal(); window.App.closeMoreSheet();">
+        <span class="sheet-service-icon">👤</span>
+        <span class="sheet-service-name">भूमिका बदलें<br><small>Switch Role</small></span>
+      </button>
+    </div>
+
+    <!-- Language Quick Toggle inside Drawer -->
+    <div class="sheet-lang-bar">
+      <span style="font-size:0.8rem; font-weight:700; color:#475569;">🌐 भाषा (Language):</span>
+      <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+        <button type="button" class="sheet-lang-pill" onclick="window.I18n.setLanguage('hi'); window.App.closeMoreSheet();">हिंदी</button>
+        <button type="button" class="sheet-lang-pill" onclick="window.I18n.setLanguage('en'); window.App.closeMoreSheet();">English</button>
+        <button type="button" class="sheet-lang-pill" onclick="window.I18n.setLanguage('mr'); window.App.closeMoreSheet();">मराठी</button>
+        <button type="button" class="sheet-lang-pill" onclick="window.I18n.setLanguage('te'); window.App.closeMoreSheet();">తెలుగు</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar (Docked & Interactive) -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav">
+    <button class="mobile-nav-item active" data-tab="home" onclick="window.App.switchTab('home')" title="Home / मुख्य">
+      <div class="mobile-nav-icon-wrap">
+        <span class="mobile-nav-icon">🏠</span>
+      </div>
+      <span class="mobile-nav-label" data-i18n="bottom_home">Home</span>
+      <span class="mobile-nav-pill"></span>
     </button>
-    <button class="mobile-nav-item" data-tab="vision" data-roles="FARMER,PARA_VET,DVO" onclick="window.App.switchTab('vision')">
-      <span class="mobile-nav-icon">📸</span>
-      <span>Lens</span>
+    <button class="mobile-nav-item" data-tab="vision" onclick="window.App.switchTab('vision')" title="AI Vision Lens">
+      <div class="mobile-nav-icon-wrap">
+        <span class="mobile-nav-icon">📸</span>
+      </div>
+      <span class="mobile-nav-label" data-i18n="bottom_vision">Lens</span>
+      <span class="mobile-nav-pill"></span>
     </button>
-    <button class="mobile-nav-item" data-tab="triage" data-roles="FARMER,PARA_VET,DVO" onclick="window.App.switchTab('triage')">
-      <span class="mobile-nav-icon">⚡</span>
-      <span>Report</span>
+    <button class="mobile-nav-item" data-tab="triage" onclick="window.App.switchTab('triage')" title="Report Sickness">
+      <div class="mobile-nav-icon-wrap">
+        <span class="mobile-nav-icon">⚡</span>
+      </div>
+      <span class="mobile-nav-label" data-i18n="bottom_triage">Report</span>
+      <span class="mobile-nav-pill"></span>
     </button>
-    <button class="mobile-nav-item" data-tab="chat" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.App.switchTab('chat')">
-      <span class="mobile-nav-icon">💬</span>
-      <span>AI Chat</span>
+    <button class="mobile-nav-item" data-tab="map" onclick="window.App.switchTab('map')" title="Outbreak Map">
+      <div class="mobile-nav-icon-wrap">
+        <span class="mobile-nav-icon">🗺️</span>
+      </div>
+      <span class="mobile-nav-label" data-i18n="bottom_map">Map</span>
+      <span class="mobile-nav-pill"></span>
     </button>
-    <button class="mobile-nav-item" data-tab="advisories" data-roles="DVO,DIRECTOR" onclick="window.App.switchTab('advisories')">
-      <span class="mobile-nav-icon">📢</span>
-      <span>Alerts</span>
+    <button class="mobile-nav-item" data-tab="chat" onclick="window.App.switchTab('chat')" title="AI Doctor Chatbot">
+      <div class="mobile-nav-icon-wrap">
+        <span class="mobile-nav-icon">💬</span>
+      </div>
+      <span class="mobile-nav-label" data-i18n="bottom_chat">AI Chat</span>
+      <span class="mobile-nav-pill"></span>
     </button>
-    <button class="mobile-nav-item" data-tab="ehr" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.App.switchTab('ehr')">
-      <span class="mobile-nav-icon">📋</span>
-      <span>EHR</span>
-    </button>
-    <button class="mobile-nav-item" data-tab="dashboard" data-roles="DVO,DIRECTOR" onclick="window.App.switchTab('dashboard')">
-      <span class="mobile-nav-icon">📈</span>
-      <span>Stats</span>
-    </button>
-    <button class="mobile-nav-item" data-tab="auth" data-roles="FARMER,PARA_VET,DVO,DIRECTOR" onclick="window.AuthManager.openModal()" title="Switch Account / Role">
-      <span class="mobile-nav-icon">👤</span>
-      <span>Role</span>
+    <button class="mobile-nav-item" data-tab="more" onclick="window.App.toggleMoreSheet()" title="All Services">
+      <div class="mobile-nav-icon-wrap">
+        <span class="mobile-nav-icon">☰</span>
+      </div>
+      <span class="mobile-nav-label" data-i18n="bottom_more">More</span>
+      <span class="mobile-nav-pill"></span>
     </button>
   </nav>
 
