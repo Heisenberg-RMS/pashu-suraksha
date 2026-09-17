@@ -613,7 +613,7 @@ VISUAL_DISEASE_PROFILES = {
 def extract_visual_metrics(image_bytes: bytes) -> Dict[str, Any]:
     """
     Extracts quantifiable computer vision parameters from uploaded photograph bytes
-    using Pillow (RGB channels, redness index, edge variance/roughness, dark pixel density).
+    using Pillow (RGB channels, redness index, edge variance/roughness, dark pixel density, nodule relief).
     """
     if not PIL_AVAILABLE or not image_bytes or len(image_bytes) < 10:
         return {
@@ -624,6 +624,7 @@ def extract_visual_metrics(image_bytes: bytes) -> Dict[str, Any]:
             "erythema_score": 20,
             "dark_blood_ratio": 0.0,
             "roughness_score": 15,
+            "nodule_relief_score": 0.0,
             "luminance": 50,
             "summary": "Simulated Feature Vector (Pillow fallback)"
         }
@@ -665,12 +666,24 @@ def extract_visual_metrics(image_bytes: bytes) -> Dict[str, Any]:
         edge_stddev = edge_stat.stddev[0] if edge_stat.stddev else 0.0
         roughness_score = min(int(edge_stddev * 2.2), 100)
 
+        # Cutaneous Nodule Relief Score (detects 3D raised dermal lumps vs smooth coat)
+        smooth = gray.filter(ImageFilter.GaussianBlur(radius=3))
+        try:
+            p_orig = list(gray.get_flattened_data() if hasattr(gray, "get_flattened_data") else gray.getdata())
+            p_smooth = list(smooth.get_flattened_data() if hasattr(smooth, "get_flattened_data") else smooth.getdata())
+            diffs = [abs(int(a) - int(b)) for a, b in zip(p_orig, p_smooth)]
+            nodule_relief_score = round(sum(diffs) / len(diffs), 2) if diffs else 0.0
+        except Exception:
+            nodule_relief_score = 0.0
+
         # Overall Luminance / Brightness
         luminance = int((0.299 * mean_r + 0.587 * mean_g + 0.114 * mean_b) / 255.0 * 100)
 
         summary_parts = []
-        if roughness_score > 35:
-            summary_parts.append("Elevated Surface Nodularity / Roughness")
+        if nodule_relief_score >= 7.5 or roughness_score > 85:
+            summary_parts.append("Elevated Cutaneous Nodularity / Lumpy Texture")
+        elif roughness_score > 35:
+            summary_parts.append("Moderate Surface Texture")
         else:
             summary_parts.append("Smooth Cutaneous Texture")
 
@@ -690,6 +703,7 @@ def extract_visual_metrics(image_bytes: bytes) -> Dict[str, Any]:
             "erythema_score": erythema_score,
             "dark_blood_ratio": dark_blood_ratio,
             "roughness_score": roughness_score,
+            "nodule_relief_score": nodule_relief_score,
             "luminance": luminance,
             "summary": " • ".join(summary_parts)
         }
@@ -702,6 +716,7 @@ def extract_visual_metrics(image_bytes: bytes) -> Dict[str, Any]:
             "erythema_score": 15,
             "dark_blood_ratio": 0.0,
             "roughness_score": 18,
+            "nodule_relief_score": 0.0,
             "luminance": 50,
             "summary": f"Decoded ({str(e)[:30]})"
         }
@@ -742,15 +757,19 @@ Language for farmer advice: {target_lang}
 Evaluate carefully:
 1. Is this animal NORMAL/HEALTHY or does it show PATHOLOGY/DISEASE?
 2. Disease/condition identification:
-   - HEALTHY: Normal cattle (clean coat, moist muzzle, clear eyes, normal udder, sound hooves)
+   - HEALTHY: Normal livestock (smooth uniform clean coat, moist muzzle, clear eyes, normal udder, sound hooves - zero lumps/nodules)
+   - LSD: Lumpy Skin Disease (multiple raised circular 1-5cm cutaneous nodules, dermal lumps, or necrotic sitfast scabs on neck, dewlap, torso, or limbs)
    - FMD: Foot-and-Mouth Disease (vesicular erosions on tongue, eroded dental pad, drooling saliva, coronet ulcers)
-   - LSD: Lumpy Skin Disease (2-5cm round cutaneous nodules, necrotic sitfast scabs)
    - MASTITIS: Acute Clinical Mastitis (swollen, hot, red udder quarter, curdled flaky milk)
    - ANTHRAX: Sudden death carcass, lack of rigor mortis, dark uncoagulated tarry orifice discharge
    - HS: Hemorrhagic Septicemia (submandibular throat edema, brisket swelling, respiratory distress)
    - BQ: Blackleg (crepitant gaseous swelling in thigh/shoulder muscle, acute lameness)
    - TICKS: Heavy tick infestation (Hyalomma clusters, anemia, bite dermatitis)
    - OTHER: Describe specific condition if different.
+
+CRITICAL CLINICAL RULES:
+- Any animal image showing raised circular cutaneous nodules, lumps, bumps, or sitfast lesions on the coat/skin (neck, dewlap, flanks, back, legs) MUST be diagnosed as LSD (disease_code: "LSD", is_healthy: false).
+- Any animal image showing smooth, clean, normal skin/coat without nodules or ulcerations MUST be diagnosed as HEALTHY (disease_code: "HEALTHY", is_healthy: true). Do not diagnose LSD if the skin is smooth.
 
 Respond strictly in valid JSON format:
 {{
@@ -901,7 +920,7 @@ def diagnose_image(
         selected_key = "HEALTHY_CATTLE"
     elif any(k in search_text for k in ["fmd_oral_vesicles", "fmd_hoof_lesions", "fmd", "foot and mouth", "vesicle", "vesicular", "blister", "blisters", "drooling", "saliva", "khurpaka", "aphthous", "sores", "chhale", "mouth_sores"]):
         selected_key = "FMD_VESICLES"
-    elif any(k in search_text for k in ["lsd_nodules_skin", "lsd", "lumpy skin", "lumpy", "cutaneous nodule", "nodule", "nodules", "sitfast", "lumps", "lump", "skin_lumps", "ganthe", "gaanthen"]):
+    elif any(k in search_text for k in ["lsd_nodules_skin", "lsd_dewlap_nodules", "lsd_calf_nodules", "lsd", "lumpy skin", "lumpy", "cutaneous nodule", "nodule", "nodules", "sitfast", "lumps", "lump", "skin_lumps", "ganthe", "gaanthen"]):
         selected_key = "LSD_NODULES"
     elif any(k in search_text for k in ["anthrax_carcass_discharge", "anthrax", "carcass", "oozing blood", "dark blood", "unclotted blood", "tarry blood", "gilti", "kalpuli", "sudden_death"]):
         selected_key = "ANTHRAX_CARCASS"
@@ -922,7 +941,10 @@ def diagnose_image(
                 selected_key = "ANTHRAX_CARCASS"
             elif metrics["erythema_score"] >= 65 and metrics["redness_index"] >= 0.52 and metrics["dark_blood_ratio"] >= 35.0:
                 selected_key = "FMD_VESICLES"
-            elif metrics["roughness_score"] >= 88 and metrics["redness_index"] >= 0.52 and metrics["erythema_score"] >= 75:
+            elif metrics.get("redness_index", 0.33) >= 0.31 and (
+                (metrics.get("nodule_relief_score", 0.0) >= 7.2 and metrics["roughness_score"] >= 80) or
+                (metrics["roughness_score"] >= 92 and metrics.get("nodule_relief_score", 0.0) >= 6.5)
+            ):
                 selected_key = "LSD_NODULES"
             else:
                 selected_key = "HEALTHY_CATTLE"
