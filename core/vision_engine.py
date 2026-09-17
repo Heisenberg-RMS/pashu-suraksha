@@ -883,7 +883,8 @@ def diagnose_image(
     filename: str = "",
     metadata_hint: str = "",
     language: str = "en",
-    user_api_key: Optional[str] = None
+    user_api_key: Optional[str] = None,
+    client_metrics: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
     """
     Intelligent multi-feature vision AI inspection for livestock pathology.
@@ -904,6 +905,8 @@ def diagnose_image(
     # 2. Enhanced Local Veterinary Vision Engine with Reference Photo Dataset Matching
     search_text = (filename + " " + metadata_hint).lower()
     metrics = extract_visual_metrics(image_bytes)
+    if not metrics.get("valid") and client_metrics and client_metrics.get("valid"):
+        metrics = client_metrics
 
     # Reference Photo Catalog Specific Matching
     selected_key = None

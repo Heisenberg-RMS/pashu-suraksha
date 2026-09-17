@@ -104,13 +104,115 @@ class VisionDiagnosticsManager {
     });
   }
 
+  extractClientMetrics(imgElement) {
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 120;
+      canvas.height = 120;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(imgElement, 0, 0, 120, 120);
+      const imgData = ctx.getImageData(0, 0, 120, 120);
+      const data = imgData.data;
+      const n = 120 * 120;
+      const w = 120, h = 120;
+
+      let totalR = 0, totalG = 0, totalB = 0;
+      let erythemaCount = 0;
+      let darkBloodCount = 0;
+      const gray = new Uint8Array(n);
+
+      for (let i = 0; i < n; i++) {
+        const r = data[i * 4];
+        const g = data[i * 4 + 1];
+        const b = data[i * 4 + 2];
+        totalR += r;
+        totalG += g;
+        totalB += b;
+        gray[i] = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+
+        if (r > 1.35 * g && r > 1.35 * b && r > 80) {
+          erythemaCount++;
+        }
+        if (r < 55 && g < 35 && b < 35) {
+          darkBloodCount++;
+        }
+      }
+
+      const meanR = totalR / n;
+      const meanG = totalG / n;
+      const meanB = totalB / n;
+      const channelSum = meanR + meanG + meanB + 1e-6;
+      const rednessIndex = Math.round((meanR / channelSum) * 1000) / 1000;
+      const erythemaScore = Math.min(Math.round((erythemaCount / n) * 100 * 2.5), 100);
+      const darkBloodRatio = Math.round((darkBloodCount / n) * 1000) / 10;
+      const luminance = Math.round((0.299 * meanR + 0.587 * meanG + 0.114 * meanB) / 255 * 100);
+
+      // Pillow FIND_EDGES equivalent Laplacian filter
+      const edgeVals = [];
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          const val = 8 * gray[y * w + x]
+            - gray[(y - 1) * w + (x - 1)] - gray[(y - 1) * w + x] - gray[(y - 1) * w + (x + 1)]
+            - gray[y * w + (x - 1)] - gray[y * w + (x + 1)]
+            - gray[(y + 1) * w + (x - 1)] - gray[(y + 1) * w + x] - gray[(y + 1) * w + (x + 1)];
+          edgeVals.push(Math.max(0, Math.min(255, Math.abs(val))));
+        }
+      }
+      const edgeMean = edgeVals.reduce((a, b) => a + b, 0) / edgeVals.length;
+      const edgeVar = edgeVals.reduce((a, b) => a + (b - edgeMean) ** 2, 0) / edgeVals.length;
+      const edgeStddev = Math.sqrt(edgeVar);
+      const roughnessScore = Math.min(Math.round(edgeStddev * 2.2), 100);
+
+      // 3x3 box blur difference for nodule relief score
+      let diffSum = 0;
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          const box = (
+            gray[(y - 1) * w + (x - 1)] + gray[(y - 1) * w + x] + gray[(y - 1) * w + (x + 1)] +
+            gray[y * w + (x - 1)] + gray[y * w + x] + gray[y * w + (x + 1)] +
+            gray[(y + 1) * w + (x - 1)] + gray[(y + 1) * w + x] + gray[(y + 1) * w + (x + 1)]
+          );
+          const smoothed = Math.round(box / 9);
+          diffSum += Math.abs(gray[y * w + x] - smoothed);
+        }
+      }
+      const noduleReliefScore = Math.round((diffSum / edgeVals.length) * 1.88 * 100) / 100;
+
+      return {
+        valid: true,
+        width: imgElement.naturalWidth || imgElement.width || 120,
+        height: imgElement.naturalHeight || imgElement.height || 120,
+        redness_index: rednessIndex,
+        erythema_score: erythemaScore,
+        dark_blood_ratio: darkBloodRatio,
+        roughness_score: roughnessScore,
+        nodule_relief_score: noduleReliefScore,
+        luminance: luminance,
+        summary: "Client Canvas Neural Extraction"
+      };
+    } catch (e) {
+      console.warn('Client metrics extraction error:', e);
+      return null;
+    }
+  }
+
   handleImageFile(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      this.currentImageDataUrl = e.target.result;
+      const dataUrl = e.target.result;
+      this.currentImageDataUrl = dataUrl;
       this.currentFilename = file.name;
-      this.renderImagePreview(e.target.result, file.name);
-      this.analyzeImage(e.target.result, file.name, this.selectedTargetRegion);
+      this.renderImagePreview(dataUrl, file.name);
+
+      const img = new Image();
+      img.onload = () => {
+        const clientMetrics = this.extractClientMetrics(img);
+        this.analyzeImage(dataUrl, file.name, this.selectedTargetRegion, clientMetrics);
+      };
+      img.onerror = () => {
+        this.analyzeImage(dataUrl, file.name, this.selectedTargetRegion);
+      };
+      img.src = dataUrl;
     };
     reader.readAsDataURL(file);
   }
@@ -165,7 +267,7 @@ class VisionDiagnosticsManager {
     if (fileLabel) fileLabel.innerText = label || 'Captured Image';
   }
 
-  async analyzeImage(dataUrl, filename, hint) {
+  async analyzeImage(dataUrl, filename, hint, clientMetrics = null) {
     const resultCard = document.getElementById('visionResultCard');
     const dropzone = document.getElementById('visionDropzone');
     const lang = (window.I18n && window.I18n.currentLanguage) ? window.I18n.currentLanguage : 'hi';
@@ -190,7 +292,8 @@ class VisionDiagnosticsManager {
           image_data: dataUrl,
           filename: filename,
           hint: hint || this.selectedTargetRegion || 'auto',
-          language: lang
+          language: lang,
+          client_metrics: clientMetrics
         })
       });
 
@@ -755,7 +858,16 @@ class VisionDiagnosticsManager {
         this.currentImageDataUrl = dataUrl;
         this.currentFilename = item.filename;
         this.renderImagePreview(dataUrl, title);
-        this.analyzeImage(dataUrl, item.filename, item.disease_code || targetRegion);
+
+        const img = new Image();
+        img.onload = () => {
+          const clientMetrics = this.extractClientMetrics(img);
+          this.analyzeImage(dataUrl, item.filename, item.disease_code || targetRegion, clientMetrics);
+        };
+        img.onerror = () => {
+          this.analyzeImage(dataUrl, item.filename, item.disease_code || targetRegion);
+        };
+        img.src = dataUrl;
 
         // Scroll to result card
         const resultCard = document.getElementById('visionResultCard');

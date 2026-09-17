@@ -175,6 +175,7 @@ def image_diagnosis():
         filename = data.get("filename", "")
         language = data.get("language", language)
         gemini_key = data.get("gemini_api_key", gemini_key)
+        client_metrics = data.get("client_metrics")
         data_url = data.get("image_data", "")
         if "," in data_url:
             data_url = data_url.split(",")[1]
@@ -188,7 +189,8 @@ def image_diagnosis():
         filename=filename,
         metadata_hint=hint,
         language=language,
-        user_api_key=gemini_key
+        user_api_key=gemini_key,
+        client_metrics=client_metrics if request.is_json else None
     )
     return jsonify(result)
 
